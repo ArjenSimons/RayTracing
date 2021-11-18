@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "myapp.h"
+#include "RayTracer.h"
 
 TheApp* CreateApp() { return new MyApp(); }
 
