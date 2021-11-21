@@ -1,17 +1,16 @@
 #pragma once
+#include "Scene.h"
+
 class RayTracer
 {
+private:
+	Scene m_scene;
+public:
+	RayTracer();
+	~RayTracer();
+
+	void SetScene(Scene scene);
+
 };
 
-struct Ray
-{
-	float3 Origin;
-	float3 Dir;
 
-	Ray(
-		float3 origin = float3(0, 0, 0),
-		float3 dir = float3(0, 0, 0)
-	): Origin(origin), Dir(dir)
-	{
-	}
-};

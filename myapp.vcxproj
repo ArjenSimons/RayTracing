@@ -122,6 +122,9 @@
   <!-- END Custom section -->
   <ItemGroup>
     <ClCompile Include="myapp.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="template\template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precomp.h</PrecompiledHeaderFile>
@@ -131,7 +134,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl\tools.cl" />
+    <ClInclude Include="Intersectable.h" />
     <ClInclude Include="myapp.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="RayTracing.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
   </ItemGroup>

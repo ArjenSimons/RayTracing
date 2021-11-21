@@ -5,6 +5,9 @@
       <Filter>template</Filter>
     </ClCompile>
     <ClCompile Include="myapp.cpp" />
+    <ClCompile Include="RayTracer.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Plane.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -17,6 +20,11 @@
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
     </ClInclude>
+    <ClInclude Include="RayTracer.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Intersectable.h" />
+    <ClInclude Include="RayTracing.h" />
+    <ClInclude Include="Plane.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

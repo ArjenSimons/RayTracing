@@ -8,3 +8,7 @@ RayTracer::RayTracer()
 RayTracer::~RayTracer()
 {
 }
+
+void RayTracer::SetScene(Scene scene) {
+	m_scene = scene;
+}
