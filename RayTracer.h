@@ -16,6 +16,7 @@ private:
 
 	Scene m_scene;
 public:
+	RayTracer();
 	RayTracer(Scene scene);
 	~RayTracer();
 

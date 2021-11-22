@@ -8,5 +8,5 @@ protected:
 public:
 	Intersectable(float3 position) : m_position(position) {};
 	virtual ~Intersectable() noexcept = default;
-	virtual bool Intersect(Ray ray) = 0;
+	virtual bool Intersect(Ray ray) const = 0;
 };
