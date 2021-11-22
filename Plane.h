@@ -7,6 +7,5 @@ private:
 public:
 	Plane(float3 position, float3 normal);
 	~Plane();
-	bool Intersect(Ray ray) const override;
+	Intersection Intersect(Ray ray) const override;
 };
-

@@ -5,9 +5,9 @@
 
 TheApp* CreateApp() { return new MyApp(); }
 
-RayTracer rayTracer;
+RayTracer* rayTracer;
 
-Plane plane(float3(0, -1, 0), float3(0, 1, 0));
+Plane plane(float3(0, -3, 0), float3(0, 1, 0));
 
 // -----------------------------------------------------------
 // Initialize the application
@@ -21,9 +21,7 @@ void MyApp::Init()
 
 	scene.AddObject(&plane);
 
-	rayTracer.SetScene(scene);
-
-	RayTracer rayTracer = RayTracer(scene);
+	rayTracer = new RayTracer(scene);
 
 	std::cout << "end init" << std::endl;
 }
@@ -39,7 +37,7 @@ void MyApp::Tick(float deltaTime)
 	//printf("hello world!\n");
 	// plot some colors
 
-	std::vector<std::vector<float3>> renderBuffer = rayTracer.Render();
+	std::vector<std::vector<float3>> renderBuffer = rayTracer->Render();
 
 	//std::cout << std::bitset<32>((255 << 24) + (255 << 16) + (255 << 8) + (255)) << std::endl;
 	//std::cout << std::bitset<32>(INT_MAX) << std::endl;

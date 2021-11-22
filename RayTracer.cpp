@@ -1,14 +1,25 @@
 #include "precomp.h"
 #include "RayTracer.h"
 
-RayTracer::RayTracer()
-{
-
-}
+//RayTracer::RayTracer()
+//{
+//	renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+//
+//	//for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+//	//{
+//	//	uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
+//	//}
+//}
 
 RayTracer::RayTracer(Scene scene)
 	: m_scene(scene)
 {
+	renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+
+	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	{
+		uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
+	}
 }
 
 RayTracer::~RayTracer()
@@ -22,36 +33,44 @@ void RayTracer::SetScene(Scene scene)
 
 std::vector<std::vector<float3>> RayTracer::Render() 
 {
-	float col = 1;
-	float back_col = 0;
+	float3 white(1, 1, 1);
+	float3 black(0, 0, 0);
+	float3 sky(.2, .2, .2);
 
-	std::vector<std::vector<float3>> out(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-
+	Ray ray;
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
-		Ray ray = GetUVRay(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
+		ray = GetUVRay(uv[i][j]);
 
 		for (Intersectable* obj : m_scene.GetObjects())
 		{
-			if (obj->Intersect(ray)) 
+			Intersection* intersection = &obj->Intersect(ray);
+			if (intersection->intersect) 
 			{
-				out[i][j] = float3(col, col, col);
+				if (((int)(intersection->position.x) + (int)(intersection->position.z)) & 1)
+				{
+					renderBuffer[i][j] = white;
+				}
+				else 
+				{
+					renderBuffer[i][j] = black;
+				}
 			}
 			else 
 			{
-				out[i][j] = float3(back_col, back_col, back_col);
+				renderBuffer[i][j] = sky;
 			}
 		}
 	}
 
-	return out;
+	return renderBuffer;
 }
 
 
 
-Ray RayTracer::GetUVRay(float u, float v) 
+Ray RayTracer::GetUVRay(float2 uv) 
 {
-	float3 dir = normalize(p0 + u * (p1 - p0) + v * (p2 - p0));
+	float3 dir = normalize(p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0));
 
 	return Ray(camPos, dir, 100);
 }

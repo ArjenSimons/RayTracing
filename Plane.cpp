@@ -12,9 +12,23 @@ Plane::~Plane()
 
 }
 
-bool Plane::Intersect(Ray ray) const
+Intersection Plane::Intersect(Ray ray) const
 {
-	float t = -(dot((m_position - ray.Origin), m_normal)) / dot(m_normal, ray.Dir);
+	Intersection out;
 
-	return t >= 0;
+	float denom = dot(m_normal, ray.Dir);
+
+	if (denom != 0) 
+	{
+		out.t = -(dot((m_position - ray.Origin), m_normal)) / denom;
+
+		out.intersect = out.t >= 0;
+		out.position = ray.Origin + out.t * ray.Dir;
+	}
+	else 
+	{
+		out.intersect = false;
+	}
+
+	return out;
 }

@@ -13,10 +13,12 @@ private:
 	float3 p1 = C + float3( 1, -1, 0);
 	float3 p2 = C + float3(-1,  1, 0);
 
+	float2 uv[SCRWIDTH][SCRHEIGHT];
+	std::vector<std::vector<float3>> renderBuffer;
 
 	Scene m_scene;
 public:
-	RayTracer();
+	//RayTracer();
 	RayTracer(Scene scene);
 	~RayTracer();
 
@@ -24,7 +26,7 @@ public:
 
 	std::vector<std::vector<float3>> Render();
 
-	Ray GetUVRay(float u, float v);
+	Ray GetUVRay(float2 uv);
 };
 
 
