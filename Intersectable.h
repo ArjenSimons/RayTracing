@@ -3,10 +3,10 @@
 
 class Intersectable
 {
-private: 
-	float3 position;
+protected: 
+	float3 m_position;
 public:
-	Intersectable() = default;
+	Intersectable(float3 position) : m_position(position) {};
 	virtual ~Intersectable() noexcept = default;
-	virtual void Intersect(Ray ray) = 0;
+	virtual bool Intersect(Ray ray) = 0;
 };

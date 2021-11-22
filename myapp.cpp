@@ -20,8 +20,24 @@ void MyApp::Tick(float deltaTime)
 	// clear the screen to black
 	screen->Clear(0);
 	// print something to the console window
-	printf("hello world!\n");
+	//printf("hello world!\n");
 	// plot some colors
+
+	Scene scene = Scene();
+
+	RayTracer rayTracer = RayTracer(scene);
+
+	std::vector<std::vector<float3>> renderBuffer = rayTracer.Render();
+
+	//std::cout << std::bitset<32>((255 << 24) + (255 << 16) + (255 << 8) + (255)) << std::endl;
+	//std::cout << std::bitset<32>(INT_MAX) << std::endl;
+
+	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	{
+		screen->Plot(i, j, ((int)(renderBuffer[i][j].x * 255) << 16) + ((int)(renderBuffer[i][j].y * 255) << 8) + ((int)(renderBuffer[i][j].z * 255)));
+		//screen->Plot(i, j, (255 << 16) + (255 << 8) + (255));
+	}
+
 	for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	{
 		int x = red, y = green;
