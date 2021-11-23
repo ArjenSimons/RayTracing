@@ -5,6 +5,7 @@ Sphere::Sphere(float3 position, float radius)
 	: Intersectable(position), m_radius2(radius * radius)
 {
 	printf("sphere r2 = %f \n", m_radius2);
+	printf("sphere position = %f, %f, %f \n", m_position.x, m_position.y, m_position.z);
 }
 
 Sphere::~Sphere()
@@ -12,7 +13,7 @@ Sphere::~Sphere()
 
 }
 
-Intersection Sphere::Intersect(Ray ray) const 
+Intersection Sphere::Intersect(Ray ray) const
 {
 	Intersection out;
 
@@ -24,12 +25,14 @@ Intersection Sphere::Intersect(Ray ray) const
 	if (p2 > m_radius2) { return out; } //No hit
 
 	t -= sqrt(m_radius2 - p2);
-	if ((t >= 0 && t < ray.t)) 
+	if ((t >= 0))
 	{
-		out.t, ray.t = t;
+		out.t = t;
 		out.intersect = true;
 		out.position = ray.Origin + out.t * ray.Dir;
+		//printf("intersect pos: %f, %f, %f \n", out.position.x, out.position.y, out.position.z);
 	}
+
 
 	return out;
 }

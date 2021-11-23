@@ -9,6 +9,8 @@ struct Intersection
 	Intersection() 
 	{
 		intersect = false;
+		t = INT_MAX;
+		position = float3(0, 0, 0);
 	}
 };
 

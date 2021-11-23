@@ -33,64 +33,66 @@ void RayTracer::SetScene(Scene scene)
 
 std::vector<std::vector<float3>> RayTracer::Render()
 {
-	float3 white(1, 1, 1);
-	float3 black(0, 0, 0);
-	float3 sky(.2, .2, .2);
-
 	bool printed = false;
 
-	Ray ray;
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
-		ray = GetUVRay(uv[i][j]);
+		Ray ray = GetUVRay(uv[i][j]);
 
-		Intersection* closest_intersection = nullptr;
-
-		for (Intersectable* obj : m_scene.GetObjects())
-		{
-			Intersection* intersection;
-			intersection = &obj->Intersect(ray);
-
-			if (intersection->intersect)
-			{
-				if (!printed) {
-					printf("%f | %f | %f \n", intersection->position.x, intersection->position.y, intersection->position.z);
-					printed = true;
-				}
-
-				closest_intersection = intersection;
-			}
-		}
-
-		if (closest_intersection == nullptr)
-		{
-			renderBuffer[i][j] = sky;
-		}
-		else
-		{
-			// -----------------------------------------------------------
-			//zBuffer
-			// -----------------------------------------------------------
-			renderBuffer[i][j] = float3(1 / closest_intersection->position.z, 1 / closest_intersection->position.z, 1 / closest_intersection->position.z);
-
-			// -----------------------------------------------------------
-			//Checker pattern
-			// -----------------------------------------------------------
-			//if (((int)(closest_intersection->position.x) + (int)(closest_intersection->position.z)) & 1)
-			//{
-			//	renderBuffer[i][j] = white;
-			//}
-			//else
-			//{
-			//	renderBuffer[i][j] = black;
-			//}
-		}
+		renderBuffer[i][j] = Trace(ray);
 	}
 
 	return renderBuffer;
 }
 
+float3 RayTracer::Trace(Ray ray) 
+{
+	float3 white(1, 1, 1);
+	float3 black(0, 0, 0);
+	float3 sky(.2, .2, .2);
 
+	Intersection closest_intersection;
+
+	for (Intersectable* obj : m_scene.GetObjects())
+	{
+		Intersection* intersection;
+		intersection = &obj->Intersect(ray);
+
+		if (intersection->intersect && intersection->t < closest_intersection.t)
+		{
+			//if (!printed) {
+			//	printf("%f | %f | %f \n", intersection->position.x, intersection->position.y, intersection->position.z);
+			//	printed = true;
+			//}
+
+			closest_intersection = *intersection;
+		}
+	}
+
+	if (!closest_intersection.intersect)
+	{
+		return sky;
+	}
+	else
+	{
+		// -----------------------------------------------------------
+		//zBuffer
+		// -----------------------------------------------------------
+		return float3(1 / closest_intersection.position.z, 1 / closest_intersection.position.z, 1 / closest_intersection.position.z) / 2;
+
+		// -----------------------------------------------------------
+		//Checker pattern
+		// -----------------------------------------------------------
+		//if (((int)(closest_intersection->position.x) + (int)(closest_intersection->position.z)) & 1)
+		//{
+		//	return white;
+		//}
+		//else
+		//{
+		//	return black;
+		//}
+	}
+}
 
 Ray RayTracer::GetUVRay(float2 uv)
 {

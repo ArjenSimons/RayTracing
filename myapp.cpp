@@ -19,8 +19,8 @@ void MyApp::Init()
 	Plane* plane = new Plane(float3(0, -3, 0), float3(0, 1, 0));
 	Sphere* sphere = new Sphere(float3(1, 1, 5), 1);
 
-	scene.AddObject(sphere);
 	scene.AddObject(plane);
+	scene.AddObject(sphere);
 
 	rayTracer = new RayTracer(scene);
 

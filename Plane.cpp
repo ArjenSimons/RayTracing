@@ -7,7 +7,7 @@ Plane::Plane(float3 position, float3 normal)
 	printf("hallo");
 }
 
-Plane::~Plane() 
+Plane::~Plane()
 {
 
 }
@@ -18,11 +18,11 @@ Intersection Plane::Intersect(Ray ray) const
 
 	float denom = dot(m_normal, ray.Dir);
 
-	if (denom != 0) 
+	if (denom != 0)
 	{
 		out.t = -(dot((m_position - ray.Origin), m_normal)) / denom;
 
-		if (out.t >= 0 && out.t < ray.t)
+		if (out.t >= 0)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
