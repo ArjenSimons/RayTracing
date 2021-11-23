@@ -25,9 +25,8 @@ public:
 	void SetScene(Scene scene);
 
 	std::vector<std::vector<float3>> Render();
-	float3 Trace(Ray ray);
+	float3 Trace(Ray &ray);
+	Intersection GetNearestIntersection(Ray &ray);
 
 	Ray GetUVRay(float2 uv);
 };
-
-

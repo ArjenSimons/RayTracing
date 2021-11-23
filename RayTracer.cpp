@@ -45,12 +45,41 @@ std::vector<std::vector<float3>> RayTracer::Render()
 	return renderBuffer;
 }
 
-float3 RayTracer::Trace(Ray ray) 
+float3 RayTracer::Trace(Ray &ray) 
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
 	float3 sky(.2, .2, .2);
 
+	Intersection intersection = GetNearestIntersection(ray);
+
+	if (!intersection.intersect)
+	{
+		return sky;
+	}
+	else
+	{
+		// -----------------------------------------------------------
+		//zBuffer
+		// -----------------------------------------------------------
+		//return float3(1 / intersection.position.z, 1 / intersection.position.z, 1 / intersection.position.z) / 2;
+
+		// -----------------------------------------------------------
+		//Checker pattern
+		//-----------------------------------------------------------
+		if (((int)(intersection.position.x) + (int)(intersection.position.z)) & 1)
+		{
+			return white;
+		}
+		else
+		{
+			return black;
+		}
+	}
+}
+
+Intersection RayTracer::GetNearestIntersection(Ray& ray) 
+{
 	Intersection closest_intersection;
 
 	for (Intersectable* obj : m_scene.GetObjects())
@@ -69,29 +98,7 @@ float3 RayTracer::Trace(Ray ray)
 		}
 	}
 
-	if (!closest_intersection.intersect)
-	{
-		return sky;
-	}
-	else
-	{
-		// -----------------------------------------------------------
-		//zBuffer
-		// -----------------------------------------------------------
-		return float3(1 / closest_intersection.position.z, 1 / closest_intersection.position.z, 1 / closest_intersection.position.z) / 2;
-
-		// -----------------------------------------------------------
-		//Checker pattern
-		// -----------------------------------------------------------
-		//if (((int)(closest_intersection->position.x) + (int)(closest_intersection->position.z)) & 1)
-		//{
-		//	return white;
-		//}
-		//else
-		//{
-		//	return black;
-		//}
-	}
+	return closest_intersection;
 }
 
 Ray RayTracer::GetUVRay(float2 uv)
