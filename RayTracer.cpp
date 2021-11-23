@@ -89,11 +89,6 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 
 		if (intersection->intersect && intersection->t < closest_intersection.t)
 		{
-			//if (!printed) {
-			//	printf("%f | %f | %f \n", intersection->position.x, intersection->position.y, intersection->position.z);
-			//	printed = true;
-			//}
-
 			closest_intersection = *intersection;
 		}
 	}

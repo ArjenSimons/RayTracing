@@ -16,7 +16,7 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(0, -3, 0), float3(0, 1, 0));
+	Plane* plane = new Plane(float3(1, -3, 0), float3(0, 1, 0));
 	Sphere* sphere = new Sphere(float3(1, 1, 5), 1);
 
 	scene.AddObject(plane);
