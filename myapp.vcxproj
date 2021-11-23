@@ -121,7 +121,6 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
-    <ClCompile Include="CheckerMaterial.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="myapp.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -136,16 +135,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CheckerMaterial.h" />
     <ClInclude Include="cl\tools.cl" />
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="myapp.h" />
-    <ClInclude Include="Plane.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RayTracing.h" />
     <ClInclude Include="Scene.h" />
-    <ClInclude Include="Sphere.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
   </ItemGroup>

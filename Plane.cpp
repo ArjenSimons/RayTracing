@@ -1,19 +1,11 @@
 #include "precomp.h"
-#include "Plane.h"
+#include "Intersectable.h"
 
 Plane::Plane(float3 position, float3 normal, Material mat) 
 	: Intersectable(position, mat), m_normal(normal)
 {
 	
 }
-
-Plane::Plane(float3 position, float3 normal, CheckerMaterial mat) 
-	: Intersectable(position, mat), m_normal(normal)
-{
-	
-}
-
-
 
 Plane::~Plane()
 {

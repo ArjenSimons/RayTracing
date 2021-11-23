@@ -10,7 +10,6 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="CheckerMaterial.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -27,10 +26,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="RayTracing.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="CheckerMaterial.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

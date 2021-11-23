@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "Sphere.h"
+#include "Intersectable.h"
 
 Sphere::Sphere(float3 position, float radius, Material mat)
 	: Intersectable(position, mat), m_radius2(radius * radius)

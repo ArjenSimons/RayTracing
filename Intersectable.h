@@ -28,3 +28,23 @@ public:
 	virtual Intersection Intersect(Ray ray) const = 0;
 };
 
+class Plane : public Intersectable
+{
+private:
+	float3 m_normal;
+public:
+	Plane(float3 position, float3 normal, Material mat);
+	~Plane();
+	Intersection Intersect(Ray ray) const override;
+};
+
+class Sphere : public Intersectable
+{
+private:
+	float m_radius2;
+public:
+	Sphere(float3 position, float radius, Material mat);
+	~Sphere();
+	Intersection Intersect(Ray ray) const override;
+};
+

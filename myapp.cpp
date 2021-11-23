@@ -1,8 +1,7 @@
 #include "precomp.h"
 #include "myapp.h"
 #include "RayTracer.h"
-#include "Plane.h"
-#include "Sphere.h"
+#include "Intersectable.h"
 
 TheApp* CreateApp() { return new MyApp(); }
 
