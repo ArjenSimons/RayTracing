@@ -8,6 +8,7 @@
     <ClCompile Include="RayTracer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -25,6 +26,7 @@
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="RayTracing.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
