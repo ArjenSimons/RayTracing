@@ -2,12 +2,11 @@
 #include "myapp.h"
 #include "RayTracer.h"
 #include "Plane.h"
+#include "Sphere.h"
 
 TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
-
-Plane plane(float3(0, -3, 0), float3(0, 1, 0));
 
 // -----------------------------------------------------------
 // Initialize the application
@@ -17,9 +16,11 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 
 	Scene scene = Scene();
+	Plane* plane = new Plane(float3(0, -3, 0), float3(0, 1, 0));
+	Sphere* sphere = new Sphere(float3(1, 1, 5), 1);
 
-
-	scene.AddObject(&plane);
+	scene.AddObject(sphere);
+	scene.AddObject(plane);
 
 	rayTracer = new RayTracer(scene);
 

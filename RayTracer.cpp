@@ -26,42 +26,64 @@ RayTracer::~RayTracer()
 {
 }
 
-void RayTracer::SetScene(Scene scene) 
+void RayTracer::SetScene(Scene scene)
 {
 	m_scene = scene;
 }
 
-std::vector<std::vector<float3>> RayTracer::Render() 
+std::vector<std::vector<float3>> RayTracer::Render()
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
 	float3 sky(.2, .2, .2);
 
-	bool printed = true;
+	bool printed = false;
 
 	Ray ray;
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
 		ray = GetUVRay(uv[i][j]);
 
+		Intersection* closest_intersection = nullptr;
+
 		for (Intersectable* obj : m_scene.GetObjects())
 		{
-			Intersection* intersection = &obj->Intersect(ray);
-			if (intersection->intersect) 
+			Intersection* intersection;
+			intersection = &obj->Intersect(ray);
+
+			if (intersection->intersect)
 			{
-				if (((int)(intersection->position.x) + (int)(intersection->position.z)) & 1)
-				{
-					renderBuffer[i][j] = white;
+				if (!printed) {
+					printf("%f | %f | %f \n", intersection->position.x, intersection->position.y, intersection->position.z);
+					printed = true;
 				}
-				else 
-				{
-					renderBuffer[i][j] = black;
-				}
+
+				closest_intersection = intersection;
 			}
-			else 
-			{
-				renderBuffer[i][j] = sky;
-			}
+		}
+
+		if (closest_intersection == nullptr)
+		{
+			renderBuffer[i][j] = sky;
+		}
+		else
+		{
+			// -----------------------------------------------------------
+			//zBuffer
+			// -----------------------------------------------------------
+			renderBuffer[i][j] = float3(1 / closest_intersection->position.z, 1 / closest_intersection->position.z, 1 / closest_intersection->position.z);
+
+			// -----------------------------------------------------------
+			//Checker pattern
+			// -----------------------------------------------------------
+			//if (((int)(closest_intersection->position.x) + (int)(closest_intersection->position.z)) & 1)
+			//{
+			//	renderBuffer[i][j] = white;
+			//}
+			//else
+			//{
+			//	renderBuffer[i][j] = black;
+			//}
 		}
 	}
 
@@ -70,7 +92,7 @@ std::vector<std::vector<float3>> RayTracer::Render()
 
 
 
-Ray RayTracer::GetUVRay(float2 uv) 
+Ray RayTracer::GetUVRay(float2 uv)
 {
 	float3 dir = normalize(p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0));
 

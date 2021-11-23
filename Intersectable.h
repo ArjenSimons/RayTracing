@@ -5,6 +5,11 @@ struct Intersection
 	bool intersect;
 	float t;
 	float3 position;
+
+	Intersection() 
+	{
+		intersect = false;
+	}
 };
 
 class Intersectable

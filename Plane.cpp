@@ -4,7 +4,7 @@
 Plane::Plane(float3 position, float3 normal) 
 	: Intersectable(position), m_normal(normal)
 {
-
+	printf("hallo");
 }
 
 Plane::~Plane() 
@@ -22,12 +22,11 @@ Intersection Plane::Intersect(Ray ray) const
 	{
 		out.t = -(dot((m_position - ray.Origin), m_normal)) / denom;
 
-		out.intersect = out.t >= 0;
-		out.position = ray.Origin + out.t * ray.Dir;
-	}
-	else 
-	{
-		out.intersect = false;
+		if (out.t >= 0 && out.t < ray.t)
+		{
+			out.intersect = true;
+			out.position = ray.Origin + out.t * ray.Dir;
+		}		
 	}
 
 	return out;
