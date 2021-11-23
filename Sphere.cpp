@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "Sphere.h"
 
-Sphere::Sphere(float3 position, float radius)
-	: Intersectable(position), m_radius2(radius * radius)
+Sphere::Sphere(float3 position, float radius, Material mat)
+	: Intersectable(position, mat), m_radius2(radius * radius)
 {
 	printf("sphere r2 = %f \n", m_radius2);
 	printf("sphere position = %f, %f, %f \n", m_position.x, m_position.y, m_position.z);
@@ -30,9 +30,9 @@ Intersection Sphere::Intersect(Ray ray) const
 		out.t = t;
 		out.intersect = true;
 		out.position = ray.Origin + out.t * ray.Dir;
+		out.mat = m_mat;
 		//printf("intersect pos: %f, %f, %f \n", out.position.x, out.position.y, out.position.z);
 	}
-
 
 	return out;
 }

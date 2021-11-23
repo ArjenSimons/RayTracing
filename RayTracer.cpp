@@ -60,6 +60,11 @@ float3 RayTracer::Trace(Ray &ray)
 	else
 	{
 		// -----------------------------------------------------------
+		//Mat color
+		// -----------------------------------------------------------
+		return intersection.mat.GetColor(intersection.position);
+
+		// -----------------------------------------------------------
 		//zBuffer
 		// -----------------------------------------------------------
 		//return float3(1 / intersection.position.z, 1 / intersection.position.z, 1 / intersection.position.z) / 2;
@@ -67,14 +72,14 @@ float3 RayTracer::Trace(Ray &ray)
 		// -----------------------------------------------------------
 		//Checker pattern
 		//-----------------------------------------------------------
-		if (((int)(intersection.position.x) + (int)(intersection.position.z)) & 1)
-		{
-			return white;
-		}
-		else
-		{
-			return black;
-		}
+		//if (((int)(intersection.position.x) + (int)(intersection.position.z)) & 1)
+		//{
+		//	return white;
+		//}
+		//else
+		//{
+		//	return black;
+		//}
 	}
 }
 

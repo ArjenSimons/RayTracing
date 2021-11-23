@@ -1,11 +1,19 @@
 #include "precomp.h"
 #include "Plane.h"
 
-Plane::Plane(float3 position, float3 normal) 
-	: Intersectable(position), m_normal(normal)
+Plane::Plane(float3 position, float3 normal, Material mat) 
+	: Intersectable(position, mat), m_normal(normal)
 {
-	printf("hallo");
+	
 }
+
+Plane::Plane(float3 position, float3 normal, CheckerMaterial mat) 
+	: Intersectable(position, mat), m_normal(normal)
+{
+	
+}
+
+
 
 Plane::~Plane()
 {
@@ -26,6 +34,7 @@ Intersection Plane::Intersect(Ray ray) const
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
+			out.mat = m_mat;
 		}		
 	}
 
