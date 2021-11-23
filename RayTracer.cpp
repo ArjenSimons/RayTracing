@@ -37,6 +37,8 @@ std::vector<std::vector<float3>> RayTracer::Render()
 	float3 black(0, 0, 0);
 	float3 sky(.2, .2, .2);
 
+	bool printed = true;
+
 	Ray ray;
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{

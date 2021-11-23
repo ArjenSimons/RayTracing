@@ -6,7 +6,7 @@ class RayTracer
 private:
 	//Cam
 	float3 camPos = float3(0, 0, 0);
-	float3 viewDir = float3(0, 0, 0);
+	float3 viewDir = float3(0, 0, 1);
 	float d = 1;
 	float3 C = camPos + d * viewDir;
 	float3 p0 = C + float3(-1, -1, 0);
