@@ -15,7 +15,7 @@ private:
 	float3 p2 = C + float3(-1 * aspectRatio,  1, 0);
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
-	std::vector<std::vector<float3>> renderBuffer;
+	//std::vector<std::vector<float3>> renderBuffer;
 
 	Scene m_scene;
 public:
@@ -25,9 +25,11 @@ public:
 
 	void SetScene(Scene scene);
 
-	std::vector<std::vector<float3>> Render();
-	float3 Trace(Ray &ray);
+	//std::vector<std::vector<float3>> Render();
+	Color Trace(Ray &ray);
 	Intersection GetNearestIntersection(Ray &ray);
+	Color DirectIllumination(float3 point, float3 normal);
 
+	float2 GetUV(int x, int y) { return uv[x][y]; }
 	Ray GetUVRay(float2 uv);
 };

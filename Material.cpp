@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "Material.h"
 
-Material::Material(float3 color, float3 secondColor, MatType type)
+Material::Material(Color color, Color secondColor, MatType type)
 	: color(color), secondColor(secondColor), type(type)
 {
 
@@ -12,7 +12,7 @@ Material::~Material()
 
 }
 
-float3 Material::GetColor(float3 position) 
+Color Material::GetColor(float3 position)
 {
 	if (type == SOLID)
 	{

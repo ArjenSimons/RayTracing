@@ -137,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="cl\tools.cl" />
     <ClInclude Include="Intersectable.h" />
+    <ClInclude Include="LightSource.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="myapp.h" />
     <ClInclude Include="RayTracer.h" />

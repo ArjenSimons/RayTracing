@@ -7,6 +7,7 @@ struct Intersection
 	bool intersect;
 	float t;
 	float3 position;
+	float3 normal;
 	Material mat{ float3(1, 0, 1) };
 
 	Intersection()
@@ -14,6 +15,7 @@ struct Intersection
 		intersect = false;
 		t = INT_MAX;
 		position = float3(0, 0, 0);
+		normal = float3(0, 0, 0);
 	}
 };
 

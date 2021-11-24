@@ -14,7 +14,7 @@
 RayTracer::RayTracer(Scene scene)
 	: m_scene(scene)
 {
-	renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -31,21 +31,21 @@ void RayTracer::SetScene(Scene scene)
 	m_scene = scene;
 }
 
-std::vector<std::vector<float3>> RayTracer::Render()
-{
-	bool printed = false;
+//std::vector<std::vector<float3>> RayTracer::Render()
+//{
+//	bool printed = false;
+//
+//	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+//	{
+//		Ray ray = GetUVRay(uv[i][j]);
+//
+//		//renderBuffer[i][j] = Trace(ray);
+//	}
+//
+//	return renderBuffer;
+//}
 
-	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
-	{
-		Ray ray = GetUVRay(uv[i][j]);
-
-		renderBuffer[i][j] = Trace(ray);
-	}
-
-	return renderBuffer;
-}
-
-float3 RayTracer::Trace(Ray &ray) 
+Color RayTracer::Trace(Ray &ray) 
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
@@ -59,27 +59,14 @@ float3 RayTracer::Trace(Ray &ray)
 	}
 	else
 	{
-		// -----------------------------------------------------------
-		//Mat color
-		// -----------------------------------------------------------
-		return intersection.mat.GetColor(intersection.position);
+		//Color out = intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
+		
+		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
 
 		// -----------------------------------------------------------
 		//zBuffer
 		// -----------------------------------------------------------
 		//return float3(1 / intersection.position.z, 1 / intersection.position.z, 1 / intersection.position.z) / 2;
-
-		// -----------------------------------------------------------
-		//Checker pattern
-		//-----------------------------------------------------------
-		//if (((int)(intersection.position.x) + (int)(intersection.position.z)) & 1)
-		//{
-		//	return white;
-		//}
-		//else
-		//{
-		//	return black;
-		//}
 	}
 }
 
@@ -99,6 +86,33 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 	}
 
 	return closest_intersection;
+}
+
+Color RayTracer::DirectIllumination(float3 pos, float3 N)
+{
+	Color out = float3(0, 0, 0);
+
+	for (LightSource* light : m_scene.GetLights())
+	{
+		float3 C = light->position - pos;
+		float d2 = dot(C, C);
+		Ray ray(pos, normalize(C));
+
+		for (Intersectable* object : m_scene.GetObjects())
+		{
+			Intersection i = object->Intersect(ray);
+			if (i.t > 0 && i.t * i.t > d2)
+			{
+				float3 col = light->color.value;
+				col *= 1 / d2;
+				col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
+
+				out.value += col;
+				break;
+			}
+		}
+	}
+	return out;
 }
 
 Ray RayTracer::GetUVRay(float2 uv)

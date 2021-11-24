@@ -4,12 +4,24 @@
     <ClCompile Include="template\template.cpp">
       <Filter>template</Filter>
     </ClCompile>
-    <ClCompile Include="myapp.cpp" />
-    <ClCompile Include="RayTracer.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Material.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="myapp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTracer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -18,15 +30,30 @@
     <ClInclude Include="template\precomp.h">
       <Filter>template</Filter>
     </ClInclude>
-    <ClInclude Include="myapp.h" />
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="Intersectable.h" />
-    <ClInclude Include="RayTracing.h" />
-    <ClInclude Include="Material.h" />
+    <ClInclude Include="Material.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="myapp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracer.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTracing.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersectable.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>src\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
@@ -45,6 +72,15 @@
     </Filter>
     <Filter Include="template\cl">
       <UniqueIdentifier>{dc41819e-b6c1-4070-b4c1-0849e444ca7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{92c75ecc-4318-4ce9-bb98-d9b44518f187}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Geometry">
+      <UniqueIdentifier>{2d44d219-79d2-4e67-9a34-444eff7f20f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Light">
+      <UniqueIdentifier>{e8b72a43-dde4-4281-b960-6fd7d55fba5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@ Intersection Plane::Intersect(Ray ray) const
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
+			out.normal = m_normal;
 			out.mat = m_mat;
 		}		
 	}
