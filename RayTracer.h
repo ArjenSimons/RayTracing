@@ -10,9 +10,9 @@ private:
 	float aspectRatio = (float)SCRWIDTH / (float)SCRHEIGHT;
 	float d = 1;
 	float3 C = camPos + d * viewDir;
-	float3 p0 = C + float3(-1 * aspectRatio, -1, 0);
-	float3 p1 = C + float3( 1 * aspectRatio, -1, 0);
-	float3 p2 = C + float3(-1 * aspectRatio,  1, 0);
+	float3 p0 = C + float3(-1 * aspectRatio,  1, 0);
+	float3 p1 = C + float3( 1 * aspectRatio,  1, 0);
+	float3 p2 = C + float3(-1 * aspectRatio, -1, 0);
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	//std::vector<std::vector<float3>> renderBuffer;

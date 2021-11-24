@@ -49,7 +49,7 @@ Color RayTracer::Trace(Ray &ray)
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
-	float3 sky(.2, .2, .2);
+	float3 sky(.4, .7, .8);
 
 	Intersection intersection = GetNearestIntersection(ray);
 
@@ -60,9 +60,9 @@ Color RayTracer::Trace(Ray &ray)
 	else
 	{
 		//Color out = intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
-		
+		//printf("trace i pos: %f \n", intersection.position.y);
 		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
-
+		printf("trace i pos111: %f \n", intersection.position.y);
 		// -----------------------------------------------------------
 		//zBuffer
 		// -----------------------------------------------------------
@@ -82,9 +82,9 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 		if (intersection->intersect && intersection->t < closest_intersection.t)
 		{
 			closest_intersection = *intersection;
+			//printf("nearesty: %f \n", closest_intersection.position.y);
 		}
 	}
-
 	return closest_intersection;
 }
 
@@ -95,6 +95,10 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	for (LightSource* light : m_scene.GetLights())
 	{
 		float3 C = light->position - pos;
+		//if (pos.y < 2.9 || pos.y > 3.1) {
+
+		//printf("lightpos: %f, \n", pos.y);
+		//}*/
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
@@ -104,7 +108,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 			if (i.t > 0 && i.t * i.t > d2)
 			{
 				float3 col = light->color.value;
-				col *= 1 / d2;
+				//col *= 1 / d2;
 				col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
 
 				out.value += col;
@@ -117,7 +121,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 Ray RayTracer::GetUVRay(float2 uv)
 {
-	float3 dir = normalize(p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0));
+	float3 dir = normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos);
 
 	return Ray(camPos, dir, 100);
 }

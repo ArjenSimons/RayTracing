@@ -29,7 +29,7 @@ Intersection Sphere::Intersect(Ray ray) const
 	{
 		out.t = t;
 		out.intersect = true;
-		out.position = ray.Origin + out.t * ray.Dir;
+		out.position = (ray.Origin + out.t * ray.Dir);
 		out.normal = normalize(out.position - m_position);
 		out.mat = m_mat;
 

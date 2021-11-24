@@ -13,7 +13,7 @@ struct Color
 	{
 	}
 
-	float GetRGBValue() 
+	unsigned int GetRGBValue() 
 	{
 		return ((int)(value.x * 255) << 16) + ((int)(value.y * 255) << 8) + ((int)(value.z * 255));
 	}
