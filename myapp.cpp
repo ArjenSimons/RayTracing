@@ -17,16 +17,18 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(1, -3, 0), float3(0, 1, 0), Material(float3(1, 1, 1), float3(0, 0, 0), CHECKER));
+	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), float3(0, 0, 0), CHECKER));
 	//TODO: Fix plane pos negative z being handled as positive z and vice versa
 	//Plane* plane1 = new Plane(float3(0, 0, -6), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
-	Sphere* sphere = new Sphere(float3(1, 2, 4), 1, Material(float3(1, 0, 0)));
+	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0)));
 
-	LightSource* light = new LightSource(float3(1, 1, 2), 10, float3(1, 1, 1));
+	LightSource* light = new LightSource(float3(1, 5, 1), 10, float3(1, 1, 1));
+	LightSource* light1 = new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1));
 
-	//scene.AddObject(plane);
+	scene.AddObject(plane);
 	scene.AddObject(sphere);
 	scene.AddLightSource(light);
+	//scene.AddLightSource(light1);
 
 	rayTracer = new RayTracer(scene);
 
@@ -59,13 +61,18 @@ void MyApp::Tick(float deltaTime)
 		//screen->Plot(i, j, (255 << 16) + (255 << 8) + (255));
 	}
 
-	/*for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
-	{
-		int x = red, y = green;
-		screen->Plot(x + 200, y + 100, (red << 16) + (green << 8));
-	}*/
+	//for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	//{
+	//	screen->Plot(i, j, 0xffffff);
+	//}
+
+	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
+	//{
+	//	int x = red, y = green;
+	//	screen->Plot(x + 200, y + 100, (red << 16) + (green << 8));
+	//}
 	// plot a white pixel in the bottom right corner
-	screen->Plot(SCRWIDTH - 2, SCRHEIGHT - 2, 0xffffff);
+	//screen->Plot(SCRWIDTH - 2, SCRHEIGHT - 2, 0xffffff);
 
 	std::cout << deltaTime << "ms" << std::endl;
 }

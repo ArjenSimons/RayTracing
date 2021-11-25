@@ -20,10 +20,10 @@ Intersection Plane::Intersect(Ray ray) const
 
 	if (denom != 0)
 	{
-		out.t = -(dot((m_position - ray.Origin), m_normal)) / denom;
+		out.t = (dot((m_position - ray.Origin), m_normal)) / denom;
 		//out.t = -(dot(ray.Origin, m_normal) + 0) / denom;
 
-		if (out.t <= 0)
+		if (out.t >= 0)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;

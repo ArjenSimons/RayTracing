@@ -121,7 +121,5 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 Ray RayTracer::GetUVRay(float2 uv)
 {
-	float3 dir = normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos);
-
-	return Ray(camPos, dir, 100);
+	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 100);
 }
