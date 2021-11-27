@@ -17,7 +17,7 @@ private:
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	//std::vector<std::vector<float3>> renderBuffer;
 
-	Scene m_scene;
+	Scene scene;
 public:
 	//RayTracer();
 	RayTracer(Scene scene);

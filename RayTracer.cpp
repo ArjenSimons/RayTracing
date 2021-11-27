@@ -12,7 +12,7 @@
 //}
 
 RayTracer::RayTracer(Scene scene)
-	: m_scene(scene)
+	: scene(scene)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 
@@ -28,7 +28,7 @@ RayTracer::~RayTracer()
 
 void RayTracer::SetScene(Scene scene)
 {
-	m_scene = scene;
+	scene = scene;
 }
 
 //std::vector<std::vector<float3>> RayTracer::Render()
@@ -62,7 +62,7 @@ Color RayTracer::Trace(Ray &ray)
 		//Color out = intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
 		//printf("trace i pos: %f \n", intersection.position.y);
 		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
-		printf("trace i pos111: %f \n", intersection.position.y);
+
 		// -----------------------------------------------------------
 		//zBuffer
 		// -----------------------------------------------------------
@@ -74,7 +74,7 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 {
 	Intersection closest_intersection;
 
-	for (Intersectable* obj : m_scene.GetObjects())
+	for (Intersectable* obj : scene.GetObjects())
 	{
 		Intersection* intersection;
 		intersection = &obj->Intersect(ray);
@@ -92,7 +92,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 {
 	Color out = float3(0, 0, 0);
 
-	for (LightSource* light : m_scene.GetLights())
+	for (LightSource* light : scene.GetLights())
 	{
 		float3 C = light->position - pos;
 		//if (pos.y < 2.9 || pos.y > 3.1) {
@@ -102,7 +102,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
-		for (Intersectable* object : m_scene.GetObjects())
+		for (Intersectable* object : scene.GetObjects())
 		{
 			Intersection i = object->Intersect(ray);
 			if (i.t > 0 && i.t * i.t > d2)

@@ -18,8 +18,7 @@ void MyApp::Init()
 
 	Scene scene = Scene();
 	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), float3(0, 0, 0), CHECKER));
-	//TODO: Fix plane pos negative z being handled as positive z and vice versa
-	//Plane* plane1 = new Plane(float3(0, 0, -6), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
+	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
 	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0)));
 
 	LightSource* light = new LightSource(float3(1, 5, 1), 10, float3(1, 1, 1));
@@ -27,8 +26,8 @@ void MyApp::Init()
 
 	scene.AddObject(plane);
 	scene.AddObject(sphere);
-	scene.AddLightSource(light);
-	//scene.AddLightSource(light1);
+	//scene.AddLightSource(light);
+	scene.AddLightSource(light1);
 
 	rayTracer = new RayTracer(scene);
 
@@ -42,29 +41,13 @@ void MyApp::Tick(float deltaTime)
 {
 	// clear the screen to black
 	screen->Clear(0);
-	// print something to the console window
-	//printf("hello world!\n");
-	// plot some colors
-
-	//std::vector<std::vector<float3>> renderBuffer = rayTracer->Render();
-
-	//std::cout << std::bitset<32>((255 << 24) + (255 << 16) + (255 << 8) + (255)) << std::endl;
-	//std::cout << std::bitset<32>(INT_MAX) << std::endl;
 
 	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
 		Ray ray = rayTracer->GetUVRay(rayTracer->GetUV(i, j));
 		screen->Plot(i, j, rayTracer->Trace(ray).GetRGBValue());
 
-
-		//screen->Plot(i, j, ((int)(renderBuffer[i][j].x * 255) << 16) + ((int)(renderBuffer[i][j].y * 255) << 8) + ((int)(renderBuffer[i][j].z * 255)));
-		//screen->Plot(i, j, (255 << 16) + (255 << 8) + (255));
 	}
-
-	//for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
-	//{
-	//	screen->Plot(i, j, 0xffffff);
-	//}
 
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	//{

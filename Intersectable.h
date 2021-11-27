@@ -22,10 +22,10 @@ struct Intersection
 class Intersectable
 {
 protected: 
-	float3 m_position;
-	Material m_mat;
+	float3 position;
+	Material mat;
 public:
-	Intersectable(float3 position, Material mat) : m_position(position), m_mat(mat) {};
+	Intersectable(float3 position, Material mat) : position(position), mat(mat) {};
 	virtual ~Intersectable() noexcept = default;
 	virtual Intersection Intersect(Ray ray) const = 0;
 };
@@ -33,7 +33,7 @@ public:
 class Plane : public Intersectable
 {
 private:
-	float3 m_normal;
+	float3 normal;
 public:
 	Plane(float3 position, float3 normal, Material mat);
 	~Plane();
@@ -43,7 +43,7 @@ public:
 class Sphere : public Intersectable
 {
 private:
-	float m_radius2;
+	float radius2;
 public:
 	Sphere(float3 position, float radius, Material mat);
 	~Sphere();
