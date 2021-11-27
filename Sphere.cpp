@@ -4,8 +4,7 @@
 Sphere::Sphere(float3 position, float radius, Material mat)
 	: Intersectable(position, mat), radius2(radius * radius)
 {
-	printf("sphere r2 = %f \n", radius2);
-	printf("sphere position = %f, %f, %f \n", position.x, position.y, position.z);
+
 }
 
 Sphere::~Sphere()

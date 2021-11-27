@@ -21,12 +21,12 @@ void MyApp::Init()
 	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
 	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0)));
 
-	LightSource* light = new LightSource(float3(1, 5, 1), 10, float3(1, 1, 1));
-	LightSource* light1 = new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1));
+	LightSource* light = new LightSource(float3(1, 3, 1), 1, float3(1, 1, 1));
+	LightSource* light1 = new LightSource(float3(-1, 3, -1), 1, float3(1, 1, 1));
 
 	scene.AddObject(plane);
 	scene.AddObject(sphere);
-	//scene.AddLightSource(light);
+	scene.AddLightSource(light);
 	scene.AddLightSource(light1);
 
 	rayTracer = new RayTracer(scene);

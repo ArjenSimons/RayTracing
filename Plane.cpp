@@ -21,7 +21,6 @@ Intersection Plane::Intersect(Ray ray) const
 	if (denom != 0)
 	{
 		out.t = (dot((position - ray.Origin), normal)) / denom;
-		//out.t = -(dot(ray.Origin, m_normal) + 0) / denom;
 
 		if (out.t >= 0)
 		{

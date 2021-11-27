@@ -59,8 +59,6 @@ Color RayTracer::Trace(Ray &ray)
 	}
 	else
 	{
-		//Color out = intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
-		//printf("trace i pos: %f \n", intersection.position.y);
 		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
 
 		// -----------------------------------------------------------
@@ -82,7 +80,6 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 		if (intersection->intersect && intersection->t < closest_intersection.t)
 		{
 			closest_intersection = *intersection;
-			//printf("nearesty: %f \n", closest_intersection.position.y);
 		}
 	}
 	return closest_intersection;
@@ -95,21 +92,21 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	for (LightSource* light : scene.GetLights())
 	{
 		float3 C = light->position - pos;
-		//if (pos.y < 2.9 || pos.y > 3.1) {
 
-		//printf("lightpos: %f, \n", pos.y);
-		//}*/
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
+		//TODO: FIX THIS SHIT
 		for (Intersectable* object : scene.GetObjects())
 		{
 			Intersection i = object->Intersect(ray);
+
 			if (i.t > 0 && i.t * i.t > d2)
 			{
 				float3 col = light->color.value;
-				//col *= 1 / d2;
+				col *= 1 / d2;
 				col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
+				//col *= light->intensity;
 
 				out.value += col;
 				break;
