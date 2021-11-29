@@ -15,7 +15,6 @@ struct Color
 
 	unsigned int GetRGBValue() 
 	{
-		//TODO: Clamp value to 1 before mulitplying
 		return ((int)(clamp(value.x, 0.0, 1.0) * 255) << 16) + ((int)(clamp(value.y, 0.0, 1.0) * 255) << 8) + ((int)(clamp(value.z, 0.0, 1.0) * 255));
 	}
 };

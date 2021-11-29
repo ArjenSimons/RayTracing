@@ -2,9 +2,9 @@
 #include "Material.h"
 
 Material::Material(Color color, float specularity, Color secondColor, MatType type)
-	: color(color), specularity(specularity), secondColor(secondColor), type(type)
+	: color(color), secondColor(secondColor), type(type)
 {
-
+	this->specularity = clamp(specularity, 0.0, 1.0);
 }
 
 Material::~Material()

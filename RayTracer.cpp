@@ -62,8 +62,6 @@ Color RayTracer::Trace(Ray& ray)
 		float s = intersection.mat.specularity;
 		float d = 1 - s;
 
-		//Color out = intersection.mat.GetColor(intersection.position);
-
 		Color environment = float3(0, 0, 0);
 
 		if (s != 0) 
@@ -115,7 +113,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		if (RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
 
 		float3 col = light->color.value;
-		//col *= 1 / d2;
+		col *= 1 / d2;
 		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
 		col *= light->intensity;
 
