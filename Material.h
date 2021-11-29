@@ -27,7 +27,9 @@ protected:
 	Color secondColor;
 	MatType type;
 public:
-	Material(Color color, Color secondColor = float3(1, 0, 1), MatType type = SOLID);
+	float specularity;
+public:
+	Material(Color color, Color secondColor = float3(1, 0, 1), float specularity = 0, MatType type = SOLID);
 	~Material();
 	Color GetColor(float3 position);
 };

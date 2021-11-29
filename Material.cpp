@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "Material.h"
 
-Material::Material(Color color, Color secondColor, MatType type)
-	: color(color), secondColor(secondColor), type(type)
+Material::Material(Color color, Color secondColor, float specularity, MatType type)
+	: color(color), secondColor(secondColor), specularity(specularity), type(type)
 {
 
 }
