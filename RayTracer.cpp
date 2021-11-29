@@ -108,7 +108,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	return out;
 }
 
-bool RayTracer::RayIsBlocked(Ray& ray, float d2)
+bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 {
 	for (Intersectable* object : scene.GetObjects())
 	{
@@ -122,7 +122,7 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2)
 	return false;
 }
 
-Ray RayTracer::GetUVRay(float2 uv)
+Ray RayTracer::GetUVRay(float2 uv) const
 {
 	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 100);
 }
