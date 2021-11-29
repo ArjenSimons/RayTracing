@@ -27,9 +27,11 @@ public:
 
 	//std::vector<std::vector<float3>> Render();
 	Color Trace(Ray &ray);
-	Intersection GetNearestIntersection(Ray &ray);
-	Color DirectIllumination(float3 point, float3 normal);
 
-	float2 GetUV(int x, int y) { return uv[x][y]; }
-	Ray GetUVRay(float2 uv);
+	float2 GetUV(int x, int y) const { return uv[x][y]; }
+	Ray GetUVRay(float2 uv) const;
+private:
+	Intersection GetNearestIntersection(Ray& ray);
+	Color DirectIllumination(float3 point, float3 normal);
+	bool RayIsBlocked(Ray& ray, float d2) const;
 };
