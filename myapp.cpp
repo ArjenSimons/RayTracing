@@ -17,9 +17,9 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), float3(0, 0, 0), CHECKER));
+	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), 1, float3(0, 0, 0), CHECKER));
 	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
-	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0)));
+	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(.9, .9, .9), 1));
 
 	LightSource* light = new LightSource(float3(1, 3, 1), 1, float3(1, 1, 1));
 	LightSource* light1 = new LightSource(float3(-1, 3, -1), 1, float3(1, 1, 1));

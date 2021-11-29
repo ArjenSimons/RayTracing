@@ -12,7 +12,7 @@ Sphere::~Sphere()
 
 }
 
-Intersection Sphere::Intersect(Ray ray) const
+Intersection Sphere::Intersect(Ray ray)
 {
 	Intersection out;
 
@@ -24,14 +24,13 @@ Intersection Sphere::Intersect(Ray ray) const
 	if (p2 > radius2) { return out; } //No hit
 
 	t -= sqrt(radius2 - p2);
-	if ((t >= 0))
+	if ((t > 0))
 	{
 		out.t = t;
 		out.intersect = true;
 		out.position = (ray.Origin + out.t * ray.Dir);
 		out.normal = normalize(out.position - position);
 		out.mat = mat;
-
 		//printf("intersect pos: %f, %f, %f \n", out.position.x, out.position.y, out.position.z);
 	}
 

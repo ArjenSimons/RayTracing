@@ -59,7 +59,23 @@ Color RayTracer::Trace(Ray& ray)
 	}
 	else
 	{
-		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
+		float s = intersection.mat.specularity;
+		float d = 1 - s;
+
+		//Color out = intersection.mat.GetColor(intersection.position);
+
+		Color environment = float3(0, 0, 0);
+
+		if (s != 0) 
+		{
+			environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal))).value;
+		}
+		if (d != 0) 
+		{
+			environment.value += d * DirectIllumination(intersection.position, intersection.normal).value;
+		}
+
+		return intersection.mat.GetColor(intersection.position).value * environment.value;
 
 		// -----------------------------------------------------------
 		//zBuffer
@@ -77,7 +93,7 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 		Intersection* intersection;
 		intersection = &obj->Intersect(ray);
 
-		if (intersection->intersect && intersection->t < closest_intersection.t)
+		if (intersection->intersect && intersection->t != 0 && intersection->t < closest_intersection.t)
 		{
 			closest_intersection = *intersection;
 		}
@@ -99,13 +115,18 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		if (RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
 
 		float3 col = light->color.value;
-		col *= 1 / d2;
+		//col *= 1 / d2;
 		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
-		//col *= light->intensity;
+		col *= light->intensity;
 
 		out.value += col;
 	}
 	return out;
+}
+
+float3 RayTracer::Reflect(float3 dir, float3 N) const
+{
+	return dir - 2 * dot(dir, N) * N;
 }
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2) const

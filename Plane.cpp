@@ -12,7 +12,7 @@ Plane::~Plane()
 
 }
 
-Intersection Plane::Intersect(Ray ray) const
+Intersection Plane::Intersect(Ray ray)
 {
 	Intersection out;
 
@@ -22,7 +22,7 @@ Intersection Plane::Intersect(Ray ray) const
 	{
 		out.t = (dot((position - ray.Origin), normal)) / denom;
 
-		if (out.t >= 0)
+		if (out.t > 0)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
