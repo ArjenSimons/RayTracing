@@ -17,19 +17,22 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), 0, float3(0, 0, 0), CHECKER));
-	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
-	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(.9, .9, .9), 1));
+	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), 1, float3(0, 0, 0), CHECKER));
+	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), 1));
+	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0), .1));
+	Sphere* sphere1 = new Sphere(float3(1, 2, -3), 1, Material(float3(.5, .5, .9), 0));
 
-	LightSource* light = new LightSource(float3(1, 3, 1), 1, float3(1, 1, 1));
-	LightSource* light1 = new LightSource(float3(-1, 3, -1), 1, float3(1, 1, 1));
+	LightSource* light = new LightSource(float3(1, 1, 1), 10, float3(1, 1, 1));
+	LightSource* light1 = new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1));
 
 	scene.AddObject(plane);
+	//scene.AddObject(plane1);
 	scene.AddObject(sphere);
+	scene.AddObject(sphere1);
 	scene.AddLightSource(light);
 	scene.AddLightSource(light1);
 
-	rayTracer = new RayTracer(scene);
+	rayTracer = new RayTracer(scene, 5);
 
 	std::cout << "end init" << std::endl;
 }
