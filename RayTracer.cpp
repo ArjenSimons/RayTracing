@@ -45,7 +45,7 @@ void RayTracer::SetScene(Scene scene)
 //	return renderBuffer;
 //}
 
-Color RayTracer::Trace(Ray &ray) 
+Color RayTracer::Trace(Ray& ray)
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
@@ -68,7 +68,7 @@ Color RayTracer::Trace(Ray &ray)
 	}
 }
 
-Intersection RayTracer::GetNearestIntersection(Ray& ray) 
+Intersection RayTracer::GetNearestIntersection(Ray& ray)
 {
 	Intersection closest_intersection;
 
@@ -96,24 +96,30 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
-		//TODO: FIX THIS SHIT
-		for (Intersectable* object : scene.GetObjects())
-		{
-			Intersection i = object->Intersect(ray);
+		if (RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
 
-			if (i.t > 0 && i.t * i.t > d2)
-			{
-				float3 col = light->color.value;
-				col *= 1 / d2;
-				col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
-				//col *= light->intensity;
+		float3 col = light->color.value;
+		col *= 1 / d2;
+		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
+		//col *= light->intensity;
 
-				out.value += col;
-				break;
-			}
-		}
+		out.value += col;
 	}
 	return out;
+}
+
+bool RayTracer::RayIsBlocked(Ray& ray, float d2)
+{
+	for (Intersectable* object : scene.GetObjects())
+	{
+		Intersection i = object->Intersect(ray);
+
+		if (i.t > 0 && i.t * i.t < d2)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 Ray RayTracer::GetUVRay(float2 uv)

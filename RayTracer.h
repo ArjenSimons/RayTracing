@@ -32,4 +32,6 @@ public:
 
 	float2 GetUV(int x, int y) { return uv[x][y]; }
 	Ray GetUVRay(float2 uv);
+private:
+	bool RayIsBlocked(Ray& ray, float d2);
 };
