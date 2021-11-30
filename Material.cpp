@@ -1,10 +1,10 @@
 #include "precomp.h"
 #include "Material.h"
 
-Material::Material(Color color, Color secondColor, MatType type)
+Material::Material(Color color, float specularity, Color secondColor, MatType type)
 	: color(color), secondColor(secondColor), type(type)
 {
-
+	this->specularity = clamp(specularity, 0.0, 1.0);
 }
 
 Material::~Material()

@@ -11,8 +11,8 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene)
-	: scene(scene)
+RayTracer::RayTracer(Scene scene, unsigned int maxBounces)
+	: scene(scene), maxBounces(maxBounces)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 
@@ -45,7 +45,7 @@ void RayTracer::SetScene(Scene scene)
 //	return renderBuffer;
 //}
 
-Color RayTracer::Trace(Ray& ray)
+Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 {
 	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
@@ -59,7 +59,26 @@ Color RayTracer::Trace(Ray& ray)
 	}
 	else
 	{
-		return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
+		float s = 0;
+		if (bounceDepth <= maxBounces)
+		{
+			s = intersection.mat.specularity * ray.e;
+		}
+
+		float d = 1 - s;
+
+		Color environment = float3(0, 0, 0);
+
+		if (s != 0 && ray.e > .1) 
+		{
+			environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal), s), bounceDepth + 1).value;
+		}
+		if (d != 0) 
+		{
+			environment.value += d * DirectIllumination(intersection.position, intersection.normal).value;
+		}
+
+		return intersection.mat.GetColor(intersection.position).value * environment.value;
 
 		// -----------------------------------------------------------
 		//zBuffer
@@ -77,7 +96,7 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 		Intersection* intersection;
 		intersection = &obj->Intersect(ray);
 
-		if (intersection->intersect && intersection->t < closest_intersection.t)
+		if (intersection->intersect && intersection->t != 0 && intersection->t < closest_intersection.t)
 		{
 			closest_intersection = *intersection;
 		}
@@ -101,11 +120,16 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		float3 col = light->color.value;
 		col *= 1 / d2;
 		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
-		//col *= light->intensity;
+		col *= light->intensity;
 
 		out.value += col;
 	}
 	return out;
+}
+
+float3 RayTracer::Reflect(float3 dir, float3 N) const
+{
+	return dir - 2 * dot(dir, N) * N;
 }
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
@@ -124,5 +148,5 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(float2 uv) const
 {
-	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 100);
+	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 1, 0, 100);
 }

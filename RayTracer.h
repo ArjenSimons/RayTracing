@@ -18,20 +18,22 @@ private:
 	//std::vector<std::vector<float3>> renderBuffer;
 
 	Scene scene;
+	unsigned int maxBounces;
 public:
 	//RayTracer();
-	RayTracer(Scene scene);
+	RayTracer(Scene scene, unsigned int maxBounces);
 	~RayTracer();
 
 	void SetScene(Scene scene);
 
 	//std::vector<std::vector<float3>> Render();
-	Color Trace(Ray &ray);
+	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }
 	Ray GetUVRay(float2 uv) const;
 private:
 	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);
+	float3 Reflect(float3 dir, float3 normal) const;
 	bool RayIsBlocked(Ray& ray, float d2) const;
 };

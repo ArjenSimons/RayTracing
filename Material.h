@@ -15,8 +15,7 @@ struct Color
 
 	unsigned int GetRGBValue() 
 	{
-		//TODO: Clamp value to 1 before mulitplying
-		return ((int)(value.x * 255) << 16) + ((int)(value.y * 255) << 8) + ((int)(value.z * 255));
+		return ((int)(clamp(value.x, 0.0, 1.0) * 255) << 16) + ((int)(clamp(value.y, 0.0, 1.0) * 255) << 8) + ((int)(clamp(value.z, 0.0, 1.0) * 255));
 	}
 };
 
@@ -27,7 +26,9 @@ protected:
 	Color secondColor;
 	MatType type;
 public:
-	Material(Color color, Color secondColor = float3(1, 0, 1), MatType type = SOLID);
+	float specularity;
+public:
+	Material(Color color, float specularity = 0, Color secondColor = float3(1, 0, 1), MatType type = SOLID);
 	~Material();
 	Color GetColor(float3 position);
 };
