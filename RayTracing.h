@@ -11,3 +11,32 @@ struct Ray
 	{
 	}
 };
+
+enum Substance
+{
+	SOLID,
+	AIR,
+	WATER,
+	GLASS
+};
+
+float RefractionIndex(Substance substance)
+{
+	switch (substance)
+	{
+	case SOLID:
+		return 0;
+		break;
+	case AIR:
+		return 1.0f;
+		break;
+	case WATER:
+		return 1.333f;
+		break;
+	case GLASS:
+		return 1.52f;
+		break;
+	default:
+		break;
+	}
+}

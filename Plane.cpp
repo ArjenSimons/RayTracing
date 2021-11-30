@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "Intersectable.h"
 
-Plane::Plane(float3 position, float3 normal, Material mat) 
-	: Intersectable(position, mat), normal(normal)
+Plane::Plane(float3 position, float3 normal, Substance substance, Material mat) 
+	: Intersectable(position, substance, mat), normal(normal)
 {
 	
 }
