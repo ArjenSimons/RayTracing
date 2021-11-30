@@ -18,6 +18,11 @@ struct Color
 		//TODO: Clamp value to 1 before mulitplying
 		return ((int)(value.x * 255) << 16) + ((int)(value.y * 255) << 8) + ((int)(value.z * 255));
 	}
+
+	bool operator==(const Color rhs) const
+	{
+		return (value.x == rhs.value.x && value.y == rhs.value.y && value.z == rhs.value.z);
+	}
 };
 
 class Material
