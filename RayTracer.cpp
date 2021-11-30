@@ -15,6 +15,7 @@ RayTracer::RayTracer(Scene scene)
 	: scene(scene)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+	cam = Camera();
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -118,5 +119,5 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 Ray RayTracer::GetUVRay(float2 uv)
 {
-	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 100);
+	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 100);
 }

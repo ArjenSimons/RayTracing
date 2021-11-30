@@ -49,6 +49,8 @@ void MyApp::Tick(float deltaTime)
 
 	}
 
+	std::cout << mousePos.x << ", " << mousePos.y << std::endl;
+
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	//{
 	//	int x = red, y = green;
