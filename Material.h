@@ -19,9 +19,24 @@ struct Color
 		return ((int)(value.x * 255) << 16) + ((int)(value.y * 255) << 8) + ((int)(value.z * 255));
 	}
 
-	bool operator==(const Color rhs) const
+	bool operator==(const Color &rhs) const
 	{
 		return (value.x == rhs.value.x && value.y == rhs.value.y && value.z == rhs.value.z);
+	}
+
+	Color operator+(const Color &rhs) const
+	{
+		return float3(value.x + rhs.value.x, value.y + rhs.value.y, value.z + rhs.value.z);
+	}
+
+	Color operator-(const Color &rhs) const
+	{
+		return float3(value.x - rhs.value.x, value.y - rhs.value.y, value.z - rhs.value.z);
+	}
+
+	Color operator*(const Color& rhs) const
+	{
+		return float3(value.x * rhs.value.x, value.y * rhs.value.y, value.z * rhs.value.z);
 	}
 };
 
