@@ -72,16 +72,15 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 		Color environment = float3(0, 0, 0);
 
-		if (intersection.sTo != SOLID) 
+		if (intersection.sTo != SOLID)
 		{
-			//environment.value += Trace(Ray(intersection.position, Refract(ray.Dir, intersection.normal, ray.substance, intersection.sTo), ray.e, intersection.sTo), bounceDepth).value;
 			environment.value += Refraction(ray, intersection, intersection.sTo, bounceDepth).value;
 		}
 		else 
 		{
 			if (s != 0 && ray.e > .1)
 			{
-				environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal), s), bounceDepth + 1).value;
+				environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal), s, ray.substance), bounceDepth + 1).value;
 			}
 			if (d != 0)
 			{
@@ -145,10 +144,11 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substan
 	float3 D = ray.Dir * -1;
 	float angle = dot(i.normal, D);
 
-	float k = 1 - indexRatio * indexRatio * (1 - angle * angle);
+	float k = 1 - ((indexRatio * indexRatio) * (1 - angle * angle));
 
 	if (k < 0) //TIR
 	{
+		printf("TIR");
 		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
 	}
 

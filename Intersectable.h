@@ -52,7 +52,7 @@ public:
 	~Sphere();
 	Intersection Intersect(Ray ray) override;
 private:
-	Intersection CheapIntersect(Ray ray);
-	Intersection HeavyIntersect(Ray ray);
+	Intersection OutsideIntersect(Ray ray);
+	Intersection InsideIntersect(Ray ray);
 };
 

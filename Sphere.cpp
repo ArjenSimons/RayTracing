@@ -16,16 +16,16 @@ Intersection Sphere::Intersect(Ray ray)
 {
 	if (ray.substance == substance) 
 	{
-		return HeavyIntersect(ray);
+		return InsideIntersect(ray);
 	}
 	else
 	{
-		return CheapIntersect(ray);
+		return OutsideIntersect(ray);
 	}
 }
 
 //TODO: Fix duplicate code
-Intersection Sphere::CheapIntersect(Ray ray)
+Intersection Sphere::OutsideIntersect(Ray ray)
 {
 	Intersection out;
 
@@ -37,7 +37,7 @@ Intersection Sphere::CheapIntersect(Ray ray)
 	if (p2 > radius2) { return out; } //No hit
 
 	t -= sqrt(radius2 - p2);
-	if ((t > 0))
+	if ((t >= 0))
 	{
 		out.t = t;
 		out.intersect = true;
@@ -49,23 +49,25 @@ Intersection Sphere::CheapIntersect(Ray ray)
 	}
 }
 
-Intersection Sphere::HeavyIntersect(Ray ray)
+Intersection Sphere::InsideIntersect(Ray ray)
 {
 	Intersection out;
 
-	float3 C = position - ray.Origin;
-	float t = dot(C, ray.Dir);
-	float3 Q = C - t * ray.Dir;
-	float p2 = dot(Q, Q);
+	float3 oc = ray.Origin - position;
+	float a = dot(ray.Dir, ray.Dir);
+	float b = 2.0 * dot(oc, ray.Dir);
+	float c = dot(oc, oc) - radius2;
+	float d = b * b - 4 * a * c;
 
-	t -= sqrt(radius2 - p2);
+	float t = (-b + sqrtf(d)) / (2.0 * a);
 
-	if ((t != 0))
+
+	if ((t >= 0))
 	{
 		out.t = t;
 		out.intersect = true;
 		out.position = (ray.Origin + out.t * ray.Dir);
-		out.normal = normalize(out.position - position) * -1;
+		out.normal = normalize((out.position - position) * -1);
 		out.mat = mat;
 		out.sTo = AIR;
 		out.sFrom = ray.substance;
