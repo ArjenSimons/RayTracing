@@ -1,17 +1,4 @@
-struct Ray
-{
-	float3 Origin;
-	float3 Dir;
-	unsigned int nBounces = 0;
-	float e;
-	float t;
-
-	Ray(float3 origin = float3(0, 0, 0), float3 dir = float3(0, 1, 0), float e = 1, unsigned int nBounces = 0, float t = 1)
-		: Origin(origin), Dir(dir), e(e), t(t)
-	{
-	}
-};
-
+#pragma once
 enum Substance
 {
 	SOLID,
@@ -20,7 +7,22 @@ enum Substance
 	GLASS
 };
 
-float RefractionIndex(Substance substance)
+struct Ray
+{
+	float3 Origin;
+	float3 Dir;
+	Substance substance;
+	float e;
+	unsigned int nBounces = 0;
+	float t;
+
+	Ray(float3 origin = float3(0, 0, 0), float3 dir = float3(0, 1, 0), float e = 1, Substance substance = AIR, unsigned int nBounces = 0, float t = 1)
+		: Origin(origin), Dir(dir), e(e), substance(substance), t(t)
+	{
+	}
+};
+
+inline float RefractionIndex(Substance substance)
 {
 	switch (substance)
 	{

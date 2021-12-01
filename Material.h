@@ -1,6 +1,6 @@
 #pragma once
 enum MatType {
-	SOLID,
+	UNIFORM,
 	CHECKER
 };
 
@@ -28,7 +28,7 @@ protected:
 public:
 	float specularity;
 public:
-	Material(Color color, float specularity = 0, Color secondColor = float3(1, 0, 1), MatType type = SOLID);
+	Material(Color color, float specularity = 0, Color secondColor = float3(1, 0, 1), MatType type = UNIFORM);
 	~Material();
 	Color GetColor(float3 position);
 };

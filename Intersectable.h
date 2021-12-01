@@ -9,6 +9,8 @@ struct Intersection
 	float3 position;
 	float3 normal;
 	Material mat{ float3(1, 0, 1) };
+	Substance sFrom;
+	Substance sTo;
 
 	Intersection()
 	{
@@ -49,5 +51,8 @@ public:
 	Sphere(float3 position, float radius, Substance substance, Material mat);
 	~Sphere();
 	Intersection Intersect(Ray ray) override;
+private:
+	Intersection CheapIntersect(Ray ray);
+	Intersection HeavyIntersect(Ray ray);
 };
 

@@ -14,6 +14,19 @@ Sphere::~Sphere()
 
 Intersection Sphere::Intersect(Ray ray)
 {
+	if (ray.substance == substance) 
+	{
+		return HeavyIntersect(ray);
+	}
+	else
+	{
+		return CheapIntersect(ray);
+	}
+}
+
+//TODO: Fix duplicate code
+Intersection Sphere::CheapIntersect(Ray ray)
+{
 	Intersection out;
 
 	float3 C = position - ray.Origin;
@@ -31,7 +44,31 @@ Intersection Sphere::Intersect(Ray ray)
 		out.position = (ray.Origin + out.t * ray.Dir);
 		out.normal = normalize(out.position - position);
 		out.mat = mat;
-		//printf("intersect pos: %f, %f, %f \n", out.position.x, out.position.y, out.position.z);
+		out.sTo = substance;
+		out.sFrom = ray.substance;
+	}
+}
+
+Intersection Sphere::HeavyIntersect(Ray ray)
+{
+	Intersection out;
+
+	float3 C = position - ray.Origin;
+	float t = dot(C, ray.Dir);
+	float3 Q = C - t * ray.Dir;
+	float p2 = dot(Q, Q);
+
+	t -= sqrt(radius2 - p2);
+
+	if ((t != 0))
+	{
+		out.t = t;
+		out.intersect = true;
+		out.position = (ray.Origin + out.t * ray.Dir);
+		out.normal = normalize(out.position - position) * -1;
+		out.mat = mat;
+		out.sTo = AIR;
+		out.sFrom = ray.substance;
 	}
 
 	return out;

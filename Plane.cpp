@@ -28,6 +28,8 @@ Intersection Plane::Intersect(Ray ray)
 			out.position = ray.Origin + out.t * ray.Dir;
 			out.normal = normal;
 			out.mat = mat;
+			out.sTo = substance;
+			out.sFrom = ray.substance;
 		}		
 	}
 

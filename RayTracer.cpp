@@ -64,19 +64,31 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 		{
 			s = intersection.mat.specularity * ray.e;
 		}
+		else {
+			return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
+		}
 
 		float d = 1 - s;
 
 		Color environment = float3(0, 0, 0);
 
-		if (s != 0 && ray.e > .1) 
+		if (intersection.sTo != SOLID) 
 		{
-			environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal), s), bounceDepth + 1).value;
+			//environment.value += Trace(Ray(intersection.position, Refract(ray.Dir, intersection.normal, ray.substance, intersection.sTo), ray.e, intersection.sTo), bounceDepth).value;
+			environment.value += Refraction(ray, intersection, intersection.sTo, bounceDepth).value;
 		}
-		if (d != 0) 
+		else 
 		{
-			environment.value += d * DirectIllumination(intersection.position, intersection.normal).value;
+			if (s != 0 && ray.e > .1)
+			{
+				environment.value += s * Trace(Ray(intersection.position, reflect(ray.Dir, intersection.normal), s), bounceDepth + 1).value;
+			}
+			if (d != 0)
+			{
+				environment.value += d * DirectIllumination(intersection.position, intersection.normal).value;
+			}
 		}
+
 
 		return intersection.mat.GetColor(intersection.position).value * environment.value;
 
@@ -127,9 +139,43 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	return out;
 }
 
-float3 RayTracer::Reflect(float3 dir, float3 N) const
+Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substance& to, unsigned int bounceDepth)
+{
+	float indexRatio = RefractionIndex(ray.substance) / RefractionIndex(to);
+	float3 D = ray.Dir * -1;
+	float angle = dot(i.normal, D);
+
+	float k = 1 - indexRatio * indexRatio * (1 - angle * angle);
+
+	if (k < 0) //TIR
+	{
+		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
+	}
+
+	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * angle - sqrt(k));
+
+	return Trace(Ray(i.position, dir, ray.e, to), bounceDepth);
+}
+
+float3 RayTracer::Reflect(const float3& dir, const float3& N) const
 {
 	return dir - 2 * dot(dir, N) * N;
+}
+
+float3 RayTracer::Refract(const float3& dir, const float3& N, const Substance& from, const Substance& to) const
+{
+	float indexRatio = RefractionIndex(from) / RefractionIndex(to);
+	float3 D = dir * -1;
+	float angle = dot(N, D);
+
+	float k = 1 - indexRatio * indexRatio * (1 - angle * angle);
+
+	if (k < 0) //TIR
+	{
+		return Reflect(dir, N);
+	}
+
+	return indexRatio * dir + N * (indexRatio * angle - sqrt(k));
 }
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
@@ -148,5 +194,5 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(float2 uv) const
 {
-	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 1, 0, 100);
+	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 1, AIR, 0, 100);
 }
