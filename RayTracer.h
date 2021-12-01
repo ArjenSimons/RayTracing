@@ -6,13 +6,14 @@ class RayTracer
 {
 private:
 	//Cam
-	Camera cam;
+	
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	//std::vector<std::vector<float3>> renderBuffer;
 
 	Scene scene;
 public:
+	Camera cam;
 	//RayTracer();
 	RayTracer(Scene scene);
 	~RayTracer();

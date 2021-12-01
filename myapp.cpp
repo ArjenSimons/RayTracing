@@ -3,6 +3,8 @@
 #include "RayTracer.h"
 #include "Intersectable.h"
 
+#define M_PI 3.14159265358979323846 /* pi */
+
 TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
@@ -19,13 +21,19 @@ void MyApp::Init()
 	Scene scene = Scene();
 	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), Material(float3(1, 1, 1), float3(0, 0, 0), CHECKER));
 	//Plane* plane1 = new Plane(float3(0, 0, 5), float3(0, 0, -1), Material(float3(1, 1, 1), float3(0, 0, 0)));
-	Sphere* sphere = new Sphere(float3(1, 1, 3), 1, Material(float3(1, 0, 0)));
+	Sphere* sphere = new Sphere(float3(0, 1, 3), 1, Material(float3(1, 0, 0)));
+	Sphere* sphere2 = new Sphere(float3(0, 1, -3), 1, Material(float3(1, 1, 0)));
+	Sphere* sphere3 = new Sphere(float3(3, 1, 0), 1, Material(float3(0, 1, 0)));
+	Sphere* sphere4 = new Sphere(float3(-3, 1, 0), 1, Material(float3(0, 1, 1)));
 
 	LightSource* light = new LightSource(float3(1, 3, 1), 1, float3(1, 1, 1));
 	LightSource* light1 = new LightSource(float3(-1, 3, -1), 1, float3(1, 1, 1));
 
 	scene.AddObject(plane);
 	scene.AddObject(sphere);
+	scene.AddObject(sphere2);
+	scene.AddObject(sphere3);
+	scene.AddObject(sphere4);
 	scene.AddLightSource(light);
 	scene.AddLightSource(light1);
 
@@ -49,8 +57,6 @@ void MyApp::Tick(float deltaTime)
 
 	}
 
-	std::cout << mousePos.x << ", " << mousePos.y << std::endl;
-
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	//{
 	//	int x = red, y = green;
@@ -60,4 +66,9 @@ void MyApp::Tick(float deltaTime)
 	//screen->Plot(SCRWIDTH - 2, SCRHEIGHT - 2, 0xffffff);
 
 	std::cout << deltaTime << "ms" << std::endl;
+}
+
+void MyApp::KeyDown(int key)
+{
+	rayTracer->cam.HandleInput(key);
 }

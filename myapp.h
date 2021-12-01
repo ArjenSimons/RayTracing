@@ -15,7 +15,7 @@ public:
 	void MouseDown( int button ) { /* implement if you want to detect mouse button presses */ }
 	void MouseMove( int x, int y ) override { mousePos.x = x, mousePos.y = y; }
 	void KeyUp( int key ) { /* implement if you want to handle keys */ }
-	void KeyDown( int key ) { /* implement if you want to handle keys */ }
+	void KeyDown(int key);
 	// data members
 	int2 mousePos;
 };

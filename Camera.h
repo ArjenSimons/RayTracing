@@ -9,20 +9,12 @@ struct Camera
 	float3 p1;
 	float3 p2;
 
-	Camera(float3 position = float3(0, 0, 0), float3 direction = float3(0, 0, 1), float distance = 1)
-	{
-		pos = position;
-		viewDir = direction;
-		d = distance;
+	Camera(float3 position = float3(0, 0, 0), float3 direction = float3(0, 0, 1), float distance = 1);
 
-		float aspectRatio = (float)SCRWIDTH / (float)SCRHEIGHT;
-		float3 C = pos + d * viewDir;
-
-		p0 = C + float3(-1 * aspectRatio, 1, 0);
-		p1 = C + float3(1 * aspectRatio, 1, 0);
-		p2 = C + float3(-1 * aspectRatio, -1, 0);
-	}
-
-	void Step();
+	void HandleInput(int key);
+	void Transform(std::vector<float4>);
+	void LinearTransform(float3&, std::vector<float4>);
+	std::vector<float4> GetRotationMatrix(float);
+	std::vector<float4> GetTranslationMatrix(float3);
 };
 
