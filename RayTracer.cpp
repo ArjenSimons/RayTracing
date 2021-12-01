@@ -65,7 +65,8 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 			s = intersection.mat.specularity * ray.e;
 		}
 		else {
-			return intersection.mat.GetColor(intersection.position).value * DirectIllumination(intersection.position, intersection.normal).value;
+			//printf("max bounces reached");
+			return black;// intersection.mat.GetColor(intersection.position).value;// *DirectIllumination(intersection.position, intersection.normal).value;
 		}
 
 		float d = 1 - s;
@@ -140,11 +141,14 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substance& to, unsigned int bounceDepth)
 {
-	float indexRatio = RefractionIndex(ray.substance) / RefractionIndex(to);
-	float3 D = ray.Dir * -1;
-	float angle = dot(i.normal, D);
+	float n1 = RefractionIndex(ray.substance);
+	float n2 = RefractionIndex(to);
 
-	float k = 1 - ((indexRatio * indexRatio) * (1 - angle * angle));
+	float indexRatio = n1/ n2;
+	float3 D = ray.Dir * -1;
+	float cosi = dot(i.normal, D);
+
+	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 
 	if (k < 0) //TIR
 	{
@@ -152,9 +156,32 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substan
 		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
 	}
 
-	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * angle - sqrt(k));
+	//Fresnel
+	float sint = indexRatio * sqrtf(max(0.f, 1 - cosi * cosi));
 
-	return Trace(Ray(i.position, dir, ray.e, to), bounceDepth);
+	float cost = sqrt(max(0.0f, 1 - sint * sint));
+	cosi = fabsf(cosi);
+
+	float n1TimesAngle1 = n1 * cosi;
+	float n1TimesAngle2 = n1 * cost;
+	float n2TimesAngle1 = n2 * cosi;
+	float n2TimesAngle2 = n2 * cost;
+
+	float sPolarizedSqrd = (n1TimesAngle1 - n2TimesAngle2) / (n1TimesAngle1 + n2TimesAngle2);
+	float pPolarizedSqrd = (n1TimesAngle2 - n2TimesAngle1) / (n1TimesAngle2 + n2TimesAngle1);
+
+	float Fr = .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
+	float Ft = 1 - Fr;
+
+
+	//Reflect 
+	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e * Fr, ray.substance), bounceDepth + 1).value;
+
+	//Refract
+	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * cosi - sqrt(k));
+	Color refract = Ft * Trace(Ray(i.position, dir, ray.e, to), bounceDepth).value;
+
+	return refract.value + reflect.value;
 }
 
 float3 RayTracer::Reflect(const float3& dir, const float3& N) const

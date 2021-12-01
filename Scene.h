@@ -18,7 +18,7 @@ public:
 };
 
 
-inline Scene GetTelescopeScene() 
+static Scene GetTelescopeScene() 
 {
 	Scene scene = Scene();
 	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), 0, float3(0, 0, 0), CHECKER));
