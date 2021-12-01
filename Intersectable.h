@@ -9,7 +9,6 @@ struct Intersection
 	float3 position;
 	float3 normal;
 	Material mat{ float3(1, 0, 1) };
-	Substance sFrom;
 	Substance sTo;
 
 	Intersection()

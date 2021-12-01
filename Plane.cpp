@@ -29,7 +29,6 @@ Intersection Plane::Intersect(Ray ray)
 			out.normal = normal;
 			out.mat = mat;
 			out.sTo = substance;
-			out.sFrom = ray.substance;
 		}		
 	}
 

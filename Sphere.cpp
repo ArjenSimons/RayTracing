@@ -45,7 +45,6 @@ Intersection Sphere::OutsideIntersect(Ray ray)
 		out.normal = normalize(out.position - position);
 		out.mat = mat;
 		out.sTo = substance;
-		out.sFrom = ray.substance;
 	}
 }
 
@@ -70,7 +69,6 @@ Intersection Sphere::InsideIntersect(Ray ray)
 		out.normal = normalize((out.position - position) * -1);
 		out.mat = mat;
 		out.sTo = AIR;
-		out.sFrom = ray.substance;
 	}
 
 	return out;

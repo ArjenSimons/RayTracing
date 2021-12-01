@@ -60,13 +60,13 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 	else
 	{
 		float s = 0;
-		if (bounceDepth <= maxBounces)
+		if (bounceDepth <= maxBounces && ray.e > .1f)
 		{
 			s = intersection.mat.specularity * ray.e;
 		}
-		else {
-			//printf("max bounces reached");
-			return black;// intersection.mat.GetColor(intersection.position).value;// *DirectIllumination(intersection.position, intersection.normal).value;
+		else 
+		{
+			return black;
 		}
 
 		float d = 1 - s;
@@ -75,7 +75,7 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 		if (intersection.sTo != SOLID)
 		{
-			environment.value += Refraction(ray, intersection, intersection.sTo, bounceDepth).value;
+			environment.value += Refraction(ray, intersection, bounceDepth).value;
 		}
 		else 
 		{
@@ -88,7 +88,6 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 				environment.value += d * DirectIllumination(intersection.position, intersection.normal).value;
 			}
 		}
-
 
 		return intersection.mat.GetColor(intersection.position).value * environment.value;
 
@@ -139,10 +138,10 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	return out;
 }
 
-Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substance& to, unsigned int bounceDepth)
+Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
 {
 	float n1 = RefractionIndex(ray.substance);
-	float n2 = RefractionIndex(to);
+	float n2 = RefractionIndex(i.sTo);
 
 	float indexRatio = n1/ n2;
 	float3 D = ray.Dir * -1;
@@ -152,13 +151,11 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substan
 
 	if (k < 0) //TIR
 	{
-		printf("TIR");
 		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
 	}
 
 	//Fresnel
 	float sint = indexRatio * sqrtf(max(0.f, 1 - cosi * cosi));
-
 	float cost = sqrt(max(0.0f, 1 - sint * sint));
 	cosi = fabsf(cosi);
 
@@ -170,8 +167,8 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substan
 	float sPolarizedSqrd = (n1TimesAngle1 - n2TimesAngle2) / (n1TimesAngle1 + n2TimesAngle2);
 	float pPolarizedSqrd = (n1TimesAngle2 - n2TimesAngle1) / (n1TimesAngle2 + n2TimesAngle1);
 
-	float Fr = .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
-	float Ft = 1 - Fr;
+	float Fr = ray.e * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
+	float Ft = ray.e - Fr;
 
 
 	//Reflect 
@@ -179,30 +176,14 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, const Substan
 
 	//Refract
 	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * cosi - sqrt(k));
-	Color refract = Ft * Trace(Ray(i.position, dir, ray.e, to), bounceDepth).value;
+	Color refract = Ft * Trace(Ray(i.position, dir, ray.e, i.sTo), bounceDepth).value;
 
-	return refract.value + reflect.value;
+	return refract + reflect;
 }
 
 float3 RayTracer::Reflect(const float3& dir, const float3& N) const
 {
 	return dir - 2 * dot(dir, N) * N;
-}
-
-float3 RayTracer::Refract(const float3& dir, const float3& N, const Substance& from, const Substance& to) const
-{
-	float indexRatio = RefractionIndex(from) / RefractionIndex(to);
-	float3 D = dir * -1;
-	float angle = dot(N, D);
-
-	float k = 1 - indexRatio * indexRatio * (1 - angle * angle);
-
-	if (k < 0) //TIR
-	{
-		return Reflect(dir, N);
-	}
-
-	return indexRatio * dir + N * (indexRatio * angle - sqrt(k));
 }
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2) const

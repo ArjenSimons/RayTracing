@@ -34,7 +34,7 @@ void MyApp::Init()
 	scene.AddLightSource(light1);
 
 
-	Scene teloscopeScene = GetTelescopeScene();
+	//Scene teloscopeScene = GetTelescopeScene();
 
 	rayTracer = new RayTracer(scene, 5);
 

@@ -37,7 +37,7 @@ static Scene GetTelescopeScene()
 	LightSource* light6 = new LightSource(float3(-1, -.5, 5.21), 10, float3(1, 1, 1));
 	LightSource* light7 = new LightSource(float3(1, -.5, 5.21), 10, float3(1, 1, 1));
 
-	//scene.AddObject(plane);
+	scene.AddObject(plane);
 	scene.AddObject(sphere);
 	scene.AddObject(sphere1);
 	scene.AddObject(sphere2);
