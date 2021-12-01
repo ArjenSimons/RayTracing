@@ -4,7 +4,8 @@ enum Substance
 	SOLID,
 	AIR,
 	WATER,
-	GLASS
+	GLASS,
+	DIAMOND
 };
 
 struct Ray
@@ -38,6 +39,8 @@ inline float RefractionIndex(Substance substance)
 	case GLASS:
 		return 1.52f;
 		break;
+	case DIAMOND:
+		return 2.417f;
 	default:
 		break;
 	}
