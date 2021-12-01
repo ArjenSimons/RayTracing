@@ -20,14 +20,30 @@ Color Material::GetColor(float3 position)
 	}
 	else if (type == CHECKER)
 	{
+		Color retVal = color;
+
 		if (((int)(position.x) + (int)(position.z)) & 1)
 		{
-			return color;
+			retVal = color;
 		}
 		else
 		{
-			return secondColor;
+			retVal = secondColor;
 		}
+
+		if (position.x < 0)
+		{
+			if (retVal == color)
+			{
+				retVal = secondColor;
+			}
+			else
+			{
+				retVal = color;
+			}
+		}
+
+		return retVal;
 	}
 	else return color;
 }
