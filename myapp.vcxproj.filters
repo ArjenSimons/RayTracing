@@ -60,6 +60,7 @@
     <ClInclude Include="Camera.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="controller.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

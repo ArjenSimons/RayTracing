@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cl\tools.cl" />
+    <ClInclude Include="controller.h" />
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="Material.h" />

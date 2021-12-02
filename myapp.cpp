@@ -57,6 +57,8 @@ void MyApp::Tick(float deltaTime)
 
 	}
 
+	rayTracer->cam.Tick();
+
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	//{
 	//	int x = red, y = green;
@@ -68,7 +70,73 @@ void MyApp::Tick(float deltaTime)
 	std::cout << deltaTime << "ms" << std::endl;
 }
 
+void MyApp::MouseMove(int x, int y)
+{
+	rayTracer->cam.controller.newX = x;
+	rayTracer->cam.controller.newY = y;
+}
+void MyApp::KeyUp(int key)
+{
+	/*
+	W = 87
+	A = 65
+	S = 83
+	D = 68
+	*/
+
+	switch (key)
+	{
+	case 87:
+		rayTracer->cam.controller.forward = false;
+		break;
+
+	case 83:
+		rayTracer->cam.controller.backward = false;
+		break;
+
+	case 65:
+		rayTracer->cam.controller.leftward = false;
+		break;
+
+	case 68:
+		rayTracer->cam.controller.rightward = false;
+		break;
+
+	default:
+		break;
+	}
+}
 void MyApp::KeyDown(int key)
 {
-	rayTracer->cam.HandleInput(key);
+	std::cout << "Key down" << std::endl;
+
+	/*
+	W = 87
+	A = 65
+	S = 83
+	D = 68
+	*/
+
+	switch (key)
+	{
+	case 87:
+		std::cout << "forward" << std::endl;
+		rayTracer->cam.controller.forward = true;
+		break;
+
+	case 83:
+		rayTracer->cam.controller.backward = true;
+		break;
+
+	case 65:
+		rayTracer->cam.controller.leftward = true;
+		break;
+
+	case 68:
+		rayTracer->cam.controller.rightward = true;
+		break;
+
+	default:
+		break;
+	}
 }
