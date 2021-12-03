@@ -45,3 +45,8 @@ private:
 	shared_ptr<Texture> even;
 	shared_ptr<Texture> odd;
 };
+
+class ImageTexture : public Texture
+{
+
+};

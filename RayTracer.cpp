@@ -12,7 +12,7 @@
 //}
 
 RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
-	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(nThreads)
 {
 	//renderBuffer = std::vector<std::vector<unsigned int>>(SCRWIDTH, std::vector<unsigned int>(SCRHEIGHT, 0));
 
@@ -21,7 +21,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 		uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
 	}
 
-	for (unsigned int i = 0; i <= processor_count; i++)
+	for (unsigned int i = 0; i <= nThreads; i++)
 	{
 		threadStartPoints.emplace_back(threadWidth * i);
 	}
@@ -42,7 +42,7 @@ void RayTracer::Render()
 	{
 		std::vector<std::future<void>> results;
 
-		for (unsigned int i = 0; i < processor_count; ++i)
+		for (unsigned int i = 0; i < nThreads; ++i)
 		{
 			results.emplace_back(
 				threadPool.enqueue([this, i] { Render(threadStartPoints[i], threadStartPoints[i + 1]); })

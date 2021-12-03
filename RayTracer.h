@@ -18,9 +18,10 @@ private:
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
 
+	unsigned int nThreads = processor_count;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
-	unsigned int threadWidth = SCRWIDTH / processor_count;
+	unsigned int threadWidth = SCRWIDTH / nThreads;
 	std::vector<int> threadStartPoints;
 
 	Scene scene;

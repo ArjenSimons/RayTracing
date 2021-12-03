@@ -10,6 +10,9 @@ RayTracer* rayTracer;
 
 float lastDeltaTime = 0;
 
+std::vector<Intersectable*> objects;
+std::vector<LightSource*> lights;
+
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
@@ -25,21 +28,30 @@ void MyApp::Init()
 	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0));
-	Plane* plane1 = new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 0, 0), checkerTexture, 0));
-	Sphere* sphere = new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0));
-	Sphere* sphere1 = new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0));
+	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+	objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 0, 0), checkerTexture, 0)));
+	objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 
-	LightSource* light = new LightSource(float3(1, 1, 3), 10, float3(1, 1, 1));
-	LightSource* light1 = new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1));
+	lights.push_back(new LightSource(float3(1, 1, 3), 10, float3(1, 1, 1)));
+	lights.push_back(new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1)));
 
+	for (Intersectable* obj : objects)
+	{
+		scene.AddObject(obj);
+	}
 
-	scene.AddObject(plane);
-	scene.AddObject(plane1);
-	scene.AddObject(sphere);
-	scene.AddObject(sphere1);
-	scene.AddLightSource(light);
-	scene.AddLightSource(light1);
+	for (LightSource* light : lights)
+	{
+		scene.AddLightSource(light);
+	}
+
+	//scene.AddObject(plane);
+	////scene.AddObject(plane1);
+	//scene.AddObject(sphere);
+	//scene.AddObject(sphere1);
+	//scene.AddLightSource(light);
+	//scene.AddLightSource(light1);
 
 
 	//Scene teloscopeScene = GetTelescopeScene();
@@ -77,3 +89,17 @@ void MyApp::Tick(float deltaTime)
 	std::cout << deltaTime << "ms" << std::endl;
 }
 
+void MyApp::Shutdown()
+{
+	delete rayTracer;
+
+	for (Intersectable* obj : objects)
+	{
+		delete obj;
+	}
+
+	for (LightSource* light : lights)
+	{
+		delete light;
+	}
+}
