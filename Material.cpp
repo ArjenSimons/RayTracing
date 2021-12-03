@@ -14,7 +14,7 @@ Material::~Material()
 
 Color Material::GetColor(float3 position)
 {
-	if (type == SOLID)
+	if (type == UNIFORM)
 	{
 		return color;
 	}
