@@ -12,7 +12,7 @@
 //}
 
 RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
-	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(nThreads)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
 	//renderBuffer = std::vector<std::vector<unsigned int>>(SCRWIDTH, std::vector<unsigned int>(SCRHEIGHT, 0));
 

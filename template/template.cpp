@@ -7,7 +7,7 @@
 #define STBI_NO_PSD
 #define STBI_NO_PIC
 #define STBI_NO_PNM
-#include "lib/stb_image.h"
+#include "lib/stb/stb_image.h"
 
 #pragma comment( linker, "/subsystem:windows /ENTRY:mainCRTStartup" )
 

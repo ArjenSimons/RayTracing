@@ -26,14 +26,15 @@ void MyApp::Init()
 	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
 	
 	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
+	auto earthTexture = make_shared<ImageTexture>("res/earthmap.jpg");
 
 	Scene scene = Scene();
 	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 	objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 0, 0), checkerTexture, 0)));
-	objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	objects.push_back(new Sphere(float3(0, 0, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
 	objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 
-	lights.push_back(new LightSource(float3(1, 1, 3), 10, float3(1, 1, 1)));
+	lights.push_back(new LightSource(float3(1, 1, 0), 10, float3(1, 1, 1)));
 	lights.push_back(new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1)));
 
 	for (Intersectable* obj : objects)
@@ -45,14 +46,6 @@ void MyApp::Init()
 	{
 		scene.AddLightSource(light);
 	}
-
-	//scene.AddObject(plane);
-	////scene.AddObject(plane1);
-	//scene.AddObject(sphere);
-	//scene.AddObject(sphere1);
-	//scene.AddLightSource(light);
-	//scene.AddLightSource(light1);
-
 
 	//Scene teloscopeScene = GetTelescopeScene();
 

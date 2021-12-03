@@ -46,9 +46,9 @@ Intersection Sphere::OutsideIntersect(Ray ray)
 		out.mat = mat;
 		out.sTo = substance;
 
-		float theta = acos(out.normal.y);
 		float phi = atan2(out.normal.z, out.normal.x) + PI;
-		out.uv = float2(phi / 2 * PI, theta / PI);
+		float theta = acos(-out.normal.y);
+		out.uv = float2(phi / (2 * PI), theta / PI);
 	}
 }
 
@@ -75,9 +75,9 @@ Intersection Sphere::InsideIntersect(Ray ray)
 		out.mat = mat;
 		out.sTo = AIR;
 
-		float theta = acos(normal.y);
-		float phi = atan2(normal.z, normal.x) + PI;
-		out.uv = float2(phi / 2 * PI, theta / PI);
+		float phi = atan2(-normal.z, normal.x) + PI;
+		float theta = acos(-normal.y);
+		out.uv = float2(phi / (2 * PI), theta / PI);
 	}
 
 	return out;

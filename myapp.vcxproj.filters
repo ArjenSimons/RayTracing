@@ -56,6 +56,7 @@
       <Filter>src\Light</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="rtw_stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
