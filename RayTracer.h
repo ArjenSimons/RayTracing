@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "Camera.h"
+#include "ThreadPool.h";
 
 class RayTracer
 {
@@ -9,22 +10,34 @@ private:
 	
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
-	//std::vector<std::vector<float3>> renderBuffer;
+	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
+
+	ThreadingStatus threadingStatus;
+	ThreadPool threadPool;
+	unsigned int threadWidth = SCRWIDTH / processor_count;
+	std::vector<int> threadStartPoints;
 
 	Scene scene;
+	unsigned int maxBounces;
 public:
 	Camera cam;
 	//RayTracer();
-	RayTracer(Scene scene);
+	RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus);
 	~RayTracer();
 
 	void SetScene(Scene scene);
 
-	//std::vector<std::vector<float3>> Render();
-	Color Trace(Ray &ray);
-	Intersection GetNearestIntersection(Ray &ray);
-	Color DirectIllumination(float3 point, float3 normal);
+	void Render();
+	void Render(unsigned int yStart, unsigned int yEnd);
+	unsigned int GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
+	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
-	float2 GetUV(int x, int y) { return uv[x][y]; }
-	Ray GetUVRay(float2 uv);
+	float2 GetUV(int x, int y) const { return uv[x][y]; }
+	Ray GetUVRay(const float2& uv) const;
+private:
+	Intersection GetNearestIntersection(Ray& ray);
+	Color DirectIllumination(float3 point, float3 normal);
+	Color Refraction(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
+	float3 Reflect(const float3& dir, const float3& normal) const;
+	bool RayIsBlocked(Ray& ray, float d2) const;
 };

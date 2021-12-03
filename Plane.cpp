@@ -1,8 +1,8 @@
 #include "precomp.h"
 #include "Intersectable.h"
 
-Plane::Plane(float3 position, float3 normal, Material mat) 
-	: Intersectable(position, mat), normal(normal)
+Plane::Plane(float3 position, float3 normal, Substance substance, Material mat) 
+	: Intersectable(position, substance, mat), normal(normal)
 {
 	
 }
@@ -12,7 +12,7 @@ Plane::~Plane()
 
 }
 
-Intersection Plane::Intersect(Ray ray) const
+Intersection Plane::Intersect(Ray ray)
 {
 	Intersection out;
 
@@ -22,12 +22,13 @@ Intersection Plane::Intersect(Ray ray) const
 	{
 		out.t = (dot((position - ray.Origin), normal)) / denom;
 
-		if (out.t >= 0)
+		if (out.t > 0)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
 			out.normal = normal;
 			out.mat = mat;
+			out.sTo = substance;
 		}		
 	}
 
