@@ -15,11 +15,12 @@ float lastDeltaTime = 0;
 void MyApp::Init()
 {
 	// anything that happens only once at application start goes here
+	std::cout << processor_count << std::endl;
 
 	Scene scene = Scene();
 	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), 0, float3(0, 0, 0), CHECKER));
 	Plane* plane1 = new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 0, 0), 0));
-	Sphere* sphere = new Sphere(float3(0, .1, 2), 1, GLASS, Material(float3(1, 1, 1), 0));
+	Sphere* sphere = new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), 0));
 	Sphere* sphere1 = new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 0, 0), 0));
 
 	LightSource* light = new LightSource(float3(1, 1, 3), 10, float3(1, 1, 1));
@@ -36,7 +37,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5);
+	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED);
 
 	std::cout << "end init" << std::endl;
 }
@@ -49,11 +50,13 @@ void MyApp::Tick(float deltaTime)
 	// clear the screen to black
 	screen->Clear(0);
 
+	rayTracer->Render();
+
 	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
-		Ray ray = rayTracer->GetUVRay(rayTracer->GetUV(i, j));
-		screen->Plot(i, j, rayTracer->Trace(ray).GetRGBValue());
-
+		//Ray ray = rayTracer->GetUVRay(rayTracer->GetUV(i, j));
+		//screen->Plot(i, j, rayTracer->Trace(ray).GetRGBValue());
+		screen->Plot(i, j, rayTracer->GetBufferValue(i, j));
 	}
 
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)

@@ -11,14 +11,19 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene, unsigned int maxBounces)
-	: scene(scene), maxBounces(maxBounces)
+RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
-	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+	//renderBuffer = std::vector<std::vector<unsigned int>>(SCRWIDTH, std::vector<unsigned int>(SCRHEIGHT, 0));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
 		uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
+	}
+
+	for (unsigned int i = 0; i <= processor_count; i++)
+	{
+		threadStartPoints.emplace_back(threadWidth * i);
 	}
 }
 
@@ -31,23 +36,44 @@ void RayTracer::SetScene(Scene scene)
 	scene = scene;
 }
 
-//std::vector<std::vector<float3>> RayTracer::Render()
-//{
-//	bool printed = false;
-//
-//	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
-//	{
-//		Ray ray = GetUVRay(uv[i][j]);
-//
-//		//renderBuffer[i][j] = Trace(ray);
-//	}
-//
-//	return renderBuffer;
-//}
+void RayTracer::Render()
+{
+	if (threadingStatus == THREADING_ENABLED)
+	{
+		std::vector<std::future<void>> results;
+
+		for (unsigned int i = 0; i < processor_count; ++i)
+		{
+			results.emplace_back(
+				threadPool.enqueue([this, i] { Render(threadStartPoints[i], threadStartPoints[i + 1]); })
+			);
+		}
+
+		//Wait untill all threads are finished
+		threadPool.wait_until_empty();
+		threadPool.wait_until_nothing_in_flight();
+	}
+	else 
+	{
+		for (int i = 0; i < SCRWIDTH; ++i) for (int j = 0; j < SCRHEIGHT; ++j)
+		{
+			Ray ray = GetUVRay(uv[i][j]);
+			renderBuffer[i][j] = Trace(ray).GetRGBValue();
+		}
+	}
+}
+
+void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
+{
+	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
+	{
+		Ray ray = GetUVRay(uv[i][j]);
+		renderBuffer[i][j] = Trace(ray).GetRGBValue();
+	}
+}
 
 Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 {
-	float3 white(1, 1, 1);
 	float3 black(0, 0, 0);
 	float3 sky(.4, .7, .8);
 
@@ -200,7 +226,7 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 	return false;
 }
 
-Ray RayTracer::GetUVRay(float2 uv) const
+Ray RayTracer::GetUVRay(const float2& uv) const
 {
 	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 1, AIR, 0, 100);
 }
