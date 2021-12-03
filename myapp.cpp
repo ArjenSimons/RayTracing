@@ -25,7 +25,7 @@ void MyApp::Init()
 	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 
 	Scene scene = Scene();
-	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0));// , float3(0, 0, 0), CHECKER));
+	Plane* plane = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0));
 	Plane* plane1 = new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 0, 0), checkerTexture, 0));
 	Sphere* sphere = new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0));
 	Sphere* sphere1 = new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0));
