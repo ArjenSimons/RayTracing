@@ -3,8 +3,6 @@
 #include "RayTracer.h"
 #include "Intersectable.h"
 
-#define M_PI 3.14159265358979323846 /* pi */
-
 TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
@@ -77,29 +75,26 @@ void MyApp::MouseMove(int x, int y)
 }
 void MyApp::KeyUp(int key)
 {
-	/*
-	W = 87
-	A = 65
-	S = 83
-	D = 68
-	*/
-
 	switch (key)
 	{
-	case 87:
+	case 87: // W
 		rayTracer->cam.controller.forward = false;
 		break;
 
-	case 83:
+	case 83: // S
 		rayTracer->cam.controller.backward = false;
 		break;
 
-	case 65:
+	case 65: // A
 		rayTracer->cam.controller.leftward = false;
 		break;
 
-	case 68:
+	case 68: // D
 		rayTracer->cam.controller.rightward = false;
+		break;
+
+	case 340: // SHIFT
+		rayTracer->cam.controller.noLook = false;
 		break;
 
 	default:
@@ -108,32 +103,35 @@ void MyApp::KeyUp(int key)
 }
 void MyApp::KeyDown(int key)
 {
-	std::cout << "Key down" << std::endl;
-
-	/*
-	W = 87
-	A = 65
-	S = 83
-	D = 68
-	*/
-
 	switch (key)
 	{
-	case 87:
+	case 87: // W
 		std::cout << "forward" << std::endl;
 		rayTracer->cam.controller.forward = true;
 		break;
 
-	case 83:
+	case 83: // S
 		rayTracer->cam.controller.backward = true;
 		break;
 
-	case 65:
+	case 65: // A
 		rayTracer->cam.controller.leftward = true;
 		break;
 
-	case 68:
+	case 68: // D
 		rayTracer->cam.controller.rightward = true;
+		break;
+
+	case 340: // SHIFT
+		rayTracer->cam.controller.noLook = true;
+		break;
+
+	case 265: // ^
+		rayTracer->cam.FOVIncr(-0.25f);
+		break;
+
+	case 264: // v
+		rayTracer->cam.FOVIncr(0.25f);
 		break;
 
 	default:

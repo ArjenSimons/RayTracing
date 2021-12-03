@@ -8,6 +8,7 @@ private:
 	std::vector<Intersectable*> objects;
 	std::vector<LightSource*> lightSources;
 public:
+
 	Scene();
 	~Scene();
 
