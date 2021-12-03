@@ -1,4 +1,7 @@
 #pragma once
+
+const unsigned int processor_count = std::thread::hardware_concurrency();
+
 enum Substance
 {
 	SOLID,
@@ -6,6 +9,12 @@ enum Substance
 	WATER,
 	GLASS,
 	DIAMOND
+};
+
+enum ThreadingStatus
+{
+	THREADING_DISABLED,
+	THREADING_ENABLED
 };
 
 struct Ray

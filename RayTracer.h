@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "ThreadPool.h";
 
 class RayTracer
 {
@@ -15,22 +16,29 @@ private:
 	float3 p2 = C + float3(-1 * aspectRatio, -1, 0);
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
-	//std::vector<std::vector<float3>> renderBuffer;
+	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
+
+	ThreadingStatus threadingStatus;
+	ThreadPool threadPool;
+	unsigned int threadWidth = SCRWIDTH / processor_count;
+	std::vector<int> threadStartPoints;
 
 	Scene scene;
 	unsigned int maxBounces;
 public:
 	//RayTracer();
-	RayTracer(Scene scene, unsigned int maxBounces);
+	RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus);
 	~RayTracer();
 
 	void SetScene(Scene scene);
 
-	//std::vector<std::vector<float3>> Render();
+	void Render();
+	void Render(unsigned int yStart, unsigned int yEnd);
+	unsigned int GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }
-	Ray GetUVRay(float2 uv) const;
+	Ray GetUVRay(const float2& uv) const;
 private:
 	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);
