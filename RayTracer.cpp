@@ -115,7 +115,7 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 			}
 		}
 
-		return intersection.mat.GetColor(intersection.position).value * environment.value;
+		return intersection.mat.GetColor(intersection.uv, intersection.position).value * environment.value;
 
 		// -----------------------------------------------------------
 		//zBuffer

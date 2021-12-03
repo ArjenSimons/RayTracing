@@ -22,6 +22,7 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -54,6 +55,7 @@
     <ClInclude Include="LightSource.h">
       <Filter>src\Light</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
@@ -81,6 +83,9 @@
     </Filter>
     <Filter Include="src\Light">
       <UniqueIdentifier>{e8b72a43-dde4-4281-b960-6fd7d55fba5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Texturing">
+      <UniqueIdentifier>{917ef362-3f8c-415a-8e41-98d5cbcfafce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
