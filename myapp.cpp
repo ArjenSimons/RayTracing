@@ -98,7 +98,7 @@ void MyApp::KeyUp(int key)
 		break;
 
 	case 340: // SHIFT
-		rayTracer->cam.controller.noLook = false;
+		rayTracer->cam.controller.rotate = false;
 		break;
 
 	default:
@@ -127,7 +127,7 @@ void MyApp::KeyDown(int key)
 		break;
 
 	case 340: // SHIFT
-		rayTracer->cam.controller.noLook = true;
+		rayTracer->cam.controller.rotate = true;
 		break;
 
 	case 265: // ^

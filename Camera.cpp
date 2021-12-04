@@ -62,7 +62,7 @@ void Camera::Tick()
 	// Because the mouse is not 'fixed' such as in most freeform viewing experiences,
 	// it is possible to reach the top of your screen before you have looked as far up as you want
 	// thus it is desireable to move the mouse around without actually changing the camera orientation.
-	if (!controller.noLook)
+	if (controller.rotate)
 	{
 		// Check if delta position is greater than some margin
 	// to make sure we are not proccing on minute movements
