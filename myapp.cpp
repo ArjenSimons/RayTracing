@@ -74,6 +74,8 @@ void MyApp::Tick(float deltaTime)
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j));
 	}
 
+	rayTracer->cam.Tick();
+
 	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
 	//{
 	//	int x = red, y = green;
@@ -85,6 +87,74 @@ void MyApp::Tick(float deltaTime)
 	std::cout << deltaTime << "ms" << std::endl;
 }
 
+void MyApp::MouseMove(int x, int y)
+{
+	rayTracer->cam.controller.newX = x;
+	rayTracer->cam.controller.newY = y;
+}
+void MyApp::KeyUp(int key)
+{
+	switch (key)
+	{
+	case 87: // W
+		rayTracer->cam.controller.forward = false;
+		break;
+
+	case 83: // S
+		rayTracer->cam.controller.backward = false;
+		break;
+
+	case 65: // A
+		rayTracer->cam.controller.leftward = false;
+		break;
+
+	case 68: // D
+		rayTracer->cam.controller.rightward = false;
+		break;
+
+	case 340: // SHIFT
+		rayTracer->cam.controller.rotate = false;
+		break;
+
+	default:
+		break;
+	}
+}
+void MyApp::KeyDown(int key)
+{
+	switch (key)
+	{
+	case 87: // W
+		std::cout << "forward" << std::endl;
+		rayTracer->cam.controller.forward = true;
+		break;
+
+	case 83: // S
+		rayTracer->cam.controller.backward = true;
+		break;
+
+	case 65: // A
+		rayTracer->cam.controller.leftward = true;
+		break;
+
+	case 68: // D
+		rayTracer->cam.controller.rightward = true;
+		break;
+
+	case 340: // SHIFT
+		rayTracer->cam.controller.rotate = true;
+		break;
+
+	case 265: // ^
+		rayTracer->cam.FOVIncr(-0.25f);
+		break;
+
+	case 264: // v
+		rayTracer->cam.FOVIncr(0.25f);
+		break;
+
+	default:
+		break;
 void MyApp::Shutdown()
 {
 	delete rayTracer;

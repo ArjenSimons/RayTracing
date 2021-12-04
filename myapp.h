@@ -13,9 +13,9 @@ public:
 	// input handling
 	void MouseUp( int button ) { /* implement if you want to detect mouse button presses */ }
 	void MouseDown( int button ) { /* implement if you want to detect mouse button presses */ }
-	void MouseMove( int x, int y ) { mousePos.x = x, mousePos.y = y; }
-	void KeyUp( int key ) { /* implement if you want to handle keys */ }
-	void KeyDown( int key ) { /* implement if you want to handle keys */ }
+	void MouseMove(int x, int y);
+	void KeyUp(int key);
+	void KeyDown(int key);
 	// data members
 	int2 mousePos;
 };

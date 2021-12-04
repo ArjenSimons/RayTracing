@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="myapp.cpp" />
     <ClCompile Include="Plane.cpp" />
@@ -138,7 +139,9 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="cl\tools.cl" />
+    <ClInclude Include="controller.h" />
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="Material.h" />

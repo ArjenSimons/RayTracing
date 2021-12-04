@@ -1,3 +1,4 @@
+#pragma once
 // Template, IGAD version 2
 // IGAD/NHTV/UU - Jacco Bikker - 2006-2021
 
