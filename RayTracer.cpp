@@ -14,7 +14,8 @@
 RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
-	//renderBuffer = std::vector<std::vector<unsigned int>>(SCRWIDTH, std::vector<unsigned int>(SCRHEIGHT, 0));
+	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
+	cam = Camera();
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -228,5 +229,5 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(const float2& uv) const
 {
-	return Ray(camPos, normalize((p0 + uv.x * (p1 - p0) + uv.y * (p2 - p0)) - camPos), 1, AIR, 0, 100);
+	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 100);
 }

@@ -22,6 +22,9 @@
     <ClCompile Include="Sphere.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -55,6 +58,10 @@
     <ClInclude Include="LightSource.h">
       <Filter>src\Light</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="controller.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="rtw_stb_image.h" />
   </ItemGroup>
