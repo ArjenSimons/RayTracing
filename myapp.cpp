@@ -155,6 +155,9 @@ void MyApp::KeyDown(int key)
 
 	default:
 		break;
+	}
+}
+
 void MyApp::Shutdown()
 {
 	delete rayTracer;
