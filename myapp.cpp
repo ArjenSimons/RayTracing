@@ -33,15 +33,11 @@ void MyApp::Init()
 
 	Scene scene = Scene();
 	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
-	//objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
-	//objects.push_back(new Sphere(float3(0, .5, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+	objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
+	objects.push_back(new Sphere(float3(0, .5, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 
 	//objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-
-	objects.push_back(new Sphere(float3(-1, 0, 2), .1, ABSORBING_GLASS, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Sphere(float3(-.6, 0, 2), .3, ABSORBING_GLASS, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Sphere(float3(.7, 0, 2), 1, ABSORBING_GLASS, Material(float3(1, 1, 1), redTexture, 0)));
 
 	lights.push_back(new LightSource(float3(1, 1, 0), 10, float3(1, 1, 1)));
 	lights.push_back(new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1)));
