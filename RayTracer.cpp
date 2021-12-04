@@ -229,5 +229,5 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(const float2& uv) const
 {
-	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 100);
+	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
 }
