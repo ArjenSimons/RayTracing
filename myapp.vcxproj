@@ -47,7 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool;lib\stb</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -135,6 +135,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cl\tools.cl" />
@@ -144,9 +145,11 @@
     <ClInclude Include="myapp.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RayTracing.h" />
+    <ClInclude Include="rtw_stb_image.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cl\kernels.cl" />
