@@ -65,7 +65,7 @@ private:
 	float3 position3;
 	float3 normal;
 public:
-	Triangle(float3 p1, float3 p2, float3 p3, float3 normal, Substance substance, Material mat);
+	Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Material mat);
 	~Triangle() = default;
 	Intersection Intersect(Ray ray) override;
 };
