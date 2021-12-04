@@ -27,9 +27,9 @@ void Camera::CalculateScreen()
 	float3 right = normalize(cross(upEstim, viewDir));
 	float3 up = normalize(cross(viewDir, right));
 
-	p0 = C - right * a + up; // float3(-1 * aspectRatio, 1, 0);
-	p1 = C + right * a + up; // float3(1 * aspectRatio, 1, 0);
-	p2 = C - right * a - up; // float3(-1 * aspectRatio, -1, 0);
+	p0 = C - right * a + up;
+	p1 = C + right * a + up;
+	p2 = C - right * a - up;
 }
 
 void Camera::Tick()
