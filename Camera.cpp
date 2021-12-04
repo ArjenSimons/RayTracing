@@ -1,18 +1,20 @@
 #include "precomp.h"
 #include "Camera.h"
 
-Camera::Camera(float3 position, float3 direction, float distance, float aspectRatio)
+Camera::Camera(float3 position, float3 direction, float FOVDegree, float aspectRatio)
 {
 	controller = Controller();
 	pos = position;
 	viewDir = direction;
 
-	d = clamp(distance, 0.0f, 2.0f);
 	a = clamp(aspectRatio, 0.0f, 2.0f);
 	if (aspectRatio == 0)
 	{
 		a = (float)SCRWIDTH / (float)SCRHEIGHT;
 	}
+	float FOVRads = FOVDegree * PI / 180;
+	float distance = (0.5 * a / tan(0.5 * FOVRads));
+	d = clamp(distance, 0.0f, 2.0f);
 
 	CalculateScreen();
 }
