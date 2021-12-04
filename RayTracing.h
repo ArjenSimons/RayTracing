@@ -8,6 +8,7 @@ enum Substance
 	AIR,
 	WATER,
 	GLASS,
+	ABSORBING_GLASS,
 	DIAMOND
 };
 
@@ -48,8 +49,37 @@ inline float RefractionIndex(Substance substance)
 	case GLASS:
 		return 1.52f;
 		break;
+	case ABSORBING_GLASS:
+		return 1.52f;
+		break;
 	case DIAMOND:
 		return 2.417f;
+	default:
+		break;
+	}
+}
+
+inline float Absorption(Substance substance) 
+{
+	switch (substance)
+	{
+	case SOLID:
+		return .0f;
+		break;
+	case AIR:
+		return .0f;
+		break;
+	case WATER:
+		return .1f;
+		break;
+	case GLASS:
+		return .02f;
+		break;
+	case ABSORBING_GLASS:
+		return .5f;
+		break;
+	case DIAMOND:
+		return .02f;
 	default:
 		break;
 	}

@@ -175,9 +175,14 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int 
 
 	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 
+	float energy = ray.e;
+	int absorption = Absorption(ray.substance);
+
+	energy *= exp(absorption * i.t);
+
 	if (k < 0) //TIR
 	{
-		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
+		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy, ray.substance), bounceDepth + 1);
 	}
 
 	//Fresnel
@@ -193,16 +198,16 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int 
 	float sPolarizedSqrd = (n1TimesAngle1 - n2TimesAngle2) / (n1TimesAngle1 + n2TimesAngle2);
 	float pPolarizedSqrd = (n1TimesAngle2 - n2TimesAngle1) / (n1TimesAngle2 + n2TimesAngle1);
 
-	float Fr = ray.e * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
-	float Ft = ray.e - Fr;
+	float Fr = energy * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
+	float Ft = energy - Fr;
 
 
 	//Reflect 
-	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e * Fr, ray.substance), bounceDepth + 1).value;
+	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy * Fr, ray.substance), bounceDepth + 1).value;
 
 	//Refract
 	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * cosi - sqrt(k));
-	Color refract = Ft * Trace(Ray(i.position, dir, ray.e, i.sTo), bounceDepth).value;
+	Color refract = Ft * Trace(Ray(i.position, dir, energy, i.sTo), bounceDepth).value;
 
 	return refract + reflect;
 }
