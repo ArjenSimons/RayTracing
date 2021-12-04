@@ -12,7 +12,7 @@ private:
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
 
-	unsigned int nThreads = processor_count;
+	unsigned int nThreads = 16;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
 	unsigned int threadWidth = SCRWIDTH / nThreads;

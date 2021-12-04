@@ -176,10 +176,7 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int 
 
 	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 
-	float energy = ray.e;
-	int absorption = Absorption(ray.substance);
-
-	energy *= exp(absorption * i.t);
+	float energy = ray.e * exp(-Absorption(ray.substance) * i.t);
 
 	if (k < 0) //TIR
 	{
