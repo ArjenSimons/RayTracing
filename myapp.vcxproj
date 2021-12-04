@@ -148,7 +148,6 @@
     <ClInclude Include="myapp.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RayTracing.h" />
-    <ClInclude Include="rtw_stb_image.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
