@@ -15,7 +15,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-	cam = Camera();
+	cam = Camera(float3(0, 10, 0), float3(0, -9, 1));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{

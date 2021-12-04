@@ -56,3 +56,22 @@ private:
 	Intersection InsideIntersect(Ray ray);
 };
 
+class Torus : public Intersectable
+{
+private:
+	float R; // Major radius
+	float r; // Minor radius
+	float R2; // Major radius squared
+	float r2; // Minor radius squared
+	
+public:
+	Torus(float3 position, float minR, float majR, Substance substance, Material mat);
+	~Torus();
+	Intersection Intersect(Ray ray) override;
+private:
+	float GetIntersectionDistance(Ray ray);
+	float3 GetNormal(float3 position);
+	float2 GetUV(float3 position);
+	std::vector<float> Cubic(std::vector<float> cs);
+	std::vector<float> Quadratic(std::vector<float> cs);
+};

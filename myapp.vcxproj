@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="algebra.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="myapp.cpp" />
@@ -137,8 +138,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Torus.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="algebra.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cl\tools.cl" />
     <ClInclude Include="controller.h" />

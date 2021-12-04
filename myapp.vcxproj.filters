@@ -26,6 +26,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Torus.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="algebra.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -64,6 +70,9 @@
     <ClInclude Include="controller.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="rtw_stb_image.h" />
+    <ClInclude Include="algebra.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
