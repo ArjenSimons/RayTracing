@@ -41,6 +41,8 @@ public:
 	Plane(float3 position, float3 normal, Substance substance, Material mat);
 	~Plane();
 	Intersection Intersect(Ray ray) override;
+protected:
+	float2 GetUV(float3& normal, float3& position);
 };
 
 class Sphere : public Intersectable
