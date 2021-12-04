@@ -20,7 +20,7 @@
 #include <assert.h>
 #include <io.h>
 
-#include "lib/stb_image.h"
+#include "lib/stb/stb_image.h"
 
 // header for AVX, and every technology before it.
 // if your CPU does not support this (unlikely), include the appropriate header instead.

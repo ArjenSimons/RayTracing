@@ -8,8 +8,9 @@ struct Intersection
 	float t;
 	float3 position;
 	float3 normal;
-	Material mat{ float3(1, 0, 1) };
+	Material mat{ float3(1, 0, 1), nullptr };
 	Substance sTo;
+	float2 uv;
 
 	Intersection()
 	{
