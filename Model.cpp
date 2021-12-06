@@ -8,7 +8,6 @@ Model::Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance subs
 
 	float3 minBound = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxBound = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
-	printf("minfloat: %f\n", std::numeric_limits<float>::min());
 
 	for (int i = 0; i < verticess.size(); i += 3)
 	{
@@ -28,10 +27,6 @@ Model::Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance subs
 	}
 
 	aabb = AABB(minBound, maxBound);
-
-	//printf("Model face count: %i\n", triangles.size());
-	//printf("min: %f, %f, %f\n", minBound.x, minBound.y, minBound.z);
-	//printf("max: %f, %f, %f\n", maxBound.x, maxBound.y, maxBound.z);
 }
 
 Intersection Model::Intersect(Ray ray)
