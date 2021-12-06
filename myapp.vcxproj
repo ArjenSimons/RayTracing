@@ -47,7 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool;lib\stb</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool;lib\stb;lib\tinyobjloader</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -125,6 +125,8 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="myapp.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RayTracer.cpp" />
@@ -136,7 +138,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -145,6 +147,7 @@
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="myapp.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RayTracing.h" />
