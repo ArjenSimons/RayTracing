@@ -11,8 +11,8 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
-	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
+RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 	cam = Camera();
@@ -21,6 +21,8 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	{
 		uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
 	}
+	uvX = 1 / static_cast<float>(SCRWIDTH);
+	uvY = 1 / static_cast<float>(SCRHEIGHT);
 
 	for (unsigned int i = 0; i <= nThreads; i++)
 	{
@@ -56,11 +58,7 @@ void RayTracer::Render()
 	}
 	else 
 	{
-		for (int i = 0; i < SCRWIDTH; ++i) for (int j = 0; j < SCRHEIGHT; ++j)
-		{
-			Ray ray = GetUVRay(uv[i][j]);
-			renderBuffer[i][j] = Trace(ray).GetRGBValue();
-		}
+		Render(0, SCRWIDTH);
 	}
 }
 
@@ -68,8 +66,25 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 {
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
 	{
+		if (msaaStatus == MSAA::NONE)
+		{
+			Ray ray = GetUVRay(uv[i][j]);
+			Color col = Trace(ray);
+			renderBuffer[i][j] = col.GetRGBValue();
+			continue;
+		}
+
 		Ray ray = GetUVRay(uv[i][j]);
-		renderBuffer[i][j] = Trace(ray).GetRGBValue();
+		Ray ray1 = GetUVRay(uv[i][j]);
+		Ray ray2 = GetUVRay(uv[i][j]);
+		Ray ray3 = GetUVRay(uv[i][j]);
+
+		Color col = Trace(ray).GetClamped();
+		Color col1 = Trace(ray1).GetClamped();
+		Color col2 = Trace(ray2).GetClamped();
+		Color col3 = Trace(ray3).GetClamped();
+
+		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25).GetRGBValue();
 	}
 }
 
@@ -233,5 +248,13 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(const float2& uv) const
 {
-	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+	float xOffset = 0;
+	float yOffset = 0;
+
+	if (msaaStatus == MSAA::MSAA_4X) 
+	{
+		xOffset = RandomFloat() * uvX;
+		yOffset = RandomFloat() * uvY;
+	}
+	return Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
 }
