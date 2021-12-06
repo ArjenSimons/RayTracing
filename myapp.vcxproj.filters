@@ -31,14 +31,6 @@
     </ClCompile>
     <ClCompile Include="algebra.cpp">
       <Filter>src</Filter>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>src\Texturing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -76,14 +68,10 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="controller.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="rtw_stb_image.h" />
     <ClInclude Include="algebra.h">
       <Filter>src</Filter>
-    <ClInclude Include="Texture.h">
-      <Filter>src\Texturing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>src\Texturing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

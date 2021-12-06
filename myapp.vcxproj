@@ -47,7 +47,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool;lib\stb;lib\tinyobjloader</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>template;.;lib\glad\include;lib\glfw\include;lib\OpenCL\inc;lib\zlib;lib\ThreadPool;lib\stb</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>precomp.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
@@ -126,8 +126,6 @@
     <ClCompile Include="algebra.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
     <ClCompile Include="myapp.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RayTracer.cpp" />
@@ -141,7 +139,6 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Torus.cpp" />
-    <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algebra.h" />
@@ -151,10 +148,10 @@
     <ClInclude Include="Intersectable.h" />
     <ClInclude Include="LightSource.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="myapp.h" />
     <ClInclude Include="RayTracer.h" />
     <ClInclude Include="RayTracing.h" />
+    <ClInclude Include="rtw_stb_image.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />

@@ -11,8 +11,8 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
-	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
+RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 	cam = Camera(float3(0, 10, -10), float3(0, -9, 5));
@@ -21,8 +21,6 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	{
 		uv[i][j] = float2(static_cast<float>(i) / static_cast<float>(SCRWIDTH), static_cast<float>(j) / static_cast<float>(SCRHEIGHT));
 	}
-	uvX = 1 / static_cast<float>(SCRWIDTH);
-	uvY = 1 / static_cast<float>(SCRHEIGHT);
 
 	for (unsigned int i = 0; i <= nThreads; i++)
 	{
@@ -58,7 +56,11 @@ void RayTracer::Render()
 	}
 	else 
 	{
-		Render(0, SCRWIDTH);
+		for (int i = 0; i < SCRWIDTH; ++i) for (int j = 0; j < SCRHEIGHT; ++j)
+		{
+			Ray ray = GetUVRay(uv[i][j]);
+			renderBuffer[i][j] = Trace(ray, 0).GetRGBValue();
+		}
 	}
 }
 
@@ -66,25 +68,8 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 {
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
 	{
-		if (msaaStatus == MSAA::NONE)
-		{
-			Ray ray = GetUVRay(uv[i][j]);
-			Color col = Trace(ray);
-			renderBuffer[i][j] = col.GetRGBValue();
-			continue;
-		}
-
 		Ray ray = GetUVRay(uv[i][j]);
-		Ray ray1 = GetUVRay(uv[i][j]);
-		Ray ray2 = GetUVRay(uv[i][j]);
-		Ray ray3 = GetUVRay(uv[i][j]);
-
-		Color col = Trace(ray).GetClamped();
-		Color col1 = Trace(ray1).GetClamped();
-		Color col2 = Trace(ray2).GetClamped();
-		Color col3 = Trace(ray3).GetClamped();
-
-		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25).GetRGBValue();
+		renderBuffer[i][j] = Trace(ray).GetRGBValue();
 	}
 }
 
@@ -170,13 +155,11 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
-		float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
-
-		if (cosa == 0 || RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
+		if (RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
 
 		float3 col = light->color.value;
 		col *= 1 / d2;
-		col *= cosa;
+		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
 		col *= light->intensity;
 
 		out.value += col;
@@ -195,11 +178,9 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int 
 
 	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 
-	float energy = ray.e * exp(-Absorption(ray.substance) * i.t);
-
 	if (k < 0) //TIR
 	{
-		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy, ray.substance), bounceDepth + 1);
+		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e, ray.substance), bounceDepth + 1);
 	}
 
 	//Fresnel
@@ -215,16 +196,16 @@ Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int 
 	float sPolarizedSqrd = (n1TimesAngle1 - n2TimesAngle2) / (n1TimesAngle1 + n2TimesAngle2);
 	float pPolarizedSqrd = (n1TimesAngle2 - n2TimesAngle1) / (n1TimesAngle2 + n2TimesAngle1);
 
-	float Fr = energy * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
-	float Ft = energy - Fr;
+	float Fr = ray.e * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
+	float Ft = ray.e - Fr;
 
 
 	//Reflect 
-	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy * Fr, ray.substance), bounceDepth + 1).value;
+	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), ray.e * Fr, ray.substance), bounceDepth + 1).value;
 
 	//Refract
 	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * cosi - sqrt(k));
-	Color refract = Ft * Trace(Ray(i.position, dir, energy, i.sTo), bounceDepth).value;
+	Color refract = Ft * Trace(Ray(i.position, dir, ray.e, i.sTo), bounceDepth).value;
 
 	return refract + reflect;
 }
@@ -250,13 +231,5 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
 
 Ray RayTracer::GetUVRay(const float2& uv) const
 {
-	float xOffset = 0;
-	float yOffset = 0;
-
-	if (msaaStatus == MSAA::MSAA_4X) 
-	{
-		xOffset = RandomFloat() * uvX;
-		yOffset = RandomFloat() * uvY;
-	}
-	return Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+	return Ray(cam.pos, normalize((cam.p0 + uv.x * (cam.p1 - cam.p0) + uv.y * (cam.p2 - cam.p0)) - cam.pos), 100);
 }

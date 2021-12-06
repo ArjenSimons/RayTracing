@@ -1,7 +1,6 @@
 #pragma once
 #include "RayTracing.h"
 #include "Material.h"
-#include "Mesh.h"
 
 struct Intersection
 {
@@ -21,31 +20,6 @@ struct Intersection
 		normal = float3(0, 0, 0);
 	}
 };
-
-inline bool RayAABBIntersect(const Ray& ray, const AABB& aabb)
-{
-	float3 invDir = 1 / ray.Dir;
-
-	float tx1 = (aabb.Minimum(0) - ray.Origin.x) * invDir.x;
-	float tx2 = (aabb.Maximum(0) - ray.Origin.x) * invDir.x;
-
-	float tmin = min(tx1, tx2);
-	float tmax = max(tx1, tx2);
-
-	float ty1 = (aabb.Minimum(1) - ray.Origin.y) * invDir.y;
-	float ty2 = (aabb.Maximum(1) - ray.Origin.y) * invDir.y;
-
-	tmin = max(tmin, min(ty1, ty2));
-	tmax = min(tmax, max(ty1, ty2));
-
-	float tz1 = (aabb.Minimum(2) - ray.Origin.z) * invDir.z;
-	float tz2 = (aabb.Maximum(2) - ray.Origin.z) * invDir.z;
-
-	tmin = max(tmin, min(tz1, tz2));
-	tmax = min(tmax, max(tz1, tz2));
-
-	return tmax >= max(0.0f, tmin);
-}
 
 class Intersectable
 {
@@ -67,8 +41,6 @@ public:
 	Plane(float3 position, float3 normal, Substance substance, Material mat);
 	~Plane();
 	Intersection Intersect(Ray ray) override;
-protected:
-	float2 GetUV(float3& normal, float3& position);
 };
 
 class Sphere : public Intersectable
@@ -103,28 +75,4 @@ private:
 	float2 GetUV(float3 position);
 	std::vector<float> Cubic(std::vector<float> cs);
 	std::vector<float> Quadratic(std::vector<float> cs);
-};
-
-
-class Triangle : public Intersectable
-{
-private:
-	float3 position2;
-	float3 position3;
-	float3 normal;
-public:
-	Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Material mat);
-	~Triangle() = default;
-	Intersection Intersect(Ray ray) override;
-};
-
-class Model : public Intersectable
-{
-private:
-	std::vector<Triangle> triangles;
-	AABB aabb;
-public:
-	Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat);
-	~Model() = default;
-	Intersection Intersect(Ray ray) override;
 };
