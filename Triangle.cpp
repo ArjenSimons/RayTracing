@@ -42,7 +42,6 @@ Intersection Triangle::Intersect(Ray ray)
 		out.mat = mat;
 		out.sTo = substance;
 		out.uv = float2(u,  v);
-		
 	}
 
 	return out;

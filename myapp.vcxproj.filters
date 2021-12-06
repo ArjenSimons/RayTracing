@@ -28,6 +28,12 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>src\Texturing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">

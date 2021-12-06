@@ -1,6 +1,7 @@
 #pragma once
 #include "RayTracing.h"
 #include "Material.h"
+#include "Mesh.h"
 
 struct Intersection
 {
@@ -75,5 +76,7 @@ class Model : public Intersectable
 private:
 	std::vector<Triangle> triangles;
 public:
-	//Mesh(float3 position, const char* filename)
+	Model(float3 position, shared_ptr<Mesh> mesh, Substance substance, Material mat);
+	~Model() = default;
+	Intersection Intersect(Ray ray) override;
 };

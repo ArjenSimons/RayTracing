@@ -35,12 +35,15 @@ void MyApp::Init()
 
 	//meshes
 	auto pineTree = make_shared<Mesh>("res/pinetree.obj");
+	auto cube = make_shared<Mesh>("res/cube.obj");
 
 	Scene scene = Scene();
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), redTexture, .4)));
 	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Sphere(float3(0, .5, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
-	objects.push_back(new Triangle(float3(-.5, 0, 1), float3(0, 1, 1), float3(.5, 0, 1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
+	//objects.push_back(new Sphere(float3(0, .5, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+	//objects.push_back(new Triangle(float3(-.5, 0, 1), float3(0, 1, 1), float3(.5, 0, 1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
+	objects.push_back(new Model(float3(0, 0, 2), cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	//printf("yes");
 	//objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 
 	lights.push_back(new LightSource(float3(1, 1, 1.5), 10, float3(1, 1, 1)));

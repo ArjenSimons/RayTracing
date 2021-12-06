@@ -125,6 +125,8 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="myapp.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RayTracer.cpp" />
