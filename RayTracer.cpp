@@ -60,21 +60,6 @@ void RayTracer::Render()
 	else 
 	{
 		Render(0, SCRWIDTH);
-
-		//for (int i = 0; i < SCRWIDTH; ++i) for (int j = 0; j < SCRHEIGHT; ++j)
-		//{
-		//	Ray ray = GetUVRay(uv[i][j]);
-		//	Ray ray1 = GetUVRay(uv[i][j]);
-		//	Ray ray2 = GetUVRay(uv[i][j]);
-		//	Ray ray3 = GetUVRay(uv[i][j]);
-
-		//	Color col = Trace(ray).GetClamped();
-		//	Color col1 = Trace(ray1).GetClamped();
-		//	Color col2 = Trace(ray2).GetClamped();
-		//	Color col3 = Trace(ray3).GetClamped();
-		//	renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25).GetRGBValue();
-
-		//}
 	}
 }
 
@@ -101,8 +86,6 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 		Color col3 = Trace(ray3).GetClamped();
 
 		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25).GetRGBValue();
-
-		//renderBuffer[i][j] = col.GetRGBValue();
 	}
 }
 
