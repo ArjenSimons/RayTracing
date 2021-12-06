@@ -28,9 +28,6 @@
     <ClCompile Include="Triangle.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>src\Texturing</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -68,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="controller.h" />
     <ClInclude Include="Texture.h">
+      <Filter>src\Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
       <Filter>src\Texturing</Filter>
     </ClInclude>
   </ItemGroup>

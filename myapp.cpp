@@ -3,6 +3,7 @@
 #include "RayTracer.h"
 #include "Intersectable.h"
 #include "Texture.h"
+#include "Mesh.h"
 
 TheApp* CreateApp() { return new MyApp(); }
 
@@ -21,6 +22,7 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 	std::cout << processor_count << std::endl;
 
+	//Textures
 	auto redTexture = make_shared<ColorTexture>(Color(1, 0, 0));
 	auto whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
@@ -30,6 +32,9 @@ void MyApp::Init()
 	auto earthTexture = make_shared<ImageTexture>("res/earthmap.jpg");
 	auto marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
 	auto brickTexture = make_shared<ImageTexture>("res/bricks.jpg");
+
+	//meshes
+	auto pineTree = make_shared<Mesh>("res/pinetree.obj");
 
 	Scene scene = Scene();
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), redTexture, .4)));

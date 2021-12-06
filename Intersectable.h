@@ -69,3 +69,11 @@ public:
 	~Triangle() = default;
 	Intersection Intersect(Ray ray) override;
 };
+
+class Model : public Intersectable
+{
+private:
+	std::vector<Triangle> triangles;
+public:
+	//Mesh(float3 position, const char* filename)
+};
