@@ -22,6 +22,36 @@ struct Intersection
 	}
 };
 
+inline bool RayAABBIntersect(const Ray& ray, const AABB& aabb)
+{
+	//if (RayOrigingInsideBox(ray)) return true;
+
+	float3 invDir = 1 / ray.Dir;
+
+	if (invDir.z != invDir.z)
+		printf("%f\n", invDir.z);
+
+	float tx1 = (aabb.Minimum(0) - ray.Origin.x) * invDir.x;
+	float tx2 = (aabb.Maximum(0) - ray.Origin.x) * invDir.x;
+
+	float tmin = min(tx1, tx2);
+	float tmax = max(tx1, tx2);
+
+	float ty1 = (aabb.Minimum(1) - ray.Origin.y) * invDir.y;
+	float ty2 = (aabb.Maximum(1) - ray.Origin.y) * invDir.y;
+
+	tmin = max(tmin, min(ty1, ty2));
+	tmax = min(tmax, max(ty1, ty2));
+
+	float tz1 = (aabb.Minimum(2) - ray.Origin.z) * invDir.z;
+	float tz2 = (aabb.Maximum(2) - ray.Origin.z) * invDir.z;
+
+	tmin = max(tmin, min(tz1, tz2));
+	tmax = min(tmax, max(tz1, tz2));
+
+	return tmax >= max(0.0f, tmin);
+}
+
 class Intersectable
 {
 protected: 
@@ -75,8 +105,9 @@ class Model : public Intersectable
 {
 private:
 	std::vector<Triangle> triangles;
+	AABB aabb;
 public:
-	Model(float3 position, shared_ptr<Mesh> mesh, Substance substance, Material mat);
+	Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat);
 	~Model() = default;
 	Intersection Intersect(Ray ray) override;
 };
