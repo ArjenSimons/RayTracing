@@ -25,9 +25,11 @@
     <ClCompile Include="Camera.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Triangle.cpp">
       <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>src\Texturing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -65,7 +67,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="controller.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Texture.h">
+      <Filter>src\Texturing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
