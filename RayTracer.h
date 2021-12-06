@@ -31,7 +31,7 @@ public:
 	void Render();
 	void Render(unsigned int yStart, unsigned int yEnd);
 	unsigned int GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
-	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
+	Color Trace(Ray &ray, unsigned int bounceDepth = 0, int i = 0, int j = 0);
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }
 	Ray GetUVRay(const float2& uv) const;

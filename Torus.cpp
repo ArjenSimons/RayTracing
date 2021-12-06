@@ -42,20 +42,20 @@ float Torus::GetIntersectionDistance(Ray ray)
 	float3 o = ray.Origin;
 	float3 d = ray.Dir;
 
-	float A, B, C, D, E, F;
-	A = 4 * R2 * (d.x * d.x + d.y * d.y);
-	B = 8 * R2 * (o.x * d.x + o.y * d.y);
-	C = 4 * R2 * (o.x * o.x + o.y * o.y);
-	D = d.x * d.x + d.y * d.y + d.z * d.z;
-	E = 2 * dot(o, d);
-	F = o.x * o.x + o.y * o.y + o.z * o.z + R2 - r2;
+	float G, H, I, J, K, L;
+	G = 4 * R2 * (d.x * d.x + d.y * d.y);
+	H = 8 * R2 * (o.x * d.x + o.y * d.y);
+	I = 4 * R2 * (o.x * o.x + o.y * o.y);
+	J = dot(d, d);
+	K = 2 * dot(o, d);
+	L = dot(o, o) + R2 - r2;
 
 	double a, b, c, dd, e;
-	a = D * D;
-	b = 2 * D * E;
-	c = 2 * D * F + E * E - A * A;
-	dd = 2 * E * F - B;
-	e = F * F - C;
+	a = J * J;
+	b = 2 * J * K;
+	c = 2 * J * L + K * K - G;
+	dd = 2 * K * L - H;
+	e = L * L - I;
 
 	double res[4];
 	int resAmt = Algebra::SolveQuarticEquation(a, b, c, dd, e, res);
@@ -63,12 +63,12 @@ float Torus::GetIntersectionDistance(Ray ray)
 	std::vector<float> positives;
 	for (int i = 0; i < resAmt; i++)
 	{
-		if (res[i] > 0)
+		if (res[i] > 0.01)
 			positives.push_back((float)res[i]);
 	}
 
 	if (positives.empty())
-		return -1;
+		return 0;
 
 	std::sort(positives.begin(), positives.end());
 	return positives[0];
@@ -76,8 +76,8 @@ float Torus::GetIntersectionDistance(Ray ray)
 
 float3 Torus::GetNormal(float3 position)
 {
-	float3 Pprime = float3(position.x, position.y, 0);
-	float3 Q = normalize(Pprime) * sqrt(R2);
+	float3 P = float3(position.x, position.y, 0);
+	float3 Q = normalize(P) * R;
 	float3 N = position - Q;
 	return normalize(N);
 }
@@ -89,7 +89,7 @@ float2 Torus::GetUV(float3 position)
 	float z = position.z;
 
 	float u = 0.5f + atan2(z, x) / (2 * PI);
-	float v = 0.5f + atan2(y, (sqrt(x * x + z * z) - sqrt(R2))) / (2 * PI);
+	float v = 0.5f + atan2(y, (sqrt(x * x + z * z) - R)) / (2 * PI);
 
 	return float2(u, v);
 }
