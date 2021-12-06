@@ -24,12 +24,7 @@ struct Intersection
 
 inline bool RayAABBIntersect(const Ray& ray, const AABB& aabb)
 {
-	//if (RayOrigingInsideBox(ray)) return true;
-
 	float3 invDir = 1 / ray.Dir;
-
-	if (invDir.z != invDir.z)
-		printf("%f\n", invDir.z);
 
 	float tx1 = (aabb.Minimum(0) - ray.Origin.x) * invDir.x;
 	float tx2 = (aabb.Maximum(0) - ray.Origin.x) * invDir.x;
