@@ -5,7 +5,7 @@ Camera::Camera(float3 position, float3 direction, float FOVDegree, float aspectR
 {
 	controller = Controller();
 	pos = position;
-	viewDir = direction;
+	viewDir = normalize(direction);
 
 	a = clamp(aspectRatio, 0.0f, 2.0f);
 	if (aspectRatio == 0)
