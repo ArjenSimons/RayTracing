@@ -123,4 +123,9 @@ struct Color
 	{
 		return float3(value.x * rhs.value.x, value.y * rhs.value.y, value.z * rhs.value.z);
 	}
+
+	Color operator*(const float& rhs) const
+	{
+		return float3(value.x * rhs, value.y * rhs, value.z * rhs);
+	}
 };

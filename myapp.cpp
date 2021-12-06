@@ -4,6 +4,7 @@
 #include "Intersectable.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include <ctime>
 
 TheApp* CreateApp() { return new MyApp(); }
 
@@ -21,6 +22,14 @@ void MyApp::Init()
 {
 	// anything that happens only once at application start goes here
 	std::cout << processor_count << std::endl;
+	uint seed = static_cast<uint>(std::time(nullptr));
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
+	std::cout << RandomFloat() << std::endl;
 
 	//Textures
 	auto redTexture = make_shared<ColorTexture>(Color(1, 0, 0));
@@ -38,11 +47,11 @@ void MyApp::Init()
 	auto cube = make_shared<Mesh>("res/cube.obj");
 
 	Scene scene = Scene();
-	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
+	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
 	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	
 	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Sphere(float3(0, .1, 3), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+	objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
 
 	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
@@ -62,7 +71,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED);
+	rayTracer = new RayTracer(scene, 5, THREADING_DISABLED);
 
 	std::cout << "end init" << std::endl;
 }

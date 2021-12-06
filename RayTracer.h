@@ -10,6 +10,8 @@ private:
 	
 
 	float2 uv[SCRWIDTH][SCRHEIGHT];
+	float uvX;
+	float uvY;
 	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
 
 	unsigned int nThreads = 16;
