@@ -153,11 +153,13 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
-		if (RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
+		float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
+
+		if (cosa == 0 || RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
 
 		float3 col = light->color.value;
 		col *= 1 / d2;
-		col *= clamp(dot(N, ray.Dir), 0.0, 1.0);
+		col *= cosa;
 		col *= light->intensity;
 
 		out.value += col;

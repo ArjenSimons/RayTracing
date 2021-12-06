@@ -3,6 +3,7 @@
 #include "RayTracer.h"
 #include "Intersectable.h"
 #include "Texture.h"
+#include "Mesh.h"
 
 TheApp* CreateApp() { return new MyApp(); }
 
@@ -21,6 +22,7 @@ void MyApp::Init()
 	// anything that happens only once at application start goes here
 	std::cout << processor_count << std::endl;
 
+	//Textures
 	auto redTexture = make_shared<ColorTexture>(Color(1, 0, 0));
 	auto whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
@@ -31,16 +33,22 @@ void MyApp::Init()
 	auto marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
 	auto brickTexture = make_shared<ImageTexture>("res/bricks.jpg");
 
+	//meshes
+	auto tree = make_shared<Mesh>("res/tree.obj");
+	auto cube = make_shared<Mesh>("res/cube.obj");
+
 	Scene scene = Scene();
 	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
-	objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
-	objects.push_back(new Sphere(float3(0, .5, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
-	//objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	
+	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	objects.push_back(new Sphere(float3(0, .1, 3), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
 
-	//objects.push_back(new Sphere(float3(0, .5, 4), .2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-
-	lights.push_back(new LightSource(float3(1, 1, 0), 10, float3(1, 1, 1)));
-	lights.push_back(new LightSource(float3(-1, 3, -1), 10, float3(1, 1, 1)));
+	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
+	
+	lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
+	lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
 
 	for (Intersectable* obj : objects)
 	{
