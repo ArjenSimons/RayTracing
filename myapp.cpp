@@ -4,7 +4,6 @@
 #include "Intersectable.h"
 #include "Texture.h"
 #include "Mesh.h"
-#include <ctime>
 
 TheApp* CreateApp() { return new MyApp(); }
 
