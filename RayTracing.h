@@ -8,6 +8,7 @@ enum Substance
 	AIR,
 	WATER,
 	GLASS,
+	ABSORBING_GLASS,
 	DIAMOND
 };
 
@@ -15,6 +16,12 @@ enum ThreadingStatus
 {
 	THREADING_DISABLED,
 	THREADING_ENABLED
+};
+
+enum class MSAA
+{
+	NONE,
+	MSAA_4X
 };
 
 struct Ray
@@ -48,8 +55,37 @@ inline float RefractionIndex(Substance substance)
 	case GLASS:
 		return 1.52f;
 		break;
+	case ABSORBING_GLASS:
+		return 1.52f;
+		break;
 	case DIAMOND:
 		return 2.417f;
+	default:
+		break;
+	}
+}
+
+inline float Absorption(Substance substance) 
+{
+	switch (substance)
+	{
+	case SOLID:
+		return .0f;
+		break;
+	case AIR:
+		return .0f;
+		break;
+	case WATER:
+		return .1f;
+		break;
+	case GLASS:
+		return .02f;
+		break;
+	case ABSORBING_GLASS:
+		return .5f;
+		break;
+	case DIAMOND:
+		return .02f;
 	default:
 		break;
 	}
@@ -67,6 +103,11 @@ struct Color
 	Color(float r, float g, float b)
 		: value(float3(r, g, b))
 	{
+	}
+
+	Color GetClamped()
+	{
+		return Color(clamp(value.x, 0.0, 1.0), clamp(value.y, 0.0, 1.0), clamp(value.z, 0.0, 1.0));
 	}
 
 	unsigned int GetRGBValue()
@@ -92,5 +133,10 @@ struct Color
 	Color operator*(const Color& rhs) const
 	{
 		return float3(value.x * rhs.value.x, value.y * rhs.value.y, value.z * rhs.value.z);
+	}
+
+	Color operator*(const float& rhs) const
+	{
+		return float3(value.x * rhs, value.y * rhs, value.z * rhs);
 	}
 };

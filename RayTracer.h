@@ -6,24 +6,25 @@
 class RayTracer
 {
 private:
-	//Cam
-	
-
 	float2 uv[SCRWIDTH][SCRHEIGHT];
+	float uvX;
+	float uvY;
 	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
 
-	unsigned int nThreads = processor_count;
+	unsigned int nThreads = 16;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
 	unsigned int threadWidth = SCRWIDTH / nThreads;
 	std::vector<int> threadStartPoints;
+
+	MSAA msaaStatus;
 
 	Scene scene;
 	unsigned int maxBounces;
 public:
 	Camera cam;
 	//RayTracer();
-	RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus);
+	RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
 	~RayTracer();
 
 	void SetScene(Scene scene);
