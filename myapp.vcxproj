@@ -139,7 +139,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Torus.cpp" />
     <ClCompile Include="Triangle.cpp" />
   </ItemGroup>
