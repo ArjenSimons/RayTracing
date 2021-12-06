@@ -1,6 +1,5 @@
 #include "precomp.h"
 #include "RayTracer.h"
-#include <ctime>
 
 //RayTracer::RayTracer()
 //{
