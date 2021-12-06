@@ -2,9 +2,15 @@
 #include "Intersectable.h"
 #include "algebra.h"
 
-Torus::Torus(float3 position, float minorR, float majorR, Substance substance, Material mat)
+Torus::Torus(float3 position, float minorR, float majorR, float3 eulerAngles, Substance substance, Material mat)
 	: Intersectable(position, substance, mat), r(minorR), R(majorR)
 {
+	float dtr = PI / 180;
+
+	mat4 positionMatrix = mat4::Translate(-1 * position);
+	mat4 rotationMatrix = mat4::RotateZ(eulerAngles.z * dtr) * mat4::RotateY(eulerAngles.y * dtr) * mat4::RotateX(eulerAngles.x * dtr);
+	transf = rotationMatrix * positionMatrix;
+
 	r2 = r * r;
 	R2 = R * R;
 }
@@ -17,8 +23,12 @@ Torus::~Torus()
 Intersection Torus::Intersect(Ray ray)
 {
 	Intersection out;
+	
+	Ray torusRay = ray;
+	torusRay.Dir = transf.TransformVector(torusRay.Dir);
+	torusRay.Origin = transf.TransformPoint(torusRay.Origin);
 
-	float t = GetIntersectionDistance(ray);
+	float t = GetIntersectionDistance(torusRay);
 	if (t != -1) // this means we have found an intersection
 	{
 
@@ -27,7 +37,7 @@ Intersection Torus::Intersect(Ray ray)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + ray.Dir * t;
-			out.normal = GetNormal(out.position);
+			out.normal = ray.substance == substance ? GetNormal(out.position) * -1 : GetNormal(out.position);
 			out.mat = mat;
 			out.sTo = substance;
 			out.uv = GetUV(out.position);

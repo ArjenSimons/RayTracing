@@ -15,7 +15,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-	cam = Camera(float3(0, 0, -10), float3(0, 0, 1));
+	cam = Camera(float3(0, 10, -10), float3(0, -9, 5));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -59,7 +59,7 @@ void RayTracer::Render()
 		for (int i = 0; i < SCRWIDTH; ++i) for (int j = 0; j < SCRHEIGHT; ++j)
 		{
 			Ray ray = GetUVRay(uv[i][j]);
-			renderBuffer[i][j] = Trace(ray, 0, i, j).GetRGBValue();
+			renderBuffer[i][j] = Trace(ray, 0).GetRGBValue();
 		}
 	}
 }
@@ -73,15 +73,10 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 	}
 }
 
-Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth, int i, int j)
+Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 {
 	float3 black(0, 0, 0);
 	float3 sky(.4, .7, .8);
-
-	if (i == 543 && j == 351)
-	{
-		std::cout << "" << std::endl;
-	}
 
 	Intersection intersection = GetNearestIntersection(ray);
 
