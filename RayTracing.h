@@ -18,6 +18,12 @@ enum ThreadingStatus
 	THREADING_ENABLED
 };
 
+enum class MSAA
+{
+	NONE,
+	MSAA_4X
+};
+
 struct Ray
 {
 	float3 Origin;
@@ -97,6 +103,11 @@ struct Color
 	Color(float r, float g, float b)
 		: value(float3(r, g, b))
 	{
+	}
+
+	Color GetClamped()
+	{
+		return Color(clamp(value.x, 0.0, 1.0), clamp(value.y, 0.0, 1.0), clamp(value.z, 0.0, 1.0));
 	}
 
 	unsigned int GetRGBValue()
