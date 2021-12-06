@@ -14,42 +14,35 @@ Intersection Triangle::Intersect(Ray ray)
 {
 	Intersection out;
 
-	float denom = dot(ray.Dir, normal);
+	float3 p1p2 = position2 - position;
+	float3 p1p3 = position3 - position;
+	float3 pvec = cross(ray.Dir, p1p3);
+	float det = dot(pvec, p1p2);
 
-	if (denom != 0)
+	if (det == 0) return out; //miss
+
+	float invDet = 1 / det;
+
+	float3 tvec = ray.Origin - position;
+	float v = dot(tvec, pvec) * invDet;
+	if (v < 0 || v > 1) return out; //miss
+
+	float3 qvec = cross(tvec, p1p2);
+	float u = dot(ray.Dir, qvec) * invDet;
+	if (u < 0 || u + v > 1) return out; //miss
+
+	float t = dot(p1p3, qvec) * invDet;
+
+	if (t > 000.1) 
 	{
-		float d = -dot(normal, position);
-		float t = -(dot(normal, ray.Origin) + d) / denom;
-
-		if (t > 0) // ray is in quad
-		{
-			float3 p = ray.Origin + t * ray.Dir;
-
-			float3 C;
-
-			float3 edge0 = position2 - position;
-			float3 p0 = p - position;
-			C = cross(edge0, p0);
-			if (dot(normal, C) < 0) { return out; } //ray is on right of edge
-
-			float3 edge1 = position3 - position2;
-			float3 p1 = p - position2;
-			C = cross(edge1, p1);
-			if (dot(normal, C) < 0) { return out; } //ray is on right of edge
-
-			float3 edge2 = position - position3;
-			float3 p2 = p - position3;
-			C = cross(edge2, p2);
-			if (dot(normal, C) < 0) { return out; } //ray is on right of edge
-
-			out.t = t;
-			out.intersect = true;
-			out.position = p;
-			out.normal = normal;
-			out.mat = mat;
-			out.sTo = substance;
-			//out.uv = GetUV(normal, out.position);
-		}
+		out.t = t;
+		out.intersect = true;
+		out.position = ray.Origin + t * ray.Dir;
+		out.normal = det < 0 ? -normal : normal;
+		out.mat = mat;
+		out.sTo = substance;
+		out.uv = float2(u,  v);
+		
 	}
 
 	return out;
