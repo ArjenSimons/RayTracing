@@ -1,8 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>src\Texturing</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Torus.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
     <ClCompile Include="template\template.cpp">
       <Filter>template</Filter>
+    </ClCompile>
+    <ClCompile Include="algebra.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>src</Filter>
@@ -16,34 +40,37 @@
     <ClCompile Include="Scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>src\Texturing</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="template\common.h">
-      <Filter>template</Filter>
-    </ClInclude>
     <ClInclude Include="template\precomp.h">
       <Filter>template</Filter>
     </ClInclude>
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>src\Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>src\Texturing</Filter>
+    </ClInclude>
+    <ClInclude Include="algebra.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="LightSource.h">
+      <Filter>src\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Intersectable.h">
+      <Filter>src\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="template\common.h">
+      <Filter>template</Filter>
+    </ClInclude>
+    <ClInclude Include="controller.h">
+      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>src</Filter>
@@ -60,28 +87,12 @@
     <ClInclude Include="Scene.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Intersectable.h">
-      <Filter>src\Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="LightSource.h">
-      <Filter>src\Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="controller.h" />
-    <ClInclude Include="Texture.h">
-      <Filter>src\Texturing</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>src\Texturing</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="template\LICENSE">
+    <None Include="README.md">
       <Filter>template</Filter>
     </None>
-    <None Include="README.md">
+    <None Include="template\LICENSE">
       <Filter>template</Filter>
     </None>
     <None Include="cl\kernels.cl">
@@ -90,22 +101,22 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template">
-      <UniqueIdentifier>{a7d6e3cb-bfcd-438d-979f-17df241a55b4}</UniqueIdentifier>
+      <UniqueIdentifier>{51b00066-aea0-4dc3-b644-4f83d5455135}</UniqueIdentifier>
     </Filter>
     <Filter Include="template\cl">
-      <UniqueIdentifier>{dc41819e-b6c1-4070-b4c1-0849e444ca7e}</UniqueIdentifier>
+      <UniqueIdentifier>{e943a956-b645-4496-b970-81dd76c8bae6}</UniqueIdentifier>
     </Filter>
     <Filter Include="src">
-      <UniqueIdentifier>{92c75ecc-4318-4ce9-bb98-d9b44518f187}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Geometry">
-      <UniqueIdentifier>{2d44d219-79d2-4e67-9a34-444eff7f20f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Light">
-      <UniqueIdentifier>{e8b72a43-dde4-4281-b960-6fd7d55fba5b}</UniqueIdentifier>
+      <UniqueIdentifier>{4ec95e6e-5067-41e7-a552-ada48bbfa68b}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Texturing">
-      <UniqueIdentifier>{917ef362-3f8c-415a-8e41-98d5cbcfafce}</UniqueIdentifier>
+      <UniqueIdentifier>{b3abe4c0-0677-4cf8-ae49-37c60c01aebf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Light">
+      <UniqueIdentifier>{8bdd3371-eba1-4c2c-86e8-882b4fbc31cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Geometry">
+      <UniqueIdentifier>{82aa44cb-5c3c-4c8a-b8f6-97430a96fb9d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

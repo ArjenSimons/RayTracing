@@ -38,18 +38,28 @@ void MyApp::Init()
 	auto cube = make_shared<Mesh>("res/cube.obj");
 
 	Scene scene = Scene();
-	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	
+	//objects.push_back(new Sphere(float3(0, 0, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	objects.push_back(new Torus(float3(2, 1, 0), 1, 2, float3(90, 0, 0), GLASS, Material(float3(1, 1, 1), whiteTexture, 0)));
+	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+	//objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
 
 	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
 	
-	lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
-	lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
-
+	//lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, 0, 0), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
+	lights.push_back(new LightSource(float3(0, 0, -5), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(-5, 0, -2), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(5, 0, 0), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, 5, 0), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, -5, 0), 10, float3(1, 1, 1)));
+	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	
+	
 	for (Intersectable* obj : objects)
 	{
 		scene.AddObject(obj);
@@ -62,7 +72,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5, THREADING_DISABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }
@@ -135,7 +145,6 @@ void MyApp::KeyDown(int key)
 	switch (key)
 	{
 	case 87: // W
-		std::cout << "forward" << std::endl;
 		rayTracer->cam.controller.forward = true;
 		break;
 

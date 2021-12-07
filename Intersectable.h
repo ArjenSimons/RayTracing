@@ -84,6 +84,26 @@ private:
 	Intersection InsideIntersect(Ray ray);
 };
 
+class Torus : public Intersectable
+{
+private:
+	float R; // Major radius
+	float r; // Minor radius
+	float R2; // Major radius squared
+	float r2; // Minor radius squared
+	mat4 transf;
+	
+public:
+	Torus(float3 position, float minR, float majR, float3 eulerAngles, Substance substance, Material mat);
+	~Torus();
+	Intersection Intersect(Ray ray) override;
+private:
+	float GetIntersectionDistance(Ray ray);
+	float3 GetNormal(float3 position);
+	float2 GetUV(float3 position);
+};
+
+
 class Triangle : public Intersectable
 {
 private:

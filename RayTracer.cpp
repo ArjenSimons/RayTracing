@@ -15,7 +15,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-	cam = Camera();
+	cam = Camera(float3(0, 0, -3), float3(0, 0, 1));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -131,7 +131,9 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 			}
 		}
 
-		return intersection.mat.GetColor(intersection.uv, intersection.position).value * environment.value;
+		Color C = intersection.mat.GetColor(intersection.uv, intersection.position).value * environment.value;
+
+		return C;
 
 		// -----------------------------------------------------------
 		//zBuffer
