@@ -41,5 +41,5 @@ private:
 	Color DirectIllumination(float3 point, float3 normal);
 	Color Refraction(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
 	float3 Reflect(const float3& dir, const float3& normal) const;
-	bool RayIsBlocked(Ray& ray, float d2) const;
+	bool RayIsBlocked(Ray& ray, float d2, LightSource* l) const;
 };
