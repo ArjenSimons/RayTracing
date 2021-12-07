@@ -88,6 +88,7 @@ void MyApp::Tick(float deltaTime)
 	rayTracer->Render();
 	//rayTracer->AddVignette(.6f, .6f, 1);
 	rayTracer->AddGammaCorrection(.6f);
+	//rayTracer->AddChromaticAberration(int2(10, 0), int2(0, 0), int2(0, 0));
 
 	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
