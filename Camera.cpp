@@ -14,6 +14,7 @@ Camera::Camera(float3 position, float3 direction, float FOVDegree, float aspectR
 	}
 	float FOVRads = FOVDegree * PI / 180;
 	float distance = (0.5 * a / tan(0.5 * FOVRads));
+	std::cout << distance << std::endl;
 	d = clamp(distance, 0.0f, 2.0f);
 
 	CalculateScreen();

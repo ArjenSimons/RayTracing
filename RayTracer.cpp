@@ -16,7 +16,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-	cam = Camera(float3(0, 0, -3), float3(0, 0, 1));
+	cam = Camera(float3(0, 0, 0), float3(0, 0, 1));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -277,5 +277,23 @@ Ray RayTracer::GetUVRay(const float2& uv) const
 		xOffset = RandomFloat() * uvX;
 		yOffset = RandomFloat() * uvY;
 	}
-	return Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+
+	Ray ray = Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+
+	// Distortion happening
+	float n1 = 1;
+	float n2 = 1.3f;
+
+	float indexRatio = n1 / n2; //bepaalt de graad v. barrel distortion
+	float3 D = ray.Dir * -1;
+	float cosi = dot(cam.viewDir, D);
+	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
+	cosi = fabsf(cosi);
+
+	float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
+	
+	ray.Dir = dir;
+	//ray.Origin = float3(cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0));
+
+	return ray;
 }

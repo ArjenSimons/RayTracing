@@ -79,6 +79,7 @@ public:
 	Sphere(float3 position, float radius, Substance substance, Material mat);
 	~Sphere();
 	Intersection Intersect(Ray ray) override;
+	void Translate(float3);
 private:
 	Intersection OutsideIntersect(Ray ray);
 	Intersection InsideIntersect(Ray ray);

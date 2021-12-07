@@ -1,9 +1,11 @@
 #pragma once
 #include "controller.h"
+#include "Intersectable.h"
 
 struct Camera
 {
 	Controller controller;
+	Sphere* lens;
 
 	float3 pos;
 	float3 viewDir;
