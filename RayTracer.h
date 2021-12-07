@@ -3,8 +3,6 @@
 #include "Camera.h"
 #include "ThreadPool.h";
 
-typedef Color buffer[SCRWIDTH][SCRHEIGHT];
-
 class RayTracer
 {
 private:
@@ -38,7 +36,6 @@ public:
 	void AddGammaCorrection(float gamma);
 	void AddChromaticAberration(int2 redOffset, int2 greenOffset, int2 blueOffset);
 	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
-	buffer* GetBufferReference() { return  &renderBuffer; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }
