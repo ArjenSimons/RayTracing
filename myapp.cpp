@@ -39,7 +39,7 @@ void MyApp::Init()
 
 	Scene scene = Scene();
 	//objects.push_back(new Sphere(float3(0, 0, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	objects.push_back(new Torus(float3(2, 1, 0), 1, 2, float3(-45, 45, 0), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	objects.push_back(new Torus(float3(2, 1, 0), 1, 2, float3(90, 0, 0), GLASS, Material(float3(1, 1, 1), whiteTexture, 0)));
 	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
@@ -49,8 +49,8 @@ void MyApp::Init()
 	
 	//lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
-	lights.push_back(new LightSource(float3(0, 0, 0), 10, float3(1, 1, 1)));
-	lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, 0, 0), 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
 	lights.push_back(new LightSource(float3(0, 0, -5), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(-5, 0, -2), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(5, 0, 0), 10, float3(1, 1, 1)));
@@ -72,7 +72,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5, THREADING_DISABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }

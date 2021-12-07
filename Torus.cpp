@@ -86,20 +86,24 @@ float Torus::GetIntersectionDistance(Ray ray)
 
 float3 Torus::GetNormal(float3 position)
 {
-	float3 P = float3(position.x, position.y, 0);
+	float3 newPos = transf.TransformPoint(position);
+
+	float3 P = float3(newPos.x, newPos.y, 0);
 	float3 Q = normalize(P) * R;
-	float3 N = position - Q;
+	float3 N = newPos - Q;
 	return normalize(N);
 }
 
 float2 Torus::GetUV(float3 position)
 {
-	float x = position.x;
-	float y = position.y;
-	float z = position.z;
+	float3 newPos = transf.TransformPoint(position);
 
-	float u = 0.5f + atan2(z, x) / (2 * PI);
-	float v = 0.5f + atan2(y, (sqrt(x * x + z * z) - R)) / (2 * PI);
+	float x = newPos.x;
+	float y = newPos.y;
+	float z = newPos.z;
+
+	float u = 0.5f + atan2(x, y) / (2 * PI);
+	float v = 0.5f + atan2(z, (sqrt(y * y + x * x) - R)) / (2 * PI);
 
 	return float2(u, v);
 }

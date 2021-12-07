@@ -101,8 +101,6 @@ private:
 	float GetIntersectionDistance(Ray ray);
 	float3 GetNormal(float3 position);
 	float2 GetUV(float3 position);
-	std::vector<float> Cubic(std::vector<float> cs);
-	std::vector<float> Quadratic(std::vector<float> cs);
 };
 
 
