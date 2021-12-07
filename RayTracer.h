@@ -34,6 +34,7 @@ public:
 	void Render();
 	void Render(unsigned int yStart, unsigned int yEnd);
 	void AddVignette(float outerRadius, float smoothness, float intensity);
+	void AddGammaCorrection(float gamma);
 	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
 	buffer* GetBufferReference() { return  &renderBuffer; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);

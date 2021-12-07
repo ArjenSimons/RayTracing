@@ -105,6 +105,20 @@ void RayTracer::AddVignette(float outerRadius, float smoothness, float intensity
 	}
 }
 
+void RayTracer::AddGammaCorrection(float gamma)
+{
+	float invGamma = 1 / gamma;
+
+	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	{
+		float x = pow(renderBuffer[i][j].value.x, invGamma);
+		float y = pow(renderBuffer[i][j].value.y, invGamma);
+		float z = pow(renderBuffer[i][j].value.z, invGamma);
+
+		renderBuffer[i][j] = float3(x, y, z);
+	}
+}
+
 Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 {
 	float3 black(0, 0, 0);
