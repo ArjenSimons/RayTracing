@@ -1,5 +1,6 @@
 #include "precomp.h"
 #include "RayTracer.h"
+#include <typeinfo>
 
 //RayTracer::RayTracer()
 //{
@@ -165,14 +166,14 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 	for (LightSource* light : scene.GetLights())
 	{
-		float3 C = light->position - pos;
+		float3 C = light->GetDir(pos);
 
 		float d2 = dot(C, C);
 		Ray ray(pos, normalize(C));
 
 		float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
 
-		if (cosa == 0 || RayIsBlocked(ray, d2)){ continue; } //Go to next light source when ray is blocked
+		if (cosa == 0 || RayIsBlocked(ray, d2, light)){ continue; } //Go to next light source when ray is blocked
 
 		float3 col = light->color.value;
 		col *= 1 / d2;
@@ -234,17 +235,35 @@ float3 RayTracer::Reflect(const float3& dir, const float3& N) const
 	return dir - 2 * dot(dir, N) * N;
 }
 
-bool RayTracer::RayIsBlocked(Ray& ray, float d2) const
+bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 {
+	bool isDirectional = typeid(*l) == typeid(DirectionalLight);
+	bool isSpotLight = typeid(*l) == typeid(SpotLight);
+
 	for (Intersectable* object : scene.GetObjects())
 	{
 		Intersection i = object->Intersect(ray);
 
-		if (i.t > 0 && i.t * i.t < d2)
+		if (isDirectional)
+		{
+			if (i.t > 0 && i.intersect)
+				return true;
+		}
+
+		else if (i.t > 0 && i.t * i.t < d2)
 		{
 			return true;
 		}
 	}
+
+	// If we're dealing with a spotlight,
+	// make sure we are not approaching the light at an angle
+	// greater than the angle of the 'hood'
+	if (isSpotLight)
+	{
+		return l->IsBlocked(ray.Dir);
+	}
+
 	return false;
 }
 
