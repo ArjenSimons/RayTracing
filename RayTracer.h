@@ -3,13 +3,15 @@
 #include "Camera.h"
 #include "ThreadPool.h";
 
+typedef Color buffer[SCRWIDTH][SCRHEIGHT];
+
 class RayTracer
 {
 private:
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	float uvX;
 	float uvY;
-	unsigned int renderBuffer[SCRWIDTH][SCRHEIGHT];
+	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 
 	unsigned int nThreads = 16;
 	ThreadingStatus threadingStatus;
@@ -31,7 +33,9 @@ public:
 
 	void Render();
 	void Render(unsigned int yStart, unsigned int yEnd);
-	unsigned int GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
+	void AddVignette(float outerRadius, float smoothness, float intensity);
+	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
+	buffer* GetBufferReference() { return  &renderBuffer; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }

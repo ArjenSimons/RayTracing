@@ -15,7 +15,7 @@ RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threa
 	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
-	cam = Camera(float3(0, 0, -3), float3(0, 0, 1));
+	cam = Camera();
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
@@ -70,7 +70,7 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 		{
 			Ray ray = GetUVRay(uv[i][j]);
 			Color col = Trace(ray);
-			renderBuffer[i][j] = col.GetRGBValue();
+			renderBuffer[i][j] = col;
 			continue;
 		}
 
@@ -84,7 +84,24 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 		Color col2 = Trace(ray2).GetClamped();
 		Color col3 = Trace(ray3).GetClamped();
 
-		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25).GetRGBValue();
+		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25);
+	}
+}
+
+//TODO: Compute post processing effects on GPU
+void RayTracer::AddVignette(float outerRadius, float smoothness, float intensity)
+{
+	outerRadius = clamp(outerRadius, 0.0f, 1.0f);
+	intensity = clamp(intensity, 0.0f, 1.0f);
+	smoothness = max(0.0001f, smoothness);
+
+	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	{
+		float2 p = uv[i][j] - .5f;
+		float len = dot(p, p);
+		float vignette = smoothstep(outerRadius, outerRadius - smoothness, len) * intensity;
+
+		renderBuffer[i][j] = renderBuffer[i][j] * vignette;
 	}
 }
 
