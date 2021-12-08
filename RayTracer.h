@@ -9,6 +9,8 @@ private:
 	float2 uv[SCRWIDTH][SCRHEIGHT];
 	float uvX;
 	float uvY;
+	float df;
+
 	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 	Color tempBuffer[SCRWIDTH][SCRHEIGHT];
 
@@ -25,7 +27,7 @@ private:
 public:
 	Camera cam;
 	//RayTracer();
-	RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
+	RayTracer(Scene scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
 	~RayTracer();
 
 	void SetScene(Scene scene);

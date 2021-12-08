@@ -24,6 +24,7 @@ Intersection Sphere::Intersect(Ray ray)
 	}
 }
 
+
 //TODO: Fix duplicate code
 Intersection Sphere::OutsideIntersect(Ray ray)
 {

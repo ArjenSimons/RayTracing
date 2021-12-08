@@ -38,20 +38,21 @@ void MyApp::Init()
 	auto cube = make_shared<Mesh>("res/cube.obj");
 
 	Scene scene = Scene();
-	//objects.push_back(new Sphere(float3(0, 0, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	//objects.push_back(new Torus(float3(2, 1, 0), .5, 1, float3(90, 0, 0), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
-	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
-	objects.push_back(new Sphere(float3(0, 0, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+	//objects.push_back(new Sphere(float3(-5, 1, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	//objects.push_back(new Torus(float3(-5, 0, -1), 1, 2, float3(0, 0, 0), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
+	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
-
+	//objects.push_back(new Sphere(float3(0, 0, 5.9), 5, WATER, Material(float3(1, 1, 1), whiteTexture, 0)));
 	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
 	
-	lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
-	lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(0, 0, 0), 10, float3(1, 1, 1)));
+	//lights.push_back(new SpotLight(float3(-5, 1, 0), float3(1, 0, 0), 55, 10, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
+	//lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+	//lights.push_back(new PointLight(float3(0, 0, 0), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(0, 0, 1), 10, float3(1, 1, 1)));
+	lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(0, 1, 0), 1, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(-5, 0, -2), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(5, 0, 0), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(0, 5, 0), 10, float3(1, 1, 1)));
@@ -72,7 +73,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0.1, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }
