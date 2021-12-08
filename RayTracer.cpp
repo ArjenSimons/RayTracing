@@ -12,8 +12,8 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
-	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
+RayTracer::RayTracer(Scene scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
+	: scene(scene), df(clamp(distortion, 0.0f, 1.0f)), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 	cam = Camera(float3(0, 0, 0), float3(0, 0, 1));
@@ -250,7 +250,7 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 				return true;
 		}
 
-		else if (i.t > 0 && i.t * i.t < d2)
+		else if (i.intersect && i.t > 0 && i.t * i.t < d2)
 		{
 			return true;
 		}
@@ -280,20 +280,17 @@ Ray RayTracer::GetUVRay(const float2& uv) const
 
 	Ray ray = Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
 
-	// Distortion happening
-	float n1 = 1;
-	float n2 = 1.3f;
+	// Calculate lens distortion
+	/*float n2 = 1.5f;
 
-	float indexRatio = n1 / n2; //bepaalt de graad v. barrel distortion
+	float indexRatio = 1 / (1 + df); //bepaalt de graad v. barrel distortion.  Omdat distortionFactor clamped is op [0..1], zal altijd 0.5 <= ratio <= 1 waar zijn
 	float3 D = ray.Dir * -1;
 	float cosi = dot(cam.viewDir, D);
 	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 	cosi = fabsf(cosi);
 
 	float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
-	
-	ray.Dir = dir;
-	//ray.Origin = float3(cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0));
+	ray.Dir = normalize(dir);*/
 
 	return ray;
 }

@@ -38,7 +38,7 @@ void MyApp::Init()
 	auto cube = make_shared<Mesh>("res/cube.obj");
 
 	Scene scene = Scene();
-	objects.push_back(new Sphere(float3(-5, 1, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+	//objects.push_back(new Sphere(float3(-5, 1, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Torus(float3(-5, 0, -1), 1, 2, float3(0, 0, 0), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
 	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
@@ -73,7 +73,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }
