@@ -26,7 +26,7 @@ Intersection Plane::Intersect(Ray ray)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
-			out.normal = normal;
+			out.normal = denom < 0 ? normal : normal * -1;
 			out.mat = mat;
 			out.sTo = substance;
 			out.uv = GetUV(normal, out.position);

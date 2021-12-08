@@ -47,8 +47,8 @@ void MyApp::Init()
 	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
 	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
 	
-	lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
-	lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+	lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
+	lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(0, 0, 0), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
 	//lights.push_back(new LightSource(float3(0, 0, 1), 10, float3(1, 1, 1)));
