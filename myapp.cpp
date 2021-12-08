@@ -5,11 +5,20 @@
 #include "Texture.h"
 #include "Mesh.h"
 
+enum class Scenes
+{
+	GENERAL_SETUP,
+	TEXTURE_SETUP,
+	CORNELL_BOX_SETUP,
+	GLASS_SPHERE_SETUP,
+	MESH_SETUP,
+	SPOT_LIGHT_SETUP,
+	DONUT_SETUP
+};
+
 TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
-
-float lastDeltaTime = 0;
 
 std::vector<Intersectable*> objects;
 std::vector<LightSource*> lights;
@@ -19,48 +28,80 @@ std::vector<LightSource*> lights;
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	// anything that happens only once at application start goes here
-	std::cout << processor_count << std::endl;
-
 	//Textures
-	auto redTexture = make_shared<ColorTexture>(Color(1, 0, 0));
+	auto redTexture = make_shared<ColorTexture>(Color(.45, .12, .12));
+	auto greenTexture = make_shared<ColorTexture>(Color(.12, .45, .15));
+	auto greyTexture = make_shared<ColorTexture>(Color(.73, .73, .73));
 	auto whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
 	auto silverTexture = make_shared<ColorTexture>(Color(.8, .8, .8));
-	
-	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
-	auto earthTexture = make_shared<ImageTexture>("res/earthmap.jpg");
-	auto marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
-	auto brickTexture = make_shared<ImageTexture>("res/bricks.jpg");
 
-	//meshes
-	auto tree = make_shared<Mesh>("res/tree.obj");
-	auto cube = make_shared<Mesh>("res/cube.obj");
+	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 
 	Scene scene = Scene();
-	//objects.push_back(new Sphere(float3(-5, 1, 0), 2, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	//objects.push_back(new Torus(float3(-5, 0, -1), 1, 2, float3(0, 0, 0), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
-	objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-	//objects.push_back(new Sphere(float3(0, 3, 11), 1, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	//objects.push_back(new Sphere(float3(0, .1, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
-	//objects.push_back(new Sphere(float3(0, 0, 5.9), 5, WATER, Material(float3(1, 1, 1), whiteTexture, 0)));
-	//objects.push_back(new Model(float3(0, 0, 10), 1, cube, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	//objects.push_back(new Model(float3(0, 0, 7), 1, tree, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
-	
-	//lights.push_back(new SpotLight(float3(-5, 1, 0), float3(1, 0, 0), 55, 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(1, 1, 1), 5, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
-	//lights.push_back(new PointLight(float3(0, 0, 0), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(0, 0, 5), 10, float3(1, 1, 1)));
-	lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(0, 1, 0), 1, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(-5, 0, -2), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(5, 0, 0), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(0, 5, 0), 10, float3(1, 1, 1)));
-	//lights.push_back(new LightSource(float3(0, -5, 0), 10, float3(1, 1, 1)));
-	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-	//objects.push_back(new Plane(float3(0, 0, 1), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-	
-	
+
+	shared_ptr<ImageTexture> earthTexture = nullptr;
+	shared_ptr<ImageTexture> marbleTexture = nullptr;
+	shared_ptr<ImageTexture> brickTexture = nullptr;
+	shared_ptr<Mesh> treeMesh = nullptr;
+	shared_ptr<Mesh> cubeMesh = nullptr;
+
+
+	switch (Scenes::GENERAL_SETUP)
+	{
+	case(Scenes::GENERAL_SETUP):
+		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+		objects.push_back(new Sphere(float3(-1, -0.5, 2.5), .5, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
+		objects.push_back(new Torus(float3(1.5, 0, 3), .2, .6, float3(-40, 0, 0), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+		cubeMesh = make_shared<Mesh>("res/cube.obj");
+		objects.push_back(new Model(float3(.2, -.5, 2), .3, cubeMesh, ABSORBING_GLASS, Material(float3(.1, .1, .9), whiteTexture)));
+
+		lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
+		lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+
+		lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
+		break;
+	case(Scenes::TEXTURE_SETUP):
+		earthTexture = make_shared<ImageTexture>("res/earthmap.jpg");
+		marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
+		brickTexture = make_shared<ImageTexture>("res/bricks.jpg");
+
+		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
+		objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
+		objects.push_back(new Sphere(float3(0, 0, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
+
+		lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
+		lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+		lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
+		break;
+	case(Scenes::GLASS_SPHERE_SETUP):
+		objects.push_back(new Sphere(float3(0, .5, 2), 1, GLASS, Material(float3(1, 1, 1), silverTexture, 0)));
+		objects.push_back(new Sphere(float3(0, 1.8, 5), .5, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
+
+		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+
+		lights.push_back(new PointLight(float3(1, 3, 3), 10, float3(1, 1, 1)));
+		lights.push_back(new PointLight(float3(-1, 3, 1), 10, float3(1, 1, 1)));
+		lights.push_back(new DirectionalLight(float3(0, 8, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
+		break;
+	case(Scenes::MESH_SETUP):
+		treeMesh = make_shared<Mesh>("res/tree.obj");
+		objects.push_back(new Model(float3(0, -1, 7), 1, treeMesh, SOLID, Material(float3(1, 1, 1), greenTexture)));
+
+		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
+
+		lights.push_back(new PointLight(float3(-1, 3, 5), 10, float3(1, 1, 1)));
+		lights.push_back(new PointLight(float3(1, 3, 5), 10, float3(1, 1, 1)));
+		break;
+	case(Scenes::SPOT_LIGHT_SETUP):
+		objects.push_back(new Plane(float3(0, 0, 2), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), whiteTexture, 0)));
+
+		lights.push_back(new SpotLight(float3(-.5, .5, 1), float3(0, 0, 1), 40, 10, float3(1, 0, 0)));
+		lights.push_back(new SpotLight(float3(.5, .5, 1), float3(0, 0, 1), 40, 10, float3(0, 1, 0)));
+		lights.push_back(new SpotLight(float3(0, -.5, 1), float3(0, 0, 1), 40, 10, float3(0, 0, 1)));
+		break;
+	}
+
 	for (Intersectable* obj : objects)
 	{
 		scene.AddObject(obj);
@@ -71,9 +112,7 @@ void MyApp::Init()
 		scene.AddLightSource(light);
 	}
 
-	//Scene teloscopeScene = GetTelescopeScene();
-
-	rayTracer = new RayTracer(scene, 0.1, 5, THREADING_ENABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }
@@ -87,24 +126,16 @@ void MyApp::Tick(float deltaTime)
 	screen->Clear(0);
 
 	rayTracer->Render();
-	//rayTracer->AddVignette(.6f, .6f, 1);
+	rayTracer->AddVignette(.6f, .3f, 1);
 	rayTracer->AddGammaCorrection(.6f);
 	//rayTracer->AddChromaticAberration(int2(10, 0), int2(0, 0), int2(0, 0));
 
-	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
+	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
 	rayTracer->cam.Tick();
-
-	//for(int red = 0; red < 256; red++) for(int green = 0; green < 256; green++)
-	//{
-	//	int x = red, y = green;
-	//	screen->Plot(x + 200, y + 100, (red << 16) + (green << 8));
-	//}
-	// plot a white pixel in the bottom right corner
-	//screen->Plot(SCRWIDTH - 2, SCRHEIGHT - 2, 0xffffff);
 
 	std::cout << deltaTime << "ms" << std::endl;
 }

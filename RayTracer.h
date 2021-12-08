@@ -14,7 +14,7 @@ private:
 	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 	Color tempBuffer[SCRWIDTH][SCRHEIGHT];
 
-	unsigned int nThreads = 16;
+	unsigned int nThreads = processor_count * 4;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
 	unsigned int threadWidth = SCRWIDTH / nThreads;

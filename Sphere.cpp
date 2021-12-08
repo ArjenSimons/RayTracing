@@ -59,11 +59,11 @@ Intersection Sphere::InsideIntersect(Ray ray)
 
 	float3 oc = ray.Origin - position;
 	float a = dot(ray.Dir, ray.Dir);
-	float b = 2.0 * dot(oc, ray.Dir);
+	float b = 2.0f * dot(oc, ray.Dir);
 	float c = dot(oc, oc) - radius2;
 	float d = b * b - 4 * a * c;
 
-	float t = (-b + sqrtf(d)) / (2.0 * a);
+	float t = (-b + sqrtf(d)) / (2.0f * a);
 
 
 	if ((t >= 0))
