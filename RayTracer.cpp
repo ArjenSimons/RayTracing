@@ -296,11 +296,11 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 
 		if (isDirectional)
 		{
-			if (i.t > 0 && i.intersect)
+			if (i.t > 0.001 && i.intersect)
 				return true;
 		}
 
-		else if (i.t > 0 && i.t * i.t < d2)
+		else if (i.t > 0.001 && i.t * i.t < d2)
 		{
 			return true;
 		}
