@@ -87,12 +87,13 @@ void MyApp::Tick(float deltaTime)
 	screen->Clear(0);
 
 	rayTracer->Render();
+	//rayTracer->AddVignette(.6f, .6f, 1);
+	rayTracer->AddGammaCorrection(.6f);
+	//rayTracer->AddChromaticAberration(int2(10, 0), int2(0, 0), int2(0, 0));
 
 	for (int i = 0; i <  SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
-		//Ray ray = rayTracer->GetUVRay(rayTracer->GetUV(i, j));
-		//screen->Plot(i, j, rayTracer->Trace(ray).GetRGBValue());
-		screen->Plot(i, j, rayTracer->GetBufferValue(i, j));
+		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
 	rayTracer->cam.Tick();

@@ -95,6 +95,11 @@ struct Color
 {
 	float3 value;
 
+	Color()
+		: value(float3(0, 0, 0))
+	{
+	}
+
 	Color(float3 color)
 		: value(color)
 	{
