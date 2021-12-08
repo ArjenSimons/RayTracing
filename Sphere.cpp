@@ -24,12 +24,6 @@ Intersection Sphere::Intersect(Ray ray)
 	}
 }
 
-void Sphere::Translate(float3 direction)
-{
-	position.x += direction.x;
-	position.y += direction.y;
-	position.z += direction.z;
-}
 
 //TODO: Fix duplicate code
 Intersection Sphere::OutsideIntersect(Ray ray)

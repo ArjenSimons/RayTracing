@@ -281,16 +281,18 @@ Ray RayTracer::GetUVRay(const float2& uv) const
 	Ray ray = Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
 
 	// Calculate lens distortion
-	/*float n2 = 1.5f;
-
-	float indexRatio = 1 / (1 + df); //bepaalt de graad v. barrel distortion.  Omdat distortionFactor clamped is op [0..1], zal altijd 0.5 <= ratio <= 1 waar zijn
+	// indexRatio determines the degree of distortion
+	// Because df is clamped on [0..1], 0.5 <= ratio <= 1 will always hold true
+	// The same code can in theory be used to implement a pincushion distortion, if a ratio > 1 is used
+	// however, our code currently does not support this.
+	float indexRatio = 1 / (1 + df); 
 	float3 D = ray.Dir * -1;
 	float cosi = dot(cam.viewDir, D);
 	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
 	cosi = fabsf(cosi);
 
 	float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
-	ray.Dir = normalize(dir);*/
+	ray.Dir = normalize(dir);
 
 	return ray;
 }
