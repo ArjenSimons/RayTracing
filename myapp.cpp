@@ -73,7 +73,7 @@ void MyApp::Init()
 
 	//Scene teloscopeScene = GetTelescopeScene();
 
-	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0.1, 5, THREADING_ENABLED, MSAA::NONE);
 
 	std::cout << "end init" << std::endl;
 }
