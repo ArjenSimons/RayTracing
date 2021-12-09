@@ -4,6 +4,7 @@
 #include "Intersectable.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include <chrono>
 
 enum class Scenes
 {
@@ -28,6 +29,8 @@ std::vector<LightSource*> lights;
 // -----------------------------------------------------------
 void MyApp::Init()
 {
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
 	//Textures
 	auto redTexture = make_shared<ColorTexture>(Color(.45, .12, .12));
 	auto greenTexture = make_shared<ColorTexture>(Color(.12, .45, .15));
@@ -36,71 +39,22 @@ void MyApp::Init()
 	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
 	auto silverTexture = make_shared<ColorTexture>(Color(.8, .8, .8));
 
-	auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
+	//auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 
 	Scene scene = Scene();
 
-	shared_ptr<ImageTexture> earthTexture = nullptr;
-	shared_ptr<ImageTexture> marbleTexture = nullptr;
-	shared_ptr<ImageTexture> brickTexture = nullptr;
-	shared_ptr<Mesh> treeMesh = nullptr;
-	shared_ptr<Mesh> cubeMesh = nullptr;
+	//shared_ptr<ImageTexture> earthTexture = nullptr;
+	//shared_ptr<ImageTexture> marbleTexture = nullptr;
+	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	switch (Scenes::GENERAL_SETUP)
-	{
-	case(Scenes::GENERAL_SETUP):
-		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-		objects.push_back(new Sphere(float3(-1, -0.5, 2.5), .5, SOLID, Material(float3(1, 1, 1), silverTexture, 1)));
-		objects.push_back(new Torus(float3(1.5, 0, 3), .2, .6, float3(-40, 0, 0), SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-		cubeMesh = make_shared<Mesh>("res/cube.obj");
-		objects.push_back(new Model(float3(.2, -.5, 2), .3, cubeMesh, ABSORBING_GLASS, Material(float3(.1, .1, .9), whiteTexture)));
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
+	objects.push_back(new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture)));
 
-		lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
-		lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
+	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 
-		lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
-		break;
-	case(Scenes::TEXTURE_SETUP):
-		earthTexture = make_shared<ImageTexture>("res/earthmap.jpg");
-		marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
-		brickTexture = make_shared<ImageTexture>("res/bricks.jpg");
-
-		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), marbleTexture, .4)));
-		objects.push_back(new Plane(float3(0, 0, 4), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), brickTexture, 0)));
-		objects.push_back(new Sphere(float3(0, 0, 2), 1, SOLID, Material(float3(1, 1, 1), earthTexture, 0)));
-
-		lights.push_back(new PointLight(float3(1, 1, 1), 5, float3(1, 1, 1)));
-		lights.push_back(new PointLight(float3(-1, 3, -1.5), 10, float3(1, 1, 1)));
-		lights.push_back(new DirectionalLight(float3(0, 0, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
-		break;
-	case(Scenes::GLASS_SPHERE_SETUP):
-		objects.push_back(new Sphere(float3(0, .5, 2), 1, GLASS, Material(float3(1, 1, 1), silverTexture, 0)));
-		objects.push_back(new Sphere(float3(0, 1.8, 5), .5, SOLID, Material(float3(1, 1, 1), redTexture, 0)));
-
-		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-
-		lights.push_back(new PointLight(float3(1, 3, 3), 10, float3(1, 1, 1)));
-		lights.push_back(new PointLight(float3(-1, 3, 1), 10, float3(1, 1, 1)));
-		lights.push_back(new DirectionalLight(float3(0, 8, 0), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
-		break;
-	case(Scenes::MESH_SETUP):
-		treeMesh = make_shared<Mesh>("res/tree.obj");
-		objects.push_back(new Model(float3(0, -1, 7), 1, treeMesh, SOLID, Material(float3(1, 1, 1), greenTexture)));
-
-		objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-
-		lights.push_back(new PointLight(float3(-1, 3, 5), 10, float3(1, 1, 1)));
-		lights.push_back(new PointLight(float3(1, 3, 5), 10, float3(1, 1, 1)));
-		break;
-	case(Scenes::SPOT_LIGHT_SETUP):
-		objects.push_back(new Plane(float3(0, 0, 2), float3(0, 0, -1), SOLID, Material(float3(1, 1, 1), whiteTexture, 0)));
-
-		lights.push_back(new SpotLight(float3(-.5, .5, 1), float3(0, 0, 1), 40, 10, float3(1, 0, 0)));
-		lights.push_back(new SpotLight(float3(.5, .5, 1), float3(0, 0, 1), 40, 10, float3(0, 1, 0)));
-		lights.push_back(new SpotLight(float3(0, -.5, 1), float3(0, 0, 1), 40, 10, float3(0, 0, 1)));
-		break;
-	}
+	//lights.push_back(new PointLight(float3(-1, 5, 5), 100, float3(1, 1, 1)));
+	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
 
 	for (Intersectable* obj : objects)
 	{
@@ -114,7 +68,9 @@ void MyApp::Init()
 
 	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 
-	std::cout << "end init" << std::endl;
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+	std::cout << "Init time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 // -----------------------------------------------------------
@@ -125,9 +81,17 @@ void MyApp::Tick(float deltaTime)
 	// clear the screen to black
 	screen->Clear(0);
 
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
 	rayTracer->Render();
-	rayTracer->AddVignette(.6f, .3f, 1);
-	rayTracer->AddGammaCorrection(.6f);
+
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+	std::cout << "Render time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
+
+	//rayTracer->AddVignette(.6f, .3f, 1);
+	//rayTracer->AddGammaCorrection(.6f);
 	//rayTracer->AddChromaticAberration(int2(10, 0), int2(0, 0), int2(0, 0));
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
@@ -135,7 +99,7 @@ void MyApp::Tick(float deltaTime)
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
-	rayTracer->cam.Tick();
+	//rayTracer->cam.Tick();
 
 	std::cout << deltaTime << "ms" << std::endl;
 }

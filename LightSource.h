@@ -39,7 +39,7 @@ struct DirectionalLight : LightSource
 
 	float3 GetDir(float3 point) override
 	{
-		return -dir;
+		return dir;
 	}
 };
 

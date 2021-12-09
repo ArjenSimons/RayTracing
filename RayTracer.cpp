@@ -182,7 +182,7 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 			}
 		}
 
-		Color C = intersection.mat.GetColor(intersection.uv, intersection.position).value * environment.value;
+		Color C = intersection.mat.GetColor(intersection.uv, intersection.position) * environment;
 
 		return C;
 
@@ -212,27 +212,30 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 
 Color RayTracer::DirectIllumination(float3 pos, float3 N)
 {
-	Color out = float3(0, 0, 0);
+	Color out = float3(1, 1, 1);
 
-	for (LightSource* light : scene.GetLights())
-	{
-		float3 C = light->GetDir(pos);
+	float cosa = clamp(dot(N, normalize(-float3(.2f, -.8f, .1f))), 0.0, 1.0);
 
-		float d2 = dot(C, C);
-		Ray ray(pos, normalize(C));
+	return out * cosa;
 
-		float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
+	//for (LightSource* light : scene.GetLights())
+	//{
+	//	float3 C = light->GetDir(pos);
 
-		if (cosa == 0 || RayIsBlocked(ray, d2, light)){ continue; } //Go to next light source when ray is blocked
+	//	float d2 = dot(C, C);
+	//	Ray ray(pos, normalize(C));
 
-		float3 col = light->color.value;
-		col *= 1 / d2;
-		col *= cosa;
-		col *= light->intensity;
+	//	float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
 
-		out.value += col;
-	}
-	return out;
+	//	if (cosa == 0 || RayIsBlocked(ray, d2, light)){ continue; } //Go to next light source when ray is blocked
+	//	float3 col = light->color.value;
+	//	col *= 1 / d2;
+	//	col *= cosa;
+	//	col *= light->intensity;
+
+	//	out.value += col;
+	//}
+	//return out;
 }
 
 Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
@@ -313,7 +316,6 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 	{
 		return l->IsBlocked(ray.Dir);
 	}
-
 	return false;
 }
 
@@ -328,21 +330,21 @@ Ray RayTracer::GetUVRay(const float2& uv) const
 		yOffset = RandomFloat() * uvY;
 	}
 
-	Ray ray = Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+	return Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
 
 	// Calculate lens distortion
 	// indexRatio determines the degree of distortion
 	// Because df is clamped on [0..1], 0.5 <= ratio <= 1 will always hold true
 	// The same code can in theory be used to implement a pincushion distortion, if a ratio > 1 is used
 	// however, our code currently does not support this.
-	float indexRatio = 1 / (1 + df); 
-	float3 D = ray.Dir * -1;
-	float cosi = dot(cam.viewDir, D);
-	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
-	cosi = fabsf(cosi);
+	//float indexRatio = 1 / (1 + df); 
+	//float3 D = ray.Dir * -1;
+	//float cosi = dot(cam.viewDir, D);
+	//float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
+	//cosi = fabsf(cosi);
 
-	float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
-	ray.Dir = normalize(dir);
+	//float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
+	//ray.Dir = normalize(dir);
 
-	return ray;
+	//return ray;
 }

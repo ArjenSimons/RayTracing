@@ -7,7 +7,8 @@ Triangle::Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Materia
 	float3 a = position2 - position;
 	float3 b = position3 - position;
 
-	normal = cross(a, b);
+	normal = normalize(cross(a, b));
+	inormal = -normal;
 }
 
 Intersection Triangle::Intersect(Ray ray)
@@ -38,7 +39,7 @@ Intersection Triangle::Intersect(Ray ray)
 		out.t = t;
 		out.intersect = true;
 		out.position = ray.Origin + t * ray.Dir;
-		out.normal = det < 0 ? -normal : normal;
+		out.normal = det < 0 ? inormal : normal;
 		out.mat = mat;
 		out.sTo = substance;
 		out.uv = float2(u,  v);

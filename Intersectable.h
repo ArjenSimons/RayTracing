@@ -110,6 +110,7 @@ private:
 	float3 position2;
 	float3 position3;
 	float3 normal;
+	float3 inormal;
 public:
 	Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Material mat);
 	~Triangle() = default;
