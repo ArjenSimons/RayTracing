@@ -50,6 +50,7 @@ inline bool RayAABBIntersect(const Ray& ray, const AABB& aabb)
 class Intersectable
 {
 protected: 
+	AABB aabb;
 	float3 position;
 	Substance substance;
 	Material mat;
@@ -57,6 +58,7 @@ public:
 	Intersectable(float3 position, Substance substance, Material mat) : position(position), substance(substance), mat(mat) {};
 	virtual ~Intersectable() noexcept = default;
 	virtual Intersection Intersect(Ray ray) = 0;
+	float3 GetPosition() { return position; }
 };
 
 class Plane : public Intersectable
@@ -111,10 +113,16 @@ private:
 	float3 position3;
 	float3 normal;
 	float3 inormal;
+	float3 centroid;
+	AABB aabb;
 public:
 	Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Material mat);
 	~Triangle() = default;
 	Intersection Intersect(Ray ray) override;
+	AABB GetAABB() const { return aabb; }
+	float3 GetCentroid() const { return centroid; }
+private:
+	void CalculateBoundingBox();
 };
 
 class Model : public Intersectable
@@ -126,4 +134,5 @@ public:
 	Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat);
 	~Model() = default;
 	Intersection Intersect(Ray ray) override;
+	std::vector<Triangle> GetTriangles() const { return triangles; }
 };

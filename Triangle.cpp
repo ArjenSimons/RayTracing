@@ -9,6 +9,13 @@ Triangle::Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Materia
 
 	normal = normalize(cross(a, b));
 	inormal = -normal;
+
+	CalculateBoundingBox();
+
+	centroid = float3(
+		(position.x + position2.x + position3.x) / 3,
+		(position.y + position2.y + position3.y) / 3,
+		(position.z + position2.z + position3.z) / 3);
 }
 
 Intersection Triangle::Intersect(Ray ray)
@@ -46,4 +53,19 @@ Intersection Triangle::Intersect(Ray ray)
 	}
 
 	return out;
+}
+
+void Triangle::CalculateBoundingBox() 
+{
+	float3 minBound;
+	float3 maxBound;
+
+	minBound.x = min(min(position.x, position2.x), position3.x);
+	minBound.y = min(min(position.y, position2.y), position3.y);
+	minBound.z = min(min(position.z, position2.z), position3.z);
+	maxBound.x = max(max(position.x, position2.x), position3.x);
+	maxBound.y = max(max(position.y, position2.y), position3.y);
+	maxBound.z = max(max(position.z, position2.z), position3.z);
+
+	aabb = AABB(minBound, maxBound);
 }

@@ -40,6 +40,7 @@
     <ClCompile Include="Scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="BVH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\precomp.h">
@@ -87,6 +88,7 @@
     <ClInclude Include="Scene.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="BVH.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">

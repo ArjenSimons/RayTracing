@@ -124,6 +124,7 @@
   <!-- END Custom section -->
   <ItemGroup>
     <ClCompile Include="algebra.cpp" />
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -144,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="algebra.h" />
+    <ClInclude Include="BVH.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="cl\tools.cl" />
     <ClInclude Include="controller.h" />

@@ -4,6 +4,7 @@
 #include "Intersectable.h"
 #include "Texture.h"
 #include "Mesh.h"
+#include "BVH.h"
 #include <chrono>
 
 enum class Scenes
@@ -48,8 +49,21 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
-	objects.push_back(new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture)));
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/cube.obj");
+
+	Model model = Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+
+	int count = 5;
+
+	//Triangles primitive[5];
+
+
+
+	BVH bvh = BVH(&model.GetTriangles()[0], model.GetTriangles().size());
+	bvh.ConstructBVH();
+
+
+	//objects.push_back(new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture)));
 
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 

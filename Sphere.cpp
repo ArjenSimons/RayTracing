@@ -4,7 +4,7 @@
 Sphere::Sphere(float3 position, float radius, Substance substance, Material mat)
 	: Intersectable(position, substance, mat), radius2(radius * radius)
 {
-
+	aabb = AABB(float3(position.x - radius, position.y - radius, position.z - radius), float3(position.x + radius, position.y + radius, position.z + radius));
 }
 
 Sphere::~Sphere()
