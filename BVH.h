@@ -9,8 +9,10 @@ private:
 	struct BVHNode
 	{
 		AABB bounds;
-		int32_t leftFirst;
-		int32_t count;
+		bool isLeaf;
+		BVHNode* left, * right;
+		uint32_t first;
+		uint32_t count;
 
 		void Subdivide();
 	};
@@ -23,11 +25,11 @@ private:
 
 	BVHNode* root;
 public:
-	BVH(Triangle* intersectables, uInt count);
+	BVH(Triangle* intersectables, uint32_t count);
 	void ConstructBVH();
-	AABB CalculateBounds(Triangle* const primitives, uInt first, uInt count);
-	void SubdivideBVHNode(uInt ptr);
-	void Partition(uInt ptr);
+	AABB CalculateBounds(Triangle* const primitives, uint32_t first, uint32_t count);
+	void SubdivideBVHNode(BVHNode* node);
+	bool Partition(BVHNode* node);
 };
 
 //void BVH::BVHNode::Subdivide()
