@@ -24,7 +24,7 @@ RayTracer* rayTracer;
 
 std::vector<Intersectable*> objects;
 std::vector<LightSource*> lights;
-
+Model* model;
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
@@ -49,17 +49,17 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/cube.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/tree.obj");
 
-	Model model = Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 
 	int count = 5;
 
-	//Triangles primitive[5];
+
+	printf("# of tris = %i", model->GetTriangles().size());
 
 
-
-	BVH bvh = BVH(&model.GetTriangles()[0], model.GetTriangles().size());
+	BVH bvh = BVH(model->GetTriangles(), model->GetTriangles().size(), true);
 	bvh.ConstructBVH();
 
 

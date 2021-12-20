@@ -18,18 +18,22 @@ private:
 	};
 
 private:
-	Triangle* primitives;
+	vector<Triangle> primitives;
 	uInt n;
 	uInt* indices;
 	BVHNode* pool;
 
 	BVHNode* root;
+
+	bool diagnostics;
 public:
-	BVH(Triangle* intersectables, uint32_t count);
+	BVH(vector<Triangle> intersectables, uint32_t count, bool diagnostics);
 	void ConstructBVH();
-	AABB CalculateBounds(Triangle* const primitives, uint32_t first, uint32_t count);
+	AABB CalculateBounds(uint32_t first, uint32_t count);
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);
+private:
+	int countNodes(const BVHNode& node) const;
 };
 
 //void BVH::BVHNode::Subdivide()
