@@ -49,7 +49,7 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/buddha.obj");
 
 	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -57,11 +57,10 @@ void MyApp::Init()
 
 	int count = 5;
 
+	printf("# of tris = %i\n", model->GetTriangles().size());
 
-	printf("# of tris = %i", model->GetTriangles().size());
-
-	begin = std::chrono::steady_clock::now();
 	BVH bvh = BVH(model->GetTriangles(), model->GetTriangles().size(), true);
+	begin = std::chrono::steady_clock::now();
 	bvh.ConstructBVH();
 	end = std::chrono::steady_clock::now();
 	std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;

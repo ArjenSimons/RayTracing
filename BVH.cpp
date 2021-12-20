@@ -4,15 +4,11 @@
 BVH::BVH(vector<Triangle> intersectables, uInt count, bool diagnostics)
 	:primitives(intersectables), n(count), diagnostics(diagnostics)
 {
-	printf("p: %i", intersectables);
 }
 
 void BVH::ConstructBVH()
 {
-	printf("p: %i", primitives);
-
 	indices = new uInt[n];
-	printf("n = %i \n", n);
 	for (int i = 0; i < n; i++) indices[i] = i;
 
 	pool = new BVHNode[n * 2];
@@ -23,9 +19,6 @@ void BVH::ConstructBVH()
 	root->first = 0;
 	root->count = n;
 	root->bounds = CalculateBounds(root->first, root->count);
-
-	printf("Bounds min: %f %f %f\n", root->bounds.bmin3.x, root->bounds.bmin3.y, root->bounds.bmin3.z);
-	printf("Bounds max: %f %f %f\n", root->bounds.bmax3.x, root->bounds.bmax3.y, root->bounds.bmax3.z);
 
 	SubdivideBVHNode(root);
 
@@ -38,12 +31,11 @@ void BVH::ConstructBVH()
 AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 {
 	//Make variables;
-	float3 minBound = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
-	float3 maxBound = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+	float3 minBound = minb;
+	float3 maxBound = maxb;
 
 	for (int i = first; i < first + count; i++)
 	{
-		//printf("%i\n", indices[i]);
 		AABB aabb = primitives[indices[i]].GetAABB();
 		minBound.x = min(minBound.x, aabb.bmin3.x);
 		minBound.y = min(minBound.y, aabb.bmin3.y);
@@ -53,7 +45,6 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 		maxBound.z = max(maxBound.z, aabb.bmax3.z);
 
 	}
-	//printf("aabb min: %f %f %f\n", minBound.x, minBound.y, minBound.z);
 
 	return AABB(minBound, maxBound);
 }
@@ -82,26 +73,14 @@ bool BVH::Partition(BVHNode* node)
 	//Determine split axis
 	//Determine split position
 	float splitPos = node->bounds.Center(node->bounds.LongestAxis());
-	AABB aabb = node->bounds;
-
-	//printf("\nsplit %f\n", splitPos);
-	//printf("node %i", node);
-	//printf("Bound %f\n", node->bounds.bmin3.z);
-
 	int j = node->first - 1;
-	int count = node->count;
-	//printf("count %i\n", count);
 
-	int con = node->first + count;
-	//printf("con: %i\n", con);
 	switch (node->bounds.LongestAxis())
 	{
 	case(0):
-		for (int i = node->first; i < con; i++)
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			float x = primitives[indices[i]].GetCentroid().x;
-			//printf("x %f", x);
-			if (x < splitPos)
+			if (primitives[indices[i]].GetCentroid().x < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
 			}
@@ -109,10 +88,8 @@ bool BVH::Partition(BVHNode* node)
 
 		break;
 	case(1):
-		for (int i = node->first; i < con; i++)
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			float y = primitives[indices[i]].GetCentroid().y;
-			//printf("y %f", y);
 			if (primitives[indices[i]].GetCentroid().y < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
@@ -120,27 +97,20 @@ bool BVH::Partition(BVHNode* node)
 		}
 		break;
 	case(2):
-		for (int i = node->first; i < con; i++)
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			float z = primitives[indices[i]].GetCentroid().z;
-			//printf("z %f", z);
-
-			if (z < splitPos)
+			if (primitives[indices[i]].GetCentroid().z < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
 			}
 		}
 		break;
 	}
-	//printf("j: %i\n", j);
 
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
 	left->first = node->first;
 	left->bounds = CalculateBounds(left->first, left->count);
-
-	//printf("Bounds min: %f %f %f\n", left->bounds.bmin3.x, left->bounds.bmin3.y, left->bounds.bmin3.z);
-	//printf("Bounds max: %f %f %f\n", left->bounds.bmax3.x, left->bounds.bmax3.y, left->bounds.bmax3.z);
 
 	BVHNode* right = node->right;
 	right->count = node->count - left->count;
@@ -155,20 +125,6 @@ bool BVH::Partition(BVHNode* node)
 	}
 
 	return true;
-	////Left
-	//int left = pool[ptr].leftFirst;
-	//int c1 = j - ptr + 1;
-	//pool[left].count = j - ptr + 1;
-	//printf("c1 %i:\n", pool[left].count);
-	//printf("ptr %i:\n", ptr);
-	//pool[left].bounds = CalculateBounds(primitives, left, pool[left].count);
-	////Right
-	//int right = ptr + 1;
-	//int c = pool[ptr].count - pool[left].count;
-	//int start = left + pool[left].count;
-	//pool[right].count = c;
-	//pool[right].bounds = CalculateBounds(primitives, start, pool[right].count - 1);
-
 }
 
 int BVH::countNodes(const BVHNode& node) const
