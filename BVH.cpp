@@ -23,6 +23,10 @@ void BVH::ConstructBVH()
 	root->first = 0;
 	root->count = n;
 	root->bounds = CalculateBounds(root->first, root->count);
+
+	printf("Bounds min: %f %f %f\n", root->bounds.bmin3.x, root->bounds.bmin3.y, root->bounds.bmin3.z);
+	printf("Bounds max: %f %f %f\n", root->bounds.bmax3.x, root->bounds.bmax3.y, root->bounds.bmax3.z);
+
 	SubdivideBVHNode(root);
 
 	if (diagnostics)
@@ -36,15 +40,11 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 	//Make variables;
 	float3 minBound = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxBound = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
-	AABB aabb = primitives[6316].GetAABB();
-	//printf("\n min: %f %f %f\n", minBound.x, minBound.y, minBound.z);
-	//printf("max: %f %f %f\n", maxBound.x, maxBound.y, maxBound.z);
-	//printf("\nFirst+count= %i", first + count);
-	//printf("\nFirst= %i", first);
-	for (int i = 0; i < n; i++)
-	{
 
-		AABB aabb = primitives[i].GetAABB();
+	for (int i = first; i < first + count; i++)
+	{
+		//printf("%i\n", indices[i]);
+		AABB aabb = primitives[indices[i]].GetAABB();
 		minBound.x = min(minBound.x, aabb.bmin3.x);
 		minBound.y = min(minBound.y, aabb.bmin3.y);
 		minBound.z = min(minBound.z, aabb.bmin3.z);
@@ -53,26 +53,8 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 		maxBound.z = max(maxBound.z, aabb.bmax3.z);
 
 	}
+	//printf("aabb min: %f %f %f\n", minBound.x, minBound.y, minBound.z);
 
-	//for (int i = 0; i < n; i++)
-	//{
-
-	//		printf("yes");
-	//	//float3 pos = primitives[i].GetCentroid();
-	//	AABB aabb = primitives[i].GetAABB();
-
-	//	minBound.x = min(minBound.x, aabb.bmin3.x);
-	//	minBound.y = min(minBound.y, aabb.bmin3.y);
-	//	minBound.z = min(minBound.z, aabb.bmin3.z);
-	//	maxBound.x = max(maxBound.x, aabb.bmax3.x);
-	//	maxBound.y = max(maxBound.y, aabb.bmax3.y);
-	//	maxBound.z = max(maxBound.z, aabb.bmax3.z);
-
-	//	//printf("\n min: %f %f %f\n", minBound.x, minBound.y, minBound.z);
-	//	//printf("max: %f %f %f\n", maxBound.x, maxBound.y, maxBound.z);
-	//}
-	//printf("\n min: %f %f %f\n", minBound.x, minBound.y, minBound.z);
-	//printf("max: %f %f %f\n", maxBound.x, maxBound.y, maxBound.z);
 	return AABB(minBound, maxBound);
 }
 
@@ -83,7 +65,7 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 		node->isLeaf = true;
 		return;
 	}
-	printf("yeet\n");
+
 	node->isLeaf = false;
 	node->left = &pool[poolPtr++];
 	node->right = &pool[poolPtr++];
@@ -111,7 +93,7 @@ bool BVH::Partition(BVHNode* node)
 	//printf("count %i\n", count);
 
 	int con = node->first + count;
-
+	//printf("con: %i\n", con);
 	switch (node->bounds.LongestAxis())
 	{
 	case(0):
@@ -150,11 +132,15 @@ bool BVH::Partition(BVHNode* node)
 		}
 		break;
 	}
+	//printf("j: %i\n", j);
 
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
 	left->first = node->first;
 	left->bounds = CalculateBounds(left->first, left->count);
+
+	//printf("Bounds min: %f %f %f\n", left->bounds.bmin3.x, left->bounds.bmin3.y, left->bounds.bmin3.z);
+	//printf("Bounds max: %f %f %f\n", left->bounds.bmax3.x, left->bounds.bmax3.y, left->bounds.bmax3.z);
 
 	BVHNode* right = node->right;
 	right->count = node->count - left->count;

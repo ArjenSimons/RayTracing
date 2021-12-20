@@ -49,7 +49,7 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/tree.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
 
 	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 
