@@ -52,16 +52,19 @@ void MyApp::Init()
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
 
 	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	int count = 5;
 
 
 	printf("# of tris = %i", model->GetTriangles().size());
 
-
+	begin = std::chrono::steady_clock::now();
 	BVH bvh = BVH(model->GetTriangles(), model->GetTriangles().size(), true);
 	bvh.ConstructBVH();
-
+	end = std::chrono::steady_clock::now();
+	std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	//objects.push_back(new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture)));
 
@@ -82,9 +85,7 @@ void MyApp::Init()
 
 	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-	std::cout << "Init time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 // -----------------------------------------------------------
