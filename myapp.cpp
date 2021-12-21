@@ -51,13 +51,11 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/buddha.obj");
 
-	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	model = new Model(float3(0, -1, 2), 2, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
-
-	int count = 5;
 
 	printf("# of tris = %i\n", model->GetTriangles()->size());
 
@@ -74,12 +72,8 @@ void MyApp::Init()
 	//lights.push_back(new PointLight(float3(-1, 5, 5), 100, float3(1, 1, 1)));
 	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
 
-	begin = std::chrono::steady_clock::now();
 	scene = new Scene();
 	scene->AddBVH(bvh);
-	//scene.GetBVH().ConstructBVH();
-	end = std::chrono::steady_clock::now();
-	std::cout << "Add bvh to scene time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	for (Intersectable* obj : objects)
 	{
@@ -92,9 +86,6 @@ void MyApp::Init()
 	}
 
 	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
-
-	printf("scene here %p\n", scene->GetBVH()->GetPrims());
-
 }
 
 // -----------------------------------------------------------
@@ -106,11 +97,9 @@ void MyApp::Tick(float deltaTime)
 	screen->Clear(0);
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
+	//RENDERING
 	rayTracer->Render();
-
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
 	std::cout << "Render time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 
@@ -123,9 +112,7 @@ void MyApp::Tick(float deltaTime)
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
-	rayTracer->cam.Tick();
-
-	std::cout << deltaTime << "ms" << std::endl;
+	//rayTracer->cam.Tick();
 }
 
 void MyApp::MouseMove(int x, int y)

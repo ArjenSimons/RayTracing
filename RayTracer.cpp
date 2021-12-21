@@ -29,8 +29,6 @@ RayTracer::RayTracer(Scene* scene, float distortion, unsigned int maxBounces, Th
 	{
 		threadStartPoints.emplace_back(threadWidth * i);
 	}
-
-	printf("scene %p\n", scene->GetBVH()->GetPrims());
 }
 
 RayTracer::~RayTracer()

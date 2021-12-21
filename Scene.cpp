@@ -3,7 +3,6 @@
 
 Scene::Scene()
 {
-	printf("creating scene\n");
 }
 
 Scene::~Scene() 
