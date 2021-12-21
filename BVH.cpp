@@ -1,14 +1,17 @@
 #include "precomp.h"
 #include "BVH.h"
 
-BVH::BVH(vector<Triangle> intersectables, uInt count, bool diagnostics)
+BVH::BVH(vector<Triangle>* intersectables, uInt count, bool diagnostics)
 	:primitives(intersectables), n(count), diagnostics(diagnostics)
 {
 }
 
 void BVH::ConstructBVH()
 {
+
 	indices = new uInt[n];
+	printf("%f\n", (*primitives)[0].GetCentroid().x);
+	printf("centroid: %p\n", primitives);// [indices[i]] .GetCentroid().z);
 	for (int i = 0; i < n; i++) indices[i] = i;
 
 	pool = new BVHNode[n * 2];
@@ -28,6 +31,50 @@ void BVH::ConstructBVH()
 	}
 }
 
+Intersection BVH::Traverse(Ray& r)
+{
+	return TraverseInner(r, root);
+}
+
+Intersection BVH::TraverseInner(Ray& r, BVHNode* node)
+{
+	//printf("bounds: %f %f %f", node->bounds.bmax3.x, node->bounds.bmax3.y, node->bounds.bmax3.z);
+	if (RayAABBIntersect(r, node->bounds)) return dummyIntersection;
+	if (node->isLeaf)
+	{
+		return GetClosestIntersectionInNode(r, node);
+	}
+	else
+	{
+		Intersection left = TraverseInner(r, node->left);
+		Intersection right = TraverseInner(r, node->right);
+
+		if (left.t <= right.t) { return left; }
+		else { return right; }
+	}
+}
+
+Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node)
+{
+	Intersection closest_intersection;
+
+	for (int i = node->first; i < node->first + node->count; i++)
+	{
+		Intersection* intersection;
+		intersection = &(*primitives)[indices[i]].Intersect(r);
+		//printf("centroid: %p\n", primitives);// [indices[i]] .GetCentroid().z);
+		if (intersection->intersect) {
+			printf("yas");
+		}
+
+		if (intersection->intersect && intersection->t != 0 && intersection->t < closest_intersection.t)
+		{
+			closest_intersection = *intersection;
+		}
+	}
+	return closest_intersection;
+}
+
 AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 {
 	//Make variables;
@@ -36,7 +83,7 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 
 	for (int i = first; i < first + count; i++)
 	{
-		AABB aabb = primitives[indices[i]].GetAABB();
+		AABB aabb = (*primitives)[indices[i]].GetAABB();
 		minBound.x = min(minBound.x, aabb.bmin3.x);
 		minBound.y = min(minBound.y, aabb.bmin3.y);
 		minBound.z = min(minBound.z, aabb.bmin3.z);
@@ -80,7 +127,7 @@ bool BVH::Partition(BVHNode* node)
 	case(0):
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			if (primitives[indices[i]].GetCentroid().x < splitPos)
+			if ((*primitives)[indices[i]].GetCentroid().x < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
 			}
@@ -90,7 +137,7 @@ bool BVH::Partition(BVHNode* node)
 	case(1):
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			if (primitives[indices[i]].GetCentroid().y < splitPos)
+			if ((*primitives)[indices[i]].GetCentroid().y < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
 			}
@@ -99,7 +146,7 @@ bool BVH::Partition(BVHNode* node)
 	case(2):
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			if (primitives[indices[i]].GetCentroid().z < splitPos)
+			if ((*primitives)[indices[i]].GetCentroid().z < splitPos)
 			{
 				std::swap(indices[++j], indices[i]);
 			}

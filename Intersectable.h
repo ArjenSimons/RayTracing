@@ -134,5 +134,5 @@ public:
 	Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat);
 	~Model() = default;
 	Intersection Intersect(Ray ray) override;
-	std::vector<Triangle> GetTriangles() const { return triangles; }
+	std::vector<Triangle>* GetTriangles() { return &triangles; }
 };

@@ -25,6 +25,9 @@ RayTracer* rayTracer;
 std::vector<Intersectable*> objects;
 std::vector<LightSource*> lights;
 Model* model;
+
+BVH* bvh;
+Scene* scene;
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
@@ -42,48 +45,55 @@ void MyApp::Init()
 
 	//auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 
-	Scene scene = Scene();
 
 	//shared_ptr<ImageTexture> earthTexture = nullptr;
 	//shared_ptr<ImageTexture> marbleTexture = nullptr;
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/buddha.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/cube.obj");
 
-	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	model = new Model(float3(0, 0, 4), 1, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	int count = 5;
 
-	printf("# of tris = %i\n", model->GetTriangles().size());
+	printf("# of tris = %i\n", model->GetTriangles()->size());
 
-	BVH bvh = BVH(model->GetTriangles(), model->GetTriangles().size(), true);
+	bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), true);
 	begin = std::chrono::steady_clock::now();
-	bvh.ConstructBVH();
+	bvh->ConstructBVH();
 	end = std::chrono::steady_clock::now();
 	std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
-	//objects.push_back(new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture)));
+	objects.push_back(model);
 
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 
 	//lights.push_back(new PointLight(float3(-1, 5, 5), 100, float3(1, 1, 1)));
 	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
 
+	begin = std::chrono::steady_clock::now();
+	scene = new Scene();
+	scene->AddBVH(bvh);
+	//scene.GetBVH().ConstructBVH();
+	end = std::chrono::steady_clock::now();
+	std::cout << "Add bvh to scene time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
 	for (Intersectable* obj : objects)
 	{
-		scene.AddObject(obj);
+		scene->AddObject(obj);
 	}
 
 	for (LightSource* light : lights)
 	{
-		scene.AddLightSource(light);
+		scene->AddLightSource(light);
 	}
 
 	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 
+	printf("scene here %p\n", scene->GetBVH()->GetPrims());
 
 }
 
@@ -92,6 +102,10 @@ void MyApp::Init()
 // -----------------------------------------------------------
 void MyApp::Tick(float deltaTime)
 {
+	//std::cout << bvh->GetPrims()[0].GetCentroid().x << std::endl;
+	std::cout << scene->GetBVH()->GetPrims() << std::endl;
+	std::cout << (*scene->GetBVH()->GetPrims())[0].GetCentroid().x << std::endl;
+	std::cout << (*rayTracer->GetScene()->GetBVH()->GetPrims())[0].GetCentroid().x << std::endl;
 	// clear the screen to black
 	screen->Clear(0);
 

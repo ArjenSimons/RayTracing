@@ -22,15 +22,15 @@ private:
 
 	MSAA msaaStatus;
 
-	Scene scene;
+	Scene* scene;
 	unsigned int maxBounces;
 public:
 	Camera cam;
 	//RayTracer();
-	RayTracer(Scene scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
+	RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
 	~RayTracer();
 
-	void SetScene(Scene scene);
+	void SetScene(Scene* scene);
 
 	void Render();
 	void Render(unsigned int yStart, unsigned int yEnd);
@@ -42,6 +42,7 @@ public:
 
 	float2 GetUV(int x, int y) const { return uv[x][y]; }
 	Ray GetUVRay(const float2& uv) const;
+	Scene* GetScene() { return scene; }
 private:
 	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);

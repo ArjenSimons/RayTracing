@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "Scene.h"
 
-Scene::Scene() 
+Scene::Scene()
 {
 	printf("creating scene\n");
 }
@@ -9,6 +9,11 @@ Scene::Scene()
 Scene::~Scene() 
 {
 	
+}
+
+void Scene::AddBVH(BVH* bvhTree)
+{
+	bvh = bvhTree;
 }
 
 void Scene::AddObject(Intersectable* object) 

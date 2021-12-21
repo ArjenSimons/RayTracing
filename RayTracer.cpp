@@ -12,7 +12,7 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
+RayTracer::RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
 	: scene(scene), df(clamp(distortion, 0.0f, 1.0f)), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
@@ -29,13 +29,15 @@ RayTracer::RayTracer(Scene scene, float distortion, unsigned int maxBounces, Thr
 	{
 		threadStartPoints.emplace_back(threadWidth * i);
 	}
+
+	printf("scene %p\n", scene->GetBVH()->GetPrims());
 }
 
 RayTracer::~RayTracer()
 {
 }
 
-void RayTracer::SetScene(Scene scene)
+void RayTracer::SetScene(Scene* scene)
 {
 	scene = scene;
 }
@@ -195,9 +197,11 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 Intersection RayTracer::GetNearestIntersection(Ray& ray)
 {
+	return scene->GetBVH()->Traverse(ray);
+
 	Intersection closest_intersection;
 
-	for (Intersectable* obj : scene.GetObjects())
+	for (Intersectable* obj : scene->GetObjects())
 	{
 		Intersection* intersection;
 		intersection = &obj->Intersect(ray);
@@ -293,7 +297,7 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 	bool isDirectional = typeid(*l) == typeid(DirectionalLight);
 	bool isSpotLight = typeid(*l) == typeid(SpotLight);
 
-	for (Intersectable* object : scene.GetObjects())
+	for (Intersectable* object : scene->GetObjects())
 	{
 		Intersection i = object->Intersect(ray);
 
