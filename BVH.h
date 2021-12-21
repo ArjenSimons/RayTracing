@@ -12,20 +12,6 @@ private:
 		BVHNode* left, * right;
 		uint32_t first;
 		uint32_t count;
-
-		void Traverse(Ray r)
-		{
-			if (!RayAABBIntersect(r, bounds)) return;
-			if (isLeaf)
-			{
-
-			}
-			else
-			{
-				left->Traverse(r);
-				right->Traverse(r);
-			}
-		}
 	};
 
 private:
@@ -56,13 +42,3 @@ private:
 	bool Partition(BVHNode* node);
 	int countNodes(const BVHNode& node) const;
 };
-
-//void BVH::BVHNode::Subdivide()
-//{
-//	if (count < 3) return;
-//	leftFirst = poolPtr++;
-//	right = new BVHNode();
-//	left->Subdivide();
-//	right->Subdivide();
-//	isLeaf = false;
-//}
