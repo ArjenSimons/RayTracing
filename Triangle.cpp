@@ -16,6 +16,8 @@ Triangle::Triangle(float3 p1, float3 p2, float3 p3, Substance substance, Materia
 		(position.x + position2.x + position3.x) / 3,
 		(position.y + position2.y + position3.y) / 3,
 		(position.z + position2.z + position3.z) / 3);
+
+	//printf("c: %f %f %f\n", centroid.x, centroid.y, centroid.z);
 }
 
 Intersection Triangle::Intersect(Ray ray)
@@ -26,7 +28,6 @@ Intersection Triangle::Intersect(Ray ray)
 	float3 p1p3 = position3 - position;
 	float3 pvec = cross(ray.Dir, p1p3);
 	float det = dot(pvec, p1p2);
-
 	if (det == 0) return out; //miss
 
 	float invDet = 1 / det;
@@ -38,9 +39,10 @@ Intersection Triangle::Intersect(Ray ray)
 	float3 qvec = cross(tvec, p1p2);
 	float u = dot(ray.Dir, qvec) * invDet;
 	if (u < 0 || u + v > 1) return out; //miss
+	//printf("v", u);
 
 	float t = dot(p1p3, qvec) * invDet;
-
+	//printf("ttt %f\n", t);
 	if (t > 000.1) 
 	{
 		out.t = t;

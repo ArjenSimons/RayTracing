@@ -51,9 +51,9 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/cube.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
 
-	model = new Model(float3(0, 0, 4), 1, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	model = new Model(float3(0, -1, 2), 10, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
@@ -102,10 +102,6 @@ void MyApp::Init()
 // -----------------------------------------------------------
 void MyApp::Tick(float deltaTime)
 {
-	//std::cout << bvh->GetPrims()[0].GetCentroid().x << std::endl;
-	std::cout << scene->GetBVH()->GetPrims() << std::endl;
-	std::cout << (*scene->GetBVH()->GetPrims())[0].GetCentroid().x << std::endl;
-	std::cout << (*rayTracer->GetScene()->GetBVH()->GetPrims())[0].GetCentroid().x << std::endl;
 	// clear the screen to black
 	screen->Clear(0);
 
@@ -127,7 +123,7 @@ void MyApp::Tick(float deltaTime)
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
-	//rayTracer->cam.Tick();
+	rayTracer->cam.Tick();
 
 	std::cout << deltaTime << "ms" << std::endl;
 }

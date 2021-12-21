@@ -10,8 +10,8 @@ void BVH::ConstructBVH()
 {
 
 	indices = new uInt[n];
-	printf("%f\n", (*primitives)[0].GetCentroid().x);
-	printf("centroid: %p\n", primitives);// [indices[i]] .GetCentroid().z);
+	//printf("%f\n", (*primitives)[0].GetCentroid().x);
+	//printf("centroid: %p\n", primitives);// [indices[i]] .GetCentroid().z);
 	for (int i = 0; i < n; i++) indices[i] = i;
 
 	pool = new BVHNode[n * 2];
@@ -22,6 +22,9 @@ void BVH::ConstructBVH()
 	root->first = 0;
 	root->count = n;
 	root->bounds = CalculateBounds(root->first, root->count);
+
+	//printf("boundMin: %f %f %f\n", root->bounds.bmin3.x, root->bounds.bmin3.y, root->bounds.bmin3.z);
+	//printf("boundMax: %f %f %f\n", root->bounds.bmax3.x, root->bounds.bmax3.y, root->bounds.bmax3.z);
 
 	SubdivideBVHNode(root);
 
@@ -38,8 +41,7 @@ Intersection BVH::Traverse(Ray& r)
 
 Intersection BVH::TraverseInner(Ray& r, BVHNode* node)
 {
-	//printf("bounds: %f %f %f", node->bounds.bmax3.x, node->bounds.bmax3.y, node->bounds.bmax3.z);
-	if (RayAABBIntersect(r, node->bounds)) return dummyIntersection;
+	if (!RayAABBIntersect(r, node->bounds)) return dummyIntersection;
 	if (node->isLeaf)
 	{
 		return GetClosestIntersectionInNode(r, node);
@@ -57,19 +59,24 @@ Intersection BVH::TraverseInner(Ray& r, BVHNode* node)
 Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node)
 {
 	Intersection closest_intersection;
-
+	//printf("Yeeeeet\n");
+	//printf("nodeCount: %i\n", node->count);
 	for (int i = node->first; i < node->first + node->count; i++)
 	{
-		Intersection* intersection;
-		intersection = &(*primitives)[indices[i]].Intersect(r);
+		Intersection intersection;
+		intersection = (*primitives)[indices[i]].Intersect(r);
 		//printf("centroid: %p\n", primitives);// [indices[i]] .GetCentroid().z);
-		if (intersection->intersect) {
-			printf("yas");
+		//printf("%f\n", (*primitives)[0].GetCentroid().x);
+		//printf("%i\n", i);
+
+		//printf("%i\n", indices[i]);
+		if (intersection.intersect) {
+			//printf("yas");
 		}
 
-		if (intersection->intersect && intersection->t != 0 && intersection->t < closest_intersection.t)
+		if (intersection.intersect && (closest_intersection.intersect == false || intersection.t < closest_intersection.t))
 		{
-			closest_intersection = *intersection;
+			closest_intersection = intersection;
 		}
 	}
 	return closest_intersection;
