@@ -214,30 +214,30 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 
 Color RayTracer::DirectIllumination(float3 pos, float3 N)
 {
-	Color out = float3(1, 1, 1);
+	Color out = float3(.1f, .1f, .1f);
 
 	float cosa = clamp(dot(N, normalize(-float3(.2f, -.8f, .1f))), 0.0, 1.0);
 
 	return out * cosa;
 
-	//for (LightSource* light : scene.GetLights())
-	//{
-	//	float3 C = light->GetDir(pos);
+	for (LightSource* light : scene->GetLights())
+	{
+		float3 C = light->GetDir(pos);
 
-	//	float d2 = dot(C, C);
-	//	Ray ray(pos, normalize(C));
+		float d2 = dot(C, C);
+		Ray ray(pos, normalize(C));
 
-	//	float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
+		float cosa = clamp(dot(N, ray.Dir), 0.0, 1.0);
 
-	//	if (cosa == 0 || RayIsBlocked(ray, d2, light)){ continue; } //Go to next light source when ray is blocked
-	//	float3 col = light->color.value;
-	//	col *= 1 / d2;
-	//	col *= cosa;
-	//	col *= light->intensity;
+		if (cosa == 0 || RayIsBlocked(ray, d2, light)){ continue; } //Go to next light source when ray is blocked
+		float3 col = light->color.value;
+		col *= 1 / d2;
+		col *= cosa;
+		col *= light->intensity;
 
-	//	out.value += col;
-	//}
-	//return out;
+		out.value += col;
+	}
+	return out;
 }
 
 Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
@@ -295,20 +295,17 @@ bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 	bool isDirectional = typeid(*l) == typeid(DirectionalLight);
 	bool isSpotLight = typeid(*l) == typeid(SpotLight);
 
-	for (Intersectable* object : scene->GetObjects())
+	Intersection i = scene->GetBVH()->Traverse(ray);
+
+	if (isDirectional)
 	{
-		Intersection i = object->Intersect(ray);
-
-		if (isDirectional)
-		{
-			if (i.t > 0.001 && i.intersect)
-				return true;
-		}
-
-		else if (i.t > 0.001 && i.t * i.t < d2)
-		{
+		if (i.t > 0.001 && i.intersect)
 			return true;
-		}
+	}
+
+	else if (i.t > 0.001 && i.t * i.t < d2)
+	{
+		return true;
 	}
 
 	// If we're dealing with a spotlight,

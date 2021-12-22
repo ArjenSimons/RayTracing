@@ -114,83 +114,82 @@ bool BVH::Partition(BVHNode* node)
 	//Determine split position
 	float splitPos = node->bounds.Center(node->bounds.LongestAxis());
 
-	int splitAxis = 0;
 	AABB aabb;
 	float lowestCost = minb.x;
 	float bestBinPos;
 	float axisWidths[3] = { node->bounds.bmax3.x - node->bounds.bmin3.x, node->bounds.bmax3.y - node->bounds.bmin3.y, node->bounds.bmax3.z - node->bounds.bmin3.z };
 	float binPositions[3] = { node->bounds.bmin3.x, node->bounds.bmin3.y, node->bounds.bmin3.z };
 	//Binning
-	for (int k = 0; k < 3; k++)
+	AABB bestLeft, bestRight;
+
+	int splitAxis = node->bounds.LongestAxis();
+
+	float binDist = axisWidths[splitAxis] * iBinCount;
+
+	for (int j = 0; j < binCount - 1; j++)
 	{
-		float binDist = axisWidths[k] * iBinCount;
-
-		for (int j = 0; j < binCount - 1; j++)
+		binPositions[splitAxis] += binDist;
+		AABB left, right;
+		float3 leftMinBound = minb;
+		float3 leftMaxBound = maxb;
+		float3 rightMinBound = minb;
+		float3 rightMaxBound = maxb;
+		int leftCount = 0;
+		int rightCount = 0;
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			binPositions[k] += binDist;
-			AABB left, right;
-			float3 leftMinBound = minb;
-			float3 leftMaxBound = maxb;
-			float3 rightMinBound = minb;
-			float3 rightMaxBound = maxb;
-			int leftCount = 0;
-			int rightCount = 0;
-			for (int i = node->first; i < node->first + node->count; i++)
+			float p = 0;
+			switch (splitAxis)
 			{
-				float p = 0;
-				switch (k)
-				{
-				case(0):
-					p = (*primitives)[indices[i]].GetCentroid().x;
-					break;
-				case(1):
-					p = (*primitives)[indices[i]].GetCentroid().y;
-					break;
-				case(2):
-					p = (*primitives)[indices[i]].GetCentroid().z;
-					break;
-				}
-
-				AABB aabb = (*primitives)[indices[i]].GetAABB();
-				if (p < binPositions[k])
-				{
-					//left.Grow((*primitives)[indices[i]].GetCentroid());
-					leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
-					leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
-					leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
-					leftMaxBound.x = max(leftMaxBound.x, aabb.bmax3.x);
-					leftMaxBound.y = max(leftMaxBound.y, aabb.bmax3.y);
-					leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
-					leftCount++;
-				}
-				else
-				{
-					//right.Grow((*primitives)[indices[i]].GetCentroid());
-					rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
-					rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
-					rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
-					rightMaxBound.x = max(rightMaxBound.x, aabb.bmax3.x);
-					rightMaxBound.y = max(rightMaxBound.y, aabb.bmax3.y);
-					rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
-					rightCount++;
-				}
+			case(0):
+				p = (*primitives)[indices[i]].GetCentroid().x;
+				break;
+			case(1):
+				p = (*primitives)[indices[i]].GetCentroid().y;
+				break;
+			case(2):
+				p = (*primitives)[indices[i]].GetCentroid().z;
+				break;
 			}
 
-			left = AABB(leftMinBound, leftMaxBound);
-			right = AABB(rightMinBound, rightMaxBound);
-			//SAH
-			float leftArea = left.Area();
-			float rightArea = right.Area();
-			leftArea = isinf(leftArea) ? 0 : leftArea;
-			rightArea = isinf(rightArea) ? 0 : rightArea;
-			float cost = leftArea * leftCount + rightArea * rightCount;
-
-			if (cost < lowestCost)
+			AABB aabb = (*primitives)[indices[i]].GetAABB();
+			if (p < binPositions[splitAxis])
 			{
-				lowestCost = cost;
-				bestBinPos = binPositions[k];
-				splitAxis = k;
+				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
+				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
+				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
+				leftMaxBound.x = max(leftMaxBound.x, aabb.bmax3.x);
+				leftMaxBound.y = max(leftMaxBound.y, aabb.bmax3.y);
+				leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
+				leftCount++;
 			}
+			else
+			{
+				rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
+				rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
+				rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
+				rightMaxBound.x = max(rightMaxBound.x, aabb.bmax3.x);
+				rightMaxBound.y = max(rightMaxBound.y, aabb.bmax3.y);
+				rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
+				rightCount++;
+			}
+		}
+
+		left = AABB(leftMinBound, leftMaxBound);
+		right = AABB(rightMinBound, rightMaxBound);
+		//SAH
+		float leftArea = left.Area();
+		float rightArea = right.Area();
+		leftArea = isinf(leftArea) ? 0 : leftArea;
+		rightArea = isinf(rightArea) ? 0 : rightArea;
+		float cost = leftArea * leftCount + rightArea * rightCount;
+
+		if (cost < lowestCost)
+		{
+			lowestCost = cost;
+			bestBinPos = binPositions[splitAxis];
+			bestLeft = left;
+			bestRight = right;
 		}
 	}
 
@@ -243,12 +242,12 @@ bool BVH::Partition(BVHNode* node)
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
 	left->first = node->first;
-	left->bounds = CalculateBounds(left->first, left->count);
+	left->bounds = bestLeft;// CalculateBounds(left->first, left->count);
 
 	BVHNode* right = node->right;
 	right->count = node->count - left->count;
 	right->first = left->first + left->count;
-	right->bounds = CalculateBounds(right->first, right->count);
+	right->bounds = bestRight;// CalculateBounds(right->first, right->count);
 
 	if (left->count == node->count || right->count == node->count) {
 		node->left = nullptr;

@@ -51,7 +51,7 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/buddha.obj");
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
 
 	model = new Model(float3(0, -1, 2), 2, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -69,8 +69,8 @@ void MyApp::Init()
 
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 
-	//lights.push_back(new PointLight(float3(-1, 5, 5), 100, float3(1, 1, 1)));
-	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, .1f), .1f, float3(1, 1, 1)));
+	lights.push_back(new PointLight(float3(-1, 3, 0), 10, float3(1, 1, 1)));
+	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1)));
 
 	scene = new Scene();
 	scene->AddBVH(bvh);

@@ -1,7 +1,6 @@
 #pragma once
 #include <Intersectable.h>
 
-
 class BVH
 {
 private:
@@ -30,6 +29,7 @@ private:
 	bool diagnostics;
 	float3 minb = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+
 public:
 	BVH(vector<Triangle>* intersectables, uint32_t count, bool diagnostics);
 	void ConstructBVH();
