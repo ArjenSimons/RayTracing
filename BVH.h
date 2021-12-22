@@ -20,6 +20,8 @@ private:
 	uInt* indices;
 	uInt poolPtr;
 
+	int binCount = 4;
+	float iBinCount = 1.0f / binCount;
 	BVHNode* pool;
 	BVHNode* root;
 

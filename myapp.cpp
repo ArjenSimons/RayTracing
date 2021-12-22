@@ -94,7 +94,7 @@ void MyApp::Init()
 void MyApp::Tick(float deltaTime)
 {
 	// clear the screen to black
-	screen->Clear(0);
+	//screen->Clear(0);
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	//RENDERING
@@ -112,7 +112,7 @@ void MyApp::Tick(float deltaTime)
 		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
 	}
 
-	//rayTracer->cam.Tick();
+	rayTracer->cam.Tick();
 }
 
 void MyApp::MouseMove(int x, int y)
