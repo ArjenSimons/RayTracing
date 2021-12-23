@@ -34,6 +34,39 @@ Intersection BVH::Traverse(Ray& r)
 	return TraverseInner(r, root);
 }
 
+void BVH::Translate(float3 t)
+{
+	//TODO: Probably a better way to do this
+	translation.Translate(t);
+
+	float3 tr = translation.GetTranslation();
+	tr += t;
+	translation = mat4::Translate(tr);
+	invTranslation = translation.Inverted();
+}
+
+void BVH::RotateX(float r)
+{
+	mat4 rot = mat4::RotateX(r);
+	translation = translation * rot;
+	invTranslation = translation.Inverted();
+
+}
+void BVH::RotateY(float r)
+{
+	mat4 rot = mat4::RotateY(r);
+	translation = translation * rot;
+	invTranslation = translation.Inverted();
+
+}
+void BVH::RotateZ(float r)
+{
+	mat4 rot = mat4::RotateZ(r);;
+	translation = translation * rot;
+	invTranslation = translation.Inverted();
+
+}
+
 Intersection BVH::TraverseInner(Ray& r, BVHNode* node)
 {
 	if (!RayAABBIntersect(r, node->bounds)) return dummyIntersection;

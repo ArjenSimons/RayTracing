@@ -17,11 +17,11 @@ class TopLevelBVH
 	//};
 
 private:
-	vector<BVH*>* BVHs;
+	vector<BVHInstance*>* BVHs;
 
 	AABB bounds;
 public:
-	TopLevelBVH(vector<BVH*>* BVHs);
+	TopLevelBVH(vector<BVHInstance*>* BVHs);
 	Intersection Traverse(Ray& r);
 };
 

@@ -10,13 +10,8 @@
 
 enum class Scenes
 {
-	GENERAL_SETUP,
-	TEXTURE_SETUP,
-	CORNELL_BOX_SETUP,
-	GLASS_SPHERE_SETUP,
-	MESH_SETUP,
-	SPOT_LIGHT_SETUP,
-	DONUT_SETUP
+	ANIM_SETUP,
+	BUDDHA_SETUP
 };
 
 TheApp* CreateApp() { return new MyApp(); }
@@ -28,57 +23,106 @@ std::vector<LightSource*> lights;
 Model* model;
 Model* bunnyModel;
 
-std::vector<BVH*> bvhs;
+std::vector<BVHInstance*> bvhs;
 TopLevelBVH* topBVH;
-BVH* bvh;
+vector<BVHInstance*> buddhas;
+BVH* buddha;
+BVH* dragonBVH;
 BVH* bunnyBVH;
+BVHInstance* dragonInstance;
+BVHInstance* dragonInstance1;
+BVHInstance* bunnyInstance;
 Scene* scene;
+
+int x = 0;
+Scenes sceneType = Scenes::ANIM_SETUP;
+
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
 void MyApp::Init()
 {
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
 	//Textures
 	auto redTexture = make_shared<ColorTexture>(Color(.45, .12, .12));
 	auto greenTexture = make_shared<ColorTexture>(Color(.12, .45, .15));
-	auto greyTexture = make_shared<ColorTexture>(Color(.73, .73, .73));
-	auto whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
-	auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
-	auto silverTexture = make_shared<ColorTexture>(Color(.8, .8, .8));
-
+	//auto greyTexture = make_shared<ColorTexture>(Color(.73, .73, .73));
+	//auto whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+	//auto blackTexture = make_shared<ColorTexture>(Color(0, 0, 0));
+	//auto silverTexture = make_shared<ColorTexture>(Color(.8, .8, .8));
 	//auto checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
-
 
 	//shared_ptr<ImageTexture> earthTexture = nullptr;
 	//shared_ptr<ImageTexture> marbleTexture = nullptr;
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
+	shared_ptr<Mesh> dragonMesh;
+	shared_ptr<Mesh> bunnyMesh;
 
+	switch (sceneType)
+	{
+	case(Scenes::ANIM_SETUP):
+		dragonMesh = make_shared<Mesh>("res/dragon.obj");
+		bunnyMesh = make_shared<Mesh>("res/bunny.obj");
 
-	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
-	shared_ptr<Mesh> bunnyMesh = make_shared<Mesh>("res/bunny.obj");
+		model = new Model(float3(0, -1, 4), 2, dragonMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		bunnyModel = new Model(float3(-3, -1, 3), 5, bunnyMesh, SOLID, Material(float3(1, 1, 1), greenTexture));
+		end = std::chrono::steady_clock::now();
+		std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
-	model = new Model(float3(0, -1, 2), 2, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
-	bunnyModel = new Model(float3(-2, -1, 1), 5, bunnyMesh, SOLID, Material(float3(1, 1, 1), greenTexture));
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+		printf("# of tris = %i\n", model->GetTriangles()->size() + bunnyModel->GetTriangles()->size());
 
-	printf("# of tris = %i\n", model->GetTriangles()->size());
+		dragonBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+		bunnyBVH = new BVH(bunnyModel->GetTriangles(), bunnyModel->GetTriangles()->size(), bunnyModel->GetTranslation(), false);
 
-	bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
-	bunnyBVH = new BVH(bunnyModel->GetTriangles(), bunnyModel->GetTriangles()->size(), bunnyModel->GetTranslation(), false);
+		begin = std::chrono::steady_clock::now();
+		dragonBVH->ConstructBVH();
+		bunnyBVH->ConstructBVH();
+		dragonInstance = new BVHInstance(dragonBVH);
+		dragonInstance->RotateY(90);
+		dragonInstance1 = new BVHInstance(dragonBVH);
+		dragonInstance1->Translate(float3(-3, 0, 0));
+		dragonInstance1->RotateY(-90);
+		bunnyInstance = new BVHInstance(bunnyBVH);
+		end = std::chrono::steady_clock::now();
+		std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
-	begin = std::chrono::steady_clock::now();
-	bvh->ConstructBVH();
-	bunnyBVH->ConstructBVH();
-	end = std::chrono::steady_clock::now();
-	std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+		objects.push_back(bunnyModel);
 
-	objects.push_back(model);
+		bvhs.push_back(dragonInstance);
+		bvhs.push_back(dragonInstance1);
+		bvhs.push_back(bunnyInstance);
+		break;
+	case(Scenes::BUDDHA_SETUP):
+		shared_ptr<Mesh> buddhaMesh = make_shared<Mesh>("res/buddha.obj");
 
-	bvhs.push_back(bvh);
-	bvhs.push_back(bunnyBVH);
+		model = new Model(float3(-15, -5, 9), 2, buddhaMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+		std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
+		printf("# of tris = %i\n", model->GetTriangles()->size() * 31 * 30);
+
+		begin = std::chrono::steady_clock::now();
+
+		buddha = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+		buddha->ConstructBVH();
+
+		for (int i = 0; i < 30; i++)
+		{
+			for (int j = 0; j < 31; j++)
+			{
+				buddhas.push_back(new BVHInstance(buddha));
+				bvhs.push_back(buddhas.back());
+				buddhas.back()->Translate(float3(i, 0, j));
+			}
+		}
+
+		end = std::chrono::steady_clock::now();
+		std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+		break;
+	}
+	
 	topBVH = new TopLevelBVH(&bvhs);
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
 	
@@ -108,6 +152,23 @@ void MyApp::Tick(float deltaTime)
 {
 	// clear the screen to black
 	//screen->Clear(0);
+
+	x += 1;
+	float sinx = 0;
+	float drakeSinx = 0;
+	switch (sceneType)
+	{
+	case(Scenes::ANIM_SETUP):
+		sinx = .5f * sin(.1f * x);
+		bunnyInstance->Translate(float3(sinx, 0, 0));
+		bunnyInstance->RotateY(x * .1f);
+		drakeSinx = .1f * sin(.5f * x);
+		dragonInstance->RotateX(drakeSinx);
+		dragonInstance1->RotateX(drakeSinx);
+		break;
+	case(Scenes::BUDDHA_SETUP):
+		break;
+	}
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 	//RENDERING

@@ -42,6 +42,10 @@ public:
 	vector<Triangle>* GetPrims() { return primitives; }
 	mat4 GetTranslation() { return translation; }
 	mat4 GetInvTranslation() { return invTranslation; }
+	void Translate(float3 translation);
+	void RotateX(float rotation);
+	void RotateY(float rotation);
+	void RotateZ(float rotation);
 private:
 	Intersection TraverseInner(Ray& r, BVHNode* node);
 	Intersection GetClosestIntersectionInNode(Ray& r, BVHNode* node);
@@ -49,4 +53,35 @@ private:
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);
 	int countNodes(const BVHNode& node) const;
+};
+
+class BVHInstance
+{
+private:
+	BVH* bvh;
+	mat4 translation;
+	mat4 invTranslation;
+public:
+	BVHInstance(BVH* bvh)
+		: bvh(bvh)
+	{
+		translation = bvh->GetTranslation();
+		invTranslation = translation.Inverted();
+	}
+	BVH* GetBVH() { return bvh; }
+	mat4 GetTranslation() { return translation; }
+	mat4 GetInvTranslation() { return invTranslation; }
+	void Translate(float3 t)
+	{
+		//TODO: Probably a better way to do this
+		translation.Translate(t);
+
+		float3 tr = translation.GetTranslation();
+		tr += t;
+		translation = mat4::Translate(tr);
+		invTranslation = translation.Inverted();
+	}
+	void RotateX(float r) { mat4 rot = mat4::RotateX(r); translation = translation * rot; invTranslation = translation.Inverted(); }
+	void RotateY(float r) { mat4 rot = mat4::RotateY(r); translation = translation * rot; invTranslation = translation.Inverted(); }
+	void RotateZ(float r) { mat4 rot = mat4::RotateZ(r); translation = translation * rot; invTranslation = translation.Inverted(); }
 };
