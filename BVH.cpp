@@ -1,9 +1,10 @@
 #include "precomp.h"
 #include "BVH.h"
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, bool diagnostics)
-	:primitives(intersectables), n(count), diagnostics(diagnostics)
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics)
+	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics)
 {
+	invTranslation = translation.Inverted();
 }
 
 void BVH::ConstructBVH()
@@ -129,7 +130,7 @@ bool BVH::Partition(BVHNode* node)
 	for (int j = 0; j < binCount - 1; j++)
 	{
 		binPositions[splitAxis] += binDist;
-		AABB left, right;
+		//AABB left, right;
 		float3 leftMinBound = minb;
 		float3 leftMaxBound = maxb;
 		float3 rightMinBound = minb;
@@ -155,6 +156,7 @@ bool BVH::Partition(BVHNode* node)
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			if (p < binPositions[splitAxis])
 			{
+				//left.Grow((*primitives)[indices[i]].GetCentroid());
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -175,8 +177,8 @@ bool BVH::Partition(BVHNode* node)
 			}
 		}
 
-		left = AABB(leftMinBound, leftMaxBound);
-		right = AABB(rightMinBound, rightMaxBound);
+		AABB left = AABB(leftMinBound, leftMaxBound);
+		AABB right = AABB(rightMinBound, rightMaxBound);
 		//SAH
 		float leftArea = left.Area();
 		float rightArea = right.Area();
@@ -193,11 +195,11 @@ bool BVH::Partition(BVHNode* node)
 		}
 	}
 
-	float parentArea = node->bounds.Area();
-	float parentCost = parentArea * node->count;
+	//float parentArea = node->bounds.Area();
+	//float parentCost = parentArea * node->count;
 	//printf("parentCost: %f\n", parentCost);
 	//printf("parentArea: %f\n", parentArea);
-	if (lowestCost >= parentCost)
+	if (lowestCost >= node->bounds.Area() * node->count)
 	{
 		node->left = nullptr;
 		node->right = nullptr;

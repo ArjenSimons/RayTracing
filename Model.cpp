@@ -4,6 +4,8 @@
 Model::Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat)
 	: Intersectable(position, substance, mat)
 {
+	translation = mat4::Translate(position);
+
 	std::vector<float3> verticess = mesh->GetVertices();
 
 	float3 minBound = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
@@ -11,7 +13,7 @@ Model::Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance subs
 
 	for (int i = 0; i < verticess.size(); i += 3)
 	{
-		float3 vertices[3] = { position + verticess[i] * scale, position + verticess[i + 1] * scale, position + verticess[i + 2] * scale };
+		float3 vertices[3] = { verticess[i] * scale, verticess[i + 1] * scale, verticess[i + 2] * scale };
 
 		triangles.push_back(Triangle(vertices[0], vertices[1], vertices[2], substance, mat));
 

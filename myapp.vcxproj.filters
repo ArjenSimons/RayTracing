@@ -41,6 +41,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="BVH.cpp" />
+    <ClCompile Include="TopLevelBVH.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\precomp.h">
@@ -89,6 +90,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="BVH.h" />
+    <ClInclude Include="TopLevelBVH.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">

@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "Mesh.h"
 #include "BVH.h"
+#include "TopLevelBVH.h"
 #include <chrono>
 
 enum class Scenes
@@ -25,8 +26,12 @@ RayTracer* rayTracer;
 std::vector<Intersectable*> objects;
 std::vector<LightSource*> lights;
 Model* model;
+Model* bunnyModel;
 
+std::vector<BVH*> bvhs;
+TopLevelBVH* topBVH;
 BVH* bvh;
+BVH* bunnyBVH;
 Scene* scene;
 // -----------------------------------------------------------
 // Initialize the application
@@ -52,28 +57,36 @@ void MyApp::Init()
 
 
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
+	shared_ptr<Mesh> bunnyMesh = make_shared<Mesh>("res/bunny.obj");
 
 	model = new Model(float3(0, -1, 2), 2, mesh, SOLID, Material(float3(1, 1, 1), redTexture));
+	bunnyModel = new Model(float3(-2, -1, 1), 5, bunnyMesh, SOLID, Material(float3(1, 1, 1), greenTexture));
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	std::cout << "Load Model Time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	printf("# of tris = %i\n", model->GetTriangles()->size());
 
-	bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), true);
+	bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+	bunnyBVH = new BVH(bunnyModel->GetTriangles(), bunnyModel->GetTriangles()->size(), bunnyModel->GetTranslation(), false);
+
 	begin = std::chrono::steady_clock::now();
 	bvh->ConstructBVH();
+	bunnyBVH->ConstructBVH();
 	end = std::chrono::steady_clock::now();
 	std::cout << "BVH Construction time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
 	objects.push_back(model);
 
+	bvhs.push_back(bvh);
+	bvhs.push_back(bunnyBVH);
+	topBVH = new TopLevelBVH(&bvhs);
 	//objects.push_back(new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, Material(float3(1, 1, 1), checkerTexture, 0)));
-
+	
 	lights.push_back(new PointLight(float3(-1, 3, 0), 10, float3(1, 1, 1)));
 	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1)));
 
 	scene = new Scene();
-	scene->AddBVH(bvh);
+	scene->AddBVH(topBVH);
 
 	for (Intersectable* obj : objects)
 	{

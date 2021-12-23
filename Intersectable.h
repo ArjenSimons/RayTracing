@@ -130,9 +130,11 @@ class Model : public Intersectable
 private:
 	std::vector<Triangle> triangles;
 	AABB aabb;
+	mat4 translation;
 public:
 	Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat);
 	~Model() = default;
 	Intersection Intersect(Ray ray) override;
 	std::vector<Triangle>* GetTriangles() { return &triangles; }
+	mat4 GetTranslation() const { return translation; }
 };

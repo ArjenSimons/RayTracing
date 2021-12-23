@@ -37,6 +37,12 @@ struct Ray
 		: Origin(origin), Dir(dir), e(e), substance(substance), t(t)
 	{
 	}
+
+	void Transform(mat4 mat)
+	{
+		Origin = mat.TransformPoint(Origin);
+		Dir = mat.TransformVector(Dir);
+	}
 };
 
 inline float RefractionIndex(Substance substance)

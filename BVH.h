@@ -24,6 +24,10 @@ private:
 	BVHNode* pool;
 	BVHNode* root;
 
+	mat4 translation;
+	mat4 invTranslation;
+	
+
 	Intersection dummyIntersection;
 
 	bool diagnostics;
@@ -31,11 +35,13 @@ private:
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 
 public:
-	BVH(vector<Triangle>* intersectables, uint32_t count, bool diagnostics);
+	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics);
 	void ConstructBVH();
 	Intersection Traverse(Ray& r);
 	BVHNode GetRoot() { return *root; }
 	vector<Triangle>* GetPrims() { return primitives; }
+	mat4 GetTranslation() { return translation; }
+	mat4 GetInvTranslation() { return invTranslation; }
 private:
 	Intersection TraverseInner(Ray& r, BVHNode* node);
 	Intersection GetClosestIntersectionInNode(Ray& r, BVHNode* node);

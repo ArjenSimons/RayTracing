@@ -10,7 +10,6 @@ Torus::Torus(float3 position, float minorR, float majorR, float3 eulerAngles, Su
 	mat4 positionMatrix = mat4::Translate(-1 * position);
 	mat4 rotationMatrix = mat4::RotateZ(eulerAngles.z * dtr) * mat4::RotateY(eulerAngles.y * dtr) * mat4::RotateX(eulerAngles.x * dtr);
 	transf = rotationMatrix * positionMatrix;
-
 	r2 = r * r;
 	R2 = R * R;
 }

@@ -214,7 +214,7 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 
 Color RayTracer::DirectIllumination(float3 pos, float3 N)
 {
-	Color out = float3(.1f, .1f, .1f);
+	Color out = float3(1, 1, 1);
 
 	float cosa = clamp(dot(N, normalize(-float3(.2f, -.8f, .1f))), 0.0, 1.0);
 

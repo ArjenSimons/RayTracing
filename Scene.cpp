@@ -10,9 +10,9 @@ Scene::~Scene()
 	
 }
 
-void Scene::AddBVH(BVH* bvhTree)
+void Scene::AddBVH(TopLevelBVH* bvhTree)
 {
-	bvh = bvhTree;
+	topBVH = bvhTree;
 }
 
 void Scene::AddObject(Intersectable* object) 
