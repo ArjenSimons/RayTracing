@@ -1,10 +1,10 @@
 #include "precomp.h"
 #include "Material.h"
 
-Material::Material(Color color, Color secondColor, MatType type)
-	: color(color), secondColor(secondColor), type(type)
+Material::Material(Color color, shared_ptr<Texture> texture, float specularity)
+	: color(color), texture(texture)
 {
-
+	this->specularity = clamp(specularity, 0.0, 1.0);
 }
 
 Material::~Material()
@@ -12,22 +12,7 @@ Material::~Material()
 
 }
 
-Color Material::GetColor(float3 position)
+Color Material::GetColor(float2 uv, float3 position) const 
 {
-	if (type == SOLID)
-	{
-		return color;
-	}
-	else if (type == CHECKER)
-	{
-		if (((int)(position.x) + (int)(position.z)) & 1)
-		{
-			return color;
-		}
-		else
-		{
-			return secondColor;
-		}
-	}
-	else return color;
+	return color * texture->value(uv, position);
 }

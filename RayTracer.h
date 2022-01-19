@@ -1,35 +1,52 @@
 #pragma once
 #include "Scene.h"
+#include "Camera.h"
+#include "ThreadPool.h";
 
 class RayTracer
 {
 private:
-	//Cam
-	float3 camPos = float3(0, 0, 0);
-	float3 viewDir = float3(0, 0, 1);
-	float aspectRatio = (float)SCRWIDTH / (float)SCRHEIGHT;
-	float d = 1;
-	float3 C = camPos + d * viewDir;
-	float3 p0 = C + float3(-1 * aspectRatio,  1, 0);
-	float3 p1 = C + float3( 1 * aspectRatio,  1, 0);
-	float3 p2 = C + float3(-1 * aspectRatio, -1, 0);
-
 	float2 uv[SCRWIDTH][SCRHEIGHT];
-	//std::vector<std::vector<float3>> renderBuffer;
+	float uvX;
+	float uvY;
+	float df;
 
-	Scene scene;
+	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
+	Color tempBuffer[SCRWIDTH][SCRHEIGHT];
+
+	unsigned int nThreads = processor_count * 4;
+	ThreadingStatus threadingStatus;
+	ThreadPool threadPool;
+	unsigned int threadWidth = SCRWIDTH / nThreads;
+	std::vector<int> threadStartPoints;
+
+	MSAA msaaStatus;
+
+	Scene* scene;
+	unsigned int maxBounces;
 public:
+	Camera cam;
 	//RayTracer();
-	RayTracer(Scene scene);
+	RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
 	~RayTracer();
 
-	void SetScene(Scene scene);
+	void SetScene(Scene* scene);
 
-	//std::vector<std::vector<float3>> Render();
-	Color Trace(Ray &ray);
-	Intersection GetNearestIntersection(Ray &ray);
+	void Render();
+	void Render(unsigned int yStart, unsigned int yEnd);
+	void AddVignette(float outerRadius, float smoothness, float intensity);
+	void AddGammaCorrection(float gamma);
+	void AddChromaticAberration(int2 redOffset, int2 greenOffset, int2 blueOffset);
+	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
+	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
+
+	float2 GetUV(int x, int y) const { return uv[x][y]; }
+	Ray GetUVRay(const float2& uv) const;
+	Scene* GetScene() { return scene; }
+private:
+	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);
-
-	float2 GetUV(int x, int y) { return uv[x][y]; }
-	Ray GetUVRay(float2 uv);
+	Color Refraction(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
+	float3 Reflect(const float3& dir, const float3& normal) const;
+	bool RayIsBlocked(Ray& ray, float d2, LightSource* l) const;
 };

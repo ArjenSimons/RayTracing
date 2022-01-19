@@ -1,11 +1,10 @@
 #include "precomp.h"
 #include "Intersectable.h"
 
-Sphere::Sphere(float3 position, float radius, Material mat)
-	: Intersectable(position, mat), radius2(radius * radius)
+Sphere::Sphere(float3 position, float radius, Substance substance, Material mat)
+	: Intersectable(position, substance, mat), radius2(radius * radius)
 {
-	printf("sphere r2 = %f \n", radius2);
-	printf("sphere position = %f, %f, %f \n", position.x, position.y, position.z);
+	aabb = AABB(float3(position.x - radius, position.y - radius, position.z - radius), float3(position.x + radius, position.y + radius, position.z + radius));
 }
 
 Sphere::~Sphere()
@@ -13,7 +12,21 @@ Sphere::~Sphere()
 
 }
 
-Intersection Sphere::Intersect(Ray ray) const
+Intersection Sphere::Intersect(Ray ray)
+{
+	if (ray.substance == substance) 
+	{
+		return InsideIntersect(ray);
+	}
+	else
+	{
+		return OutsideIntersect(ray);
+	}
+}
+
+
+//TODO: Fix duplicate code
+Intersection Sphere::OutsideIntersect(Ray ray)
 {
 	Intersection out;
 
@@ -32,8 +45,40 @@ Intersection Sphere::Intersect(Ray ray) const
 		out.position = (ray.Origin + out.t * ray.Dir);
 		out.normal = normalize(out.position - position);
 		out.mat = mat;
+		out.sTo = substance;
 
-		//printf("intersect pos: %f, %f, %f \n", out.position.x, out.position.y, out.position.z);
+		float phi = atan2(out.normal.z, out.normal.x) + PI;
+		float theta = acos(-out.normal.y);
+		out.uv = float2(phi / (2 * PI), theta / PI);
+	}
+}
+
+Intersection Sphere::InsideIntersect(Ray ray)
+{
+	Intersection out;
+
+	float3 oc = ray.Origin - position;
+	float a = dot(ray.Dir, ray.Dir);
+	float b = 2.0f * dot(oc, ray.Dir);
+	float c = dot(oc, oc) - radius2;
+	float d = b * b - 4 * a * c;
+
+	float t = (-b + sqrtf(d)) / (2.0f * a);
+
+
+	if ((t >= 0))
+	{
+		out.t = t;
+		out.intersect = true;
+		out.position = (ray.Origin + out.t * ray.Dir);
+		float3 normal = normalize(out.position - position);
+		out.normal = normal * -1;
+		out.mat = mat;
+		out.sTo = AIR;
+
+		float phi = atan2(-normal.z, normal.x) + PI;
+		float theta = acos(-normal.y);
+		out.uv = float2(phi / (2 * PI), theta / PI);
 	}
 
 	return out;

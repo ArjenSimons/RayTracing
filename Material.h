@@ -1,32 +1,15 @@
 #pragma once
-enum MatType {
-	SOLID,
-	CHECKER
-};
-
-struct Color
-{
-	float3 value;
-
-	Color(float3 color)
-		: value(color)
-	{
-	}
-
-	unsigned int GetRGBValue() 
-	{
-		return ((int)(value.x * 255) << 16) + ((int)(value.y * 255) << 8) + ((int)(value.z * 255));
-	}
-};
+#include "Texture.h"
 
 class Material
 {
 protected:
 	Color color;
-	Color secondColor;
-	MatType type;
+	shared_ptr<Texture> texture;
 public:
-	Material(Color color, Color secondColor = float3(1, 0, 1), MatType type = SOLID);
+	float specularity;
+public:
+	Material(Color color, shared_ptr<Texture> texture, float specularity = 0);
 	~Material();
-	Color GetColor(float3 position);
+	Color GetColor(float2 uv, float3 position) const;
 };

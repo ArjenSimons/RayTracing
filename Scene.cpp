@@ -1,14 +1,18 @@
 #include "precomp.h"
 #include "Scene.h"
 
-Scene::Scene() 
+Scene::Scene()
 {
-	printf("creating scene\n");
 }
 
 Scene::~Scene() 
 {
 	
+}
+
+void Scene::AddBVH(TopLevelBVH* bvhTree)
+{
+	topBVH = bvhTree;
 }
 
 void Scene::AddObject(Intersectable* object) 
