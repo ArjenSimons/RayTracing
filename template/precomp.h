@@ -1223,7 +1223,9 @@ public:
 // Extra includes:
 #include <typeinfo>
 
-// Application src headers
+// ---------------------------------------------------------------- //
+// Application src headers                                          //
+// ---------------------------------------------------------------- //
 
 // Base raytracing classes.
 #include "src/Raytracing/RayTracing.h"
