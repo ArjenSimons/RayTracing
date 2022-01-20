@@ -1,6 +1,6 @@
 #include "precomp.h"
-#include "RayTracer.h"
-#include <typeinfo>
+//#include "RayTracer.h"
+//#include <typeinfo>
 
 //RayTracer::RayTracer()
 //{

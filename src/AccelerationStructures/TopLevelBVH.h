@@ -1,6 +1,6 @@
 #pragma once
-#include "BVH.h"
-#include "Intersectable.h"
+//#include "BVH.h"
+//#include "Intersectable.h"
 
 class TopLevelBVH
 {

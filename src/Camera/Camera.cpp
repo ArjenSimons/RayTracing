@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "Camera.h"
+//#include "Camera.h"
 
 Camera::Camera(float3 position, float3 direction, float FOVDegree, float aspectRatio)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include <Intersectable.h>
+//#include <Intersectable.h>
 
 class BVH
 {

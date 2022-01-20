@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "Intersectable.h"
+//#include "Intersectable.h"
 
 Model::Model(float3 position, float scale, shared_ptr<Mesh> mesh, Substance substance, Material mat)
 	: Intersectable(position, substance, mat)

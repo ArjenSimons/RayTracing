@@ -1,8 +1,8 @@
 #pragma once
-#include "Intersectable.h"
-#include "LightSource.h"
-#include "BVH.h"
-#include "TopLevelBVH.h"
+//#include "Intersectable.h"
+//#include "LightSource.h"
+//#include "BVH.h"
+//#include "TopLevelBVH.h"
 
 class Scene
 {
