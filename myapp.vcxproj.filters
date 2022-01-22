@@ -46,6 +46,7 @@
     <ClCompile Include="src\Material\Material.cpp">
       <Filter>src\Material</Filter>
     </ClCompile>
+    <ClCompile Include="src\PostProcessing\PostProcessing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\precomp.h">
@@ -99,6 +100,7 @@
     <ClInclude Include="src\Material\Material.h">
       <Filter>src\Material</Filter>
     </ClInclude>
+    <ClInclude Include="src\PostProcessing\PostProcessing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -147,6 +149,9 @@
     </Filter>
     <Filter Include="src\Material">
       <UniqueIdentifier>{e24332fd-edc2-46be-9c7f-eac63a15d9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PostProcessing">
+      <UniqueIdentifier>{728179cc-2350-4c34-96ad-96deaebb7991}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
