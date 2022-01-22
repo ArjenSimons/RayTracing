@@ -1222,6 +1222,7 @@ public:
 
 // Extra includes:
 #include <typeinfo>
+#include "ThreadPool.h";
 
 // ---------------------------------------------------------------- //
 // Application src headers                                          //

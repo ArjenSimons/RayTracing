@@ -1,7 +1,4 @@
 #pragma once
-//#include "RayTracing.h"
-//#include "Material.h"
-//#include "Mesh.h"
 
 struct Intersection
 {

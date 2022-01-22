@@ -1,5 +1,4 @@
 #pragma once
-//#include "src/Texturing/Texture.h"
 
 class Material
 {

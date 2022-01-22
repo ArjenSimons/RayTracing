@@ -1,7 +1,4 @@
 #pragma once
-//#include "src/Scenes/Scene.h"
-//#include "src/Camera/Camera.h"
-#include "ThreadPool.h";
 
 class RayTracer
 {
