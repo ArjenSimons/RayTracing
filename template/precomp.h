@@ -1220,4 +1220,45 @@ public:
 	Surface* screen = 0;
 };
 
+// Extra includes:
+#include <typeinfo>
+#include "ThreadPool.h";
+
+// ---------------------------------------------------------------- //
+// Application src headers                                          //
+// ---------------------------------------------------------------- //
+
+// Base raytracing classes.
+#include "src/Raytracing/RayTracing.h"
+
+// Camera and controller.
+#include "src/Camera/controller.h"
+#include "src/Camera/Camera.h"
+
+// Mesh and mesh texturing.
+#include "src/Texturing/Texture.h"
+#include "src/Texturing/Mesh.h"
+
+// Intersectable geometry with materials.
+#include "src/Material/Material.h"
+#include "src/Geometry/Intersectable.h"
+
+// Acceleration structures.
+#include "src/AccelerationStructures/BVH.h"
+#include "src/AccelerationStructures/TopLevelBVH.h"
+
+// Light sources.
+#include "src/Light/LightSource.h"
+
+// Scenes.
+// TODO: Add scene manager.
+#include "src/Scenes/Scene.h"
+
+// Utils.
+#include "src/Utils/algebra.h"
+
+// Renderers.
+#include "src/Raytracing/RayTracer.h"
+
+
 // EOF

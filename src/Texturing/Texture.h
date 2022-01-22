@@ -1,5 +1,4 @@
 #pragma once
-#include "RayTracing.h"
 
 class Texture
 {

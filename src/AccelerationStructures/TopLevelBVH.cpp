@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "TopLevelBVH.h"
 
 TopLevelBVH::TopLevelBVH(vector<BVHInstance*>* BVHs)
 	: BVHs(BVHs)

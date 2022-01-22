@@ -1,6 +1,4 @@
 #include "precomp.h"
-#include "Intersectable.h"
-#include "algebra.h"
 
 Torus::Torus(float3 position, float minorR, float majorR, float3 eulerAngles, Substance substance, Material mat)
 	: Intersectable(position, substance, mat), r(minorR), R(majorR)

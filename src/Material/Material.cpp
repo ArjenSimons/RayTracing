@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "Material.h"
 
 Material::Material(Color color, shared_ptr<Texture> texture, float specularity)
 	: color(color), texture(texture)

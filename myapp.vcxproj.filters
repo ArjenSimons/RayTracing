@@ -1,47 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="Mesh.cpp">
+    <ClCompile Include="src\Texturing\Mesh.cpp">
       <Filter>src\Texturing</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
+    <ClCompile Include="src\Geometry\Model.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Triangle.cpp">
+    <ClCompile Include="src\Geometry\Triangle.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Torus.cpp">
+    <ClCompile Include="src\Geometry\Torus.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
+    <ClCompile Include="src\Geometry\Sphere.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
-    <ClCompile Include="Plane.cpp">
+    <ClCompile Include="src\Geometry\Plane.cpp">
       <Filter>src\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="template\template.cpp">
       <Filter>template</Filter>
     </ClCompile>
-    <ClCompile Include="algebra.cpp">
+    <ClCompile Include="src\myapp.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\AccelerationStructures\BVH.cpp">
+      <Filter>src\AccelerationStructures</Filter>
     </ClCompile>
-    <ClCompile Include="Material.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\AccelerationStructures\TopLevelBVH.cpp">
+      <Filter>src\AccelerationStructures</Filter>
     </ClCompile>
-    <ClCompile Include="myapp.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\Utils\algebra.cpp">
+      <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="RayTracer.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\Scenes\Scene.cpp">
+      <Filter>src\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="src\Raytracing\RayTracer.cpp">
+      <Filter>src\Raytracing</Filter>
     </ClCompile>
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="TopLevelBVH.cpp" />
+    <ClCompile Include="src\Camera\Camera.cpp">
+      <Filter>src\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material\Material.cpp">
+      <Filter>src\Material</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\precomp.h">
@@ -50,47 +54,51 @@
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="src\Texturing\Mesh.h">
       <Filter>src\Texturing</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="src\Texturing\Texture.h">
       <Filter>src\Texturing</Filter>
     </ClInclude>
-    <ClInclude Include="algebra.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="LightSource.h">
+    <ClInclude Include="src\Light\LightSource.h">
       <Filter>src\Light</Filter>
     </ClInclude>
-    <ClInclude Include="Intersectable.h">
+    <ClInclude Include="src\Geometry\Intersectable.h">
       <Filter>src\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="template\common.h">
       <Filter>template</Filter>
     </ClInclude>
-    <ClInclude Include="controller.h">
+    <ClInclude Include="src\myapp.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\AccelerationStructures\BVH.h">
+      <Filter>src\AccelerationStructures</Filter>
     </ClInclude>
-    <ClInclude Include="myapp.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\AccelerationStructures\TopLevelBVH.h">
+      <Filter>src\AccelerationStructures</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracer.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\Utils\algebra.h">
+      <Filter>src\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="RayTracing.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\Scenes\Scene.h">
+      <Filter>src\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>src</Filter>
+    <ClInclude Include="src\Raytracing\RayTracer.h">
+      <Filter>src\Raytracing</Filter>
     </ClInclude>
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="TopLevelBVH.h" />
+    <ClInclude Include="src\Raytracing\RayTracing.h">
+      <Filter>src\Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\Camera.h">
+      <Filter>src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera\controller.h">
+      <Filter>src\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material\Material.h">
+      <Filter>src\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -121,6 +129,24 @@
     </Filter>
     <Filter Include="src\Geometry">
       <UniqueIdentifier>{82aa44cb-5c3c-4c8a-b8f6-97430a96fb9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\AccelerationStructures">
+      <UniqueIdentifier>{990efe73-86b2-43c7-8edc-f59fbb8f468c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{fdc067ed-2a89-42ea-bca2-55e51592cfb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Raytracing">
+      <UniqueIdentifier>{73ed0fa2-838f-4741-b8d8-f45d83608065}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Camera">
+      <UniqueIdentifier>{b3065f10-6485-4ea3-9e7d-6ca332f117e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scenes">
+      <UniqueIdentifier>{35e5b565-aa3e-4c41-83ed-92af9f8bfc8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Material">
+      <UniqueIdentifier>{e24332fd-edc2-46be-9c7f-eac63a15d9a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

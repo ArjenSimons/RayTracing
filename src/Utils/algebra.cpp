@@ -28,11 +28,9 @@
     and quadratic, cubic, and quartic equations of one variable.
 */
 
-#include <cmath>
-#include <complex>
-#include <iostream>
-#include "precomp.h"
-#include "algebra.h"
+// Includes cmath, complex, iostream, and algebra.h now handled in precomp.h
+#include "precomp.h" 
+//#include "algebra.h"
 
 namespace Algebra
 {

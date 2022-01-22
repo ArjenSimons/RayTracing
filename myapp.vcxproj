@@ -123,45 +123,45 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
-    <ClCompile Include="algebra.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Material.cpp" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="myapp.cpp" />
-    <ClCompile Include="Plane.cpp" />
-    <ClCompile Include="RayTracer.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="src\Utils\algebra.cpp" />
+    <ClCompile Include="src\AccelerationStructures\BVH.cpp" />
+    <ClCompile Include="src\Camera\Camera.cpp" />
+    <ClCompile Include="src\Material\Material.cpp" />
+    <ClCompile Include="src\Texturing\Mesh.cpp" />
+    <ClCompile Include="src\Geometry\Model.cpp" />
+    <ClCompile Include="src\myapp.cpp" />
+    <ClCompile Include="src\Geometry\Plane.cpp" />
+    <ClCompile Include="src\Raytracing\RayTracer.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Geometry\Sphere.cpp" />
     <ClCompile Include="template\template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">precomp.h</PrecompiledHeaderFile>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">precomp.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="TopLevelBVH.cpp" />
-    <ClCompile Include="Torus.cpp" />
-    <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="src\AccelerationStructures\TopLevelBVH.cpp" />
+    <ClCompile Include="src\Geometry\Torus.cpp" />
+    <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="algebra.h" />
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="src\Utils\algebra.h" />
+    <ClInclude Include="src\AccelerationStructures\BVH.h" />
+    <ClInclude Include="src\Camera\Camera.h" />
     <ClInclude Include="cl\tools.cl" />
-    <ClInclude Include="controller.h" />
-    <ClInclude Include="Intersectable.h" />
-    <ClInclude Include="LightSource.h" />
-    <ClInclude Include="Material.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="myapp.h" />
-    <ClInclude Include="RayTracer.h" />
-    <ClInclude Include="RayTracing.h" />
-    <ClInclude Include="Scene.h" />
+    <ClInclude Include="src\Camera\controller.h" />
+    <ClInclude Include="src\Geometry\Intersectable.h" />
+    <ClInclude Include="src\Light\LightSource.h" />
+    <ClInclude Include="src\Material\Material.h" />
+    <ClInclude Include="src\Texturing\Mesh.h" />
+    <ClInclude Include="src\myapp.h" />
+    <ClInclude Include="src\Raytracing\RayTracer.h" />
+    <ClInclude Include="src\Raytracing\RayTracing.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TopLevelBVH.h" />
+    <ClInclude Include="src\Texturing\Texture.h" />
+    <ClInclude Include="src\AccelerationStructures\TopLevelBVH.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cl\kernels.cl" />

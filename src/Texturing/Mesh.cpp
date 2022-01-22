@@ -1,7 +1,8 @@
 #include "precomp.h"
+
+// TODO: Can this be moved to precomp.h?
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
-#include "Mesh.h"
 
 Mesh::Mesh(const char* filename)
 {

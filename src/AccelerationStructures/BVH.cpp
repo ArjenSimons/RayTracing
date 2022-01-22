@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "BVH.h"
 
 BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics)

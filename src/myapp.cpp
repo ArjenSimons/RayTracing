@@ -1,12 +1,5 @@
 #include "precomp.h"
 #include "myapp.h"
-#include "RayTracer.h"
-#include "Intersectable.h"
-#include "Texture.h"
-#include "Mesh.h"
-#include "BVH.h"
-#include "TopLevelBVH.h"
-#include <chrono>
 
 enum class Scenes
 {
