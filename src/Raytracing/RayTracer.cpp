@@ -246,7 +246,7 @@ Color RayTracer::TraceDielectrics(const Ray& ray, const Intersection& i, unsigne
 	// Reflection and transmission coeficcients.
 	float Fr, Ft;
 	
-	// TIR: Total internal reflection. No need to use fresnel.
+	// TIR: Total internal reflection. No need to use fresnel for Fr and Ft.
 	if (terms.k < 0) {
 		Fr = 1.f;
 		Ft = 0.f;
