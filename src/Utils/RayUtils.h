@@ -1,17 +1,17 @@
 #pragma once
 
 
-float3 Reflect(const float3& dir, const float3& N) {
+inline float3 Reflect(const float3& dir, const float3& N) {
 	return dir - 2 * dot(dir, N) * N;
 }
 
 struct DielectricTerms {
-	float n1;
-	float n2;
-	float indexRatio;
-	float k;
-	float cosi;
-	float energy;
+	float n1 = 0.f;
+	float n2 = 0.f;
+	float indexRatio = 0.f;
+	float k = 0.f;
+	float cosi = 0.f;
+	float energy = 0.f;
 
 	// Calculated values used for dielectrics.
 	DielectricTerms(const Ray& ray, const Intersection& i) {
@@ -27,14 +27,14 @@ struct DielectricTerms {
 	}
 };
 
-float3 Refract(const float3& dir, const float3& N, DielectricTerms terms) {
+inline float3 Refract(const float3& dir, const float3& N, DielectricTerms& terms) {
 
-	float3 dir = terms.indexRatio * dir + N * (terms.indexRatio * terms.cosi - sqrt(terms.k));
-	return dir;
+	float3 refractDir = terms.indexRatio * dir + N * (terms.indexRatio * terms.cosi - sqrt(terms.k));
+	return refractDir;
 }
 
 // Calculates reflection and transmission coefficients
-void Fresnel(DielectricTerms terms, float& Fr, float& Ft) {
+inline void Fresnel(DielectricTerms& terms, float& Fr, float& Ft) {
 	float sint = terms.indexRatio * sqrtf(max(0.f, 1 - terms.cosi * terms.cosi));
 	float cost = sqrt(max(0.0f, 1 - sint * sint));
 	float cosi = fabsf(terms.cosi);

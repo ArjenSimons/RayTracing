@@ -99,6 +99,7 @@
     <ClInclude Include="src\Material\Material.h">
       <Filter>src\Material</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\RayUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">

@@ -1230,7 +1230,6 @@ public:
 
 // Base raytracing classes.
 #include "src/Raytracing/RayTracing.h"
-#include "src/Utils/RayUtils.h"
 
 // Camera and controller.
 #include "src/Camera/controller.h"
@@ -1257,6 +1256,7 @@ public:
 
 // Utils.
 #include "src/Utils/algebra.h"
+#include "src/Utils/RayUtils.h"
 
 // Renderers.
 #include "src/Raytracing/RayTracer.h"
