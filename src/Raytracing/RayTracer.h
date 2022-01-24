@@ -43,7 +43,6 @@ public:
 private:
 	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);
-	Color Refraction(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
-	float3 Reflect(const float3& dir, const float3& normal) const;
+	Color TraceDielectrics(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
 	bool RayIsBlocked(Ray& ray, float d2, LightSource* l) const;
 };
