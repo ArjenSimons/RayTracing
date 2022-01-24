@@ -243,12 +243,6 @@ Color RayTracer::TraceDielectrics(const Ray& ray, const Intersection& i, unsigne
 	// Precalculate variables for refraction and fresnel formulas.
 	DielectricTerms terms = DielectricTerms(ray, i);
 
-	// TIR: Total internal reflection. No need to use fresnel.
-	if (terms.k < 0) //TIR
-	{
-		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), terms.energy, ray.substance), bounceDepth + 1);
-	}
-
 	// Reflection and transmission coeficcients.
 	float Fr, Ft;
 	
