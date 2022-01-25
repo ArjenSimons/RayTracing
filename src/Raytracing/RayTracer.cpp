@@ -38,7 +38,7 @@ void RayTracer::SetScene(Scene* scene)
 	scene = scene;
 }
 
-void RayTracer::Render()
+void RayTracer::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT])
 {
 	if (threadingStatus == THREADING_ENABLED)
 	{
@@ -47,7 +47,7 @@ void RayTracer::Render()
 		for (unsigned int i = 0; i < nThreads; ++i)
 		{
 			results.emplace_back(
-				threadPool.enqueue([this, i] { Render(threadStartPoints[i], threadStartPoints[i + 1]); })
+				threadPool.enqueue([this, i, renderBuffer] { Render(renderBuffer, threadStartPoints[i], threadStartPoints[i + 1]); })
 			);
 		}
 
@@ -57,11 +57,11 @@ void RayTracer::Render()
 	}
 	else 
 	{
-		Render(0, SCRWIDTH);
+		Render(renderBuffer, 0, SCRWIDTH);
 	}
 }
 
-void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
+void RayTracer::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int xStart, unsigned int xEnd)
 {
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
 	{
@@ -78,10 +78,10 @@ void RayTracer::Render(unsigned int xStart, unsigned int xEnd)
 		Ray ray2 = GetUVRay(uv[i][j]);
 		Ray ray3 = GetUVRay(uv[i][j]);
 
-		Color col = Trace(ray).GetClamped();
-		Color col1 = Trace(ray1).GetClamped();
-		Color col2 = Trace(ray2).GetClamped();
-		Color col3 = Trace(ray3).GetClamped();
+		Color col = Trace(ray);
+		Color col1 = Trace(ray1);
+		Color col2 = Trace(ray2);
+		Color col3 = Trace(ray3);
 
 		renderBuffer[i][j] = ((col + col1 + col2 + col3) * .25);
 	}
