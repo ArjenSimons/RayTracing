@@ -1,7 +1,7 @@
 #include "precomp.h"
 
 //TODO: Compute post processing effects on GPU
-void PostProcessing::Vignette(float outerRadius, float smoothness, float intensity)
+void PostProcessing::Vignette(Color renderBuffer[SCRWIDTH][SCRHEIGHT], float2 uv[SCRWIDTH][SCRHEIGHT], float outerRadius, float smoothness, float intensity)
 {
 	outerRadius = clamp(outerRadius, 0.0f, 1.0f);
 	intensity = clamp(intensity, 0.0f, 1.0f);
@@ -19,7 +19,7 @@ void PostProcessing::Vignette(float outerRadius, float smoothness, float intensi
 	}
 }
 
-void PostProcessing::GammaCorrection(float gamma)
+void PostProcessing::GammaCorrection(Color renderBuffer[SCRWIDTH][SCRHEIGHT], float gamma)
 {
 	float invGamma = 1 / gamma;
 
@@ -33,7 +33,9 @@ void PostProcessing::GammaCorrection(float gamma)
 	}
 }
 
-void PostProcessing::ChromaticAberration(int2 redOffset, int2 greenOffset, int2 blueOffset)
+Color tempBuffer[SCRWIDTH][SCRHEIGHT];
+
+void PostProcessing::ChromaticAberration(Color renderBuffer[SCRWIDTH][SCRHEIGHT], int2 redOffset, int2 greenOffset, int2 blueOffset)
 {
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
