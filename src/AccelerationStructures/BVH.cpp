@@ -30,7 +30,8 @@ void BVH::ConstructBVH()
 
 Intersection BVH::Traverse(Ray& r)
 {
-	return TraverseInner(r, root);
+	uint nChecks = 0;
+	return TraverseInner(r, root, nChecks);
 }
 
 void BVH::Translate(float3 t)
@@ -66,24 +67,25 @@ void BVH::RotateZ(float r)
 
 }
 
-Intersection BVH::TraverseInner(Ray& r, BVHNode* node)
+Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
 {
 	if (!RayAABBIntersect(r, node->bounds)) return dummyIntersection;
 	if (node->isLeaf)
 	{
-		return GetClosestIntersectionInNode(r, node);
+		return GetClosestIntersectionInNode(r, node, nChecks);
 	}
 	else
 	{
-		Intersection left = TraverseInner(r, node->left);
-		Intersection right = TraverseInner(r, node->right);
+		nChecks += 2;
+		Intersection left = TraverseInner(r, node->left, nChecks);
+		Intersection right = TraverseInner(r, node->right, nChecks);
 
 		if (left.t <= right.t) { return left; }
 		else { return right; }
 	}
 }
 
-Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node)
+Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChecks)
 {
 	Intersection closest_intersection;
 
@@ -97,6 +99,9 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node)
 			closest_intersection = intersection;
 		}
 	}
+
+	nChecks += node->first + node->count;
+	closest_intersection.nAABBandTriChecks = nChecks;
 	return closest_intersection;
 }
 

@@ -46,8 +46,8 @@ public:
 	void RotateY(float rotation);
 	void RotateZ(float rotation);
 private:
-	Intersection TraverseInner(Ray& r, BVHNode* node);
-	Intersection GetClosestIntersectionInNode(Ray& r, BVHNode* node);
+	Intersection TraverseInner(Ray& r, BVHNode* node, uint& nChecks);
+	Intersection GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChecks);
 	AABB CalculateBounds(uint32_t first, uint32_t count);
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);

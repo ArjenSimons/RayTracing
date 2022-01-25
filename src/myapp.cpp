@@ -4,7 +4,8 @@
 enum class Scenes
 {
 	ANIM_SETUP,
-	BUDDHA_SETUP
+	BUDDHA_SETUP,
+	BVH_TEST
 };
 
 TheApp* CreateApp() { return new MyApp(); }
@@ -28,7 +29,7 @@ BVHInstance* bunnyInstance;
 Scene* scene;
 
 int x = 0;
-Scenes sceneType = Scenes::ANIM_SETUP;
+Scenes sceneType = Scenes::BVH_TEST;
 
 // -----------------------------------------------------------
 // Initialize the application
@@ -86,6 +87,17 @@ void MyApp::Init()
 		bvhs.push_back(dragonInstance);
 		bvhs.push_back(dragonInstance1);
 		bvhs.push_back(bunnyInstance);
+		break;
+	case(Scenes::BVH_TEST):
+		dragonMesh = make_shared<Mesh>("res/dragon.obj");
+		model = new Model(float3(0, 0, 1), 2, dragonMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		dragonBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+
+		dragonBVH->ConstructBVH();
+		dragonInstance = new BVHInstance(dragonBVH);
+		dragonInstance->RotateY(90);
+		//dragonInstance->Translate(float3(0, 0, 0));
+		bvhs.push_back(dragonInstance);
 		break;
 	case(Scenes::BUDDHA_SETUP):
 		shared_ptr<Mesh> buddhaMesh = make_shared<Mesh>("res/buddha.obj");

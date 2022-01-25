@@ -9,6 +9,7 @@ struct Intersection
 	Material mat{ float3(1, 0, 1), nullptr };
 	Substance sTo;
 	float2 uv;
+	uint nAABBandTriChecks;
 
 	Intersection()
 	{
@@ -16,6 +17,7 @@ struct Intersection
 		t = INT_MAX;
 		position = float3(0, 0, 0);
 		normal = float3(0, 0, 0);
+		nAABBandTriChecks = 0;
 	}
 };
 
