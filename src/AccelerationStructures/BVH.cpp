@@ -295,6 +295,13 @@ bool BVH::Partition(BVHNode* node)
 		return false;
 	}
 
+	AABB unionRL = left->bounds.Intersection(right->bounds);
+	if (unionRL.Area() > .0f) 
+	{
+		//printf("union Area %f\n", unionRL.Area());
+		//TODO: Implement spatial splitting
+	}
+
 	return true;
 }
 
