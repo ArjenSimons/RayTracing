@@ -3,14 +3,11 @@
 class RayTracer
 {
 private:
-	float2 uv[SCRWIDTH][SCRHEIGHT];
 	float uvX;
 	float uvY;
 	float df;
 
 	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
-	Color tempBuffer[SCRWIDTH][SCRHEIGHT];
-
 	unsigned int nThreads = processor_count * 4;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
@@ -20,8 +17,9 @@ private:
 	MSAA msaaStatus;
 
 	Scene* scene;
-	unsigned int maxBounces;
+	unsigned int maxBounces = MAX_RECURSIONS;
 public:
+	float2 uv[SCRWIDTH][SCRHEIGHT];
 	Camera cam;
 	//RayTracer();
 	RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
@@ -29,8 +27,8 @@ public:
 
 	void SetScene(Scene* scene);
 
-	void Render();
-	void Render(unsigned int yStart, unsigned int yEnd);
+	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT]);
+	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int yStart, unsigned int yEnd);
 	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
