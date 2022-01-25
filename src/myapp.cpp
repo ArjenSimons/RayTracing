@@ -30,6 +30,8 @@ Scene* scene;
 int x = 0;
 Scenes sceneType = Scenes::ANIM_SETUP;
 
+Color renderBuffer[SCRWIDTH][SCRHEIGHT];
+
 // -----------------------------------------------------------
 // Initialize the application
 // -----------------------------------------------------------
@@ -163,20 +165,28 @@ void MyApp::Tick(float deltaTime)
 		break;
 	}
 
-	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 	//RENDERING
-	rayTracer->Render();
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-	std::cout << "Render time:" << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+	rayTracer->Render(renderBuffer);
+	chrono::steady_clock::time_point end = chrono::steady_clock::now();
+	cout << "Render time:" << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << "[ms]" << endl;
 
 
-	//rayTracer->AddVignette(.6f, .3f, 1);
-	//rayTracer->AddGammaCorrection(.6f);
-	//rayTracer->AddChromaticAberration(int2(10, 0), int2(0, 0), int2(0, 0));
+	if (POSTPROCESSING) {
+		if (VIGNETTING) {
+			PostProcessing::Vignette(renderBuffer, rayTracer->uv, VIGNETTE_RADIUS, VIGNETTE_SMOOTHNESS, VIGNETTE_INTENSITY);
+		}
+		if (GAMMA_CORRECTION) {
+			PostProcessing::GammaCorrection(renderBuffer, GAMMA);
+		}
+		if (CHROMATIC_ABERRATION) {
+			PostProcessing::ChromaticAberration(renderBuffer, CHROM_ABB_R_OFFSET, CHROM_ABB_G_OFFSET, CHROM_ABB_B_OFFSET);
+		}
+	}	
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
-		screen->Plot(i, j, rayTracer->GetBufferValue(i, j).GetRGBValue());
+		screen->Plot(i, j, renderBuffer[i][j].GetRGBValue());
 	}
 
 	rayTracer->cam.Tick();
