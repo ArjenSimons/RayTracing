@@ -171,6 +171,7 @@ void MyApp::Tick(float deltaTime)
 	chrono::steady_clock::time_point end = chrono::steady_clock::now();
 	cout << "Render time:" << chrono::duration_cast<chrono::milliseconds>(end - begin).count() << "[ms]" << endl;
 
+	chrono::steady_clock::time_point ppbegin = chrono::steady_clock::now();
 
 	if (POSTPROCESSING) {
 		if (VIGNETTING) {
@@ -182,7 +183,11 @@ void MyApp::Tick(float deltaTime)
 		if (CHROMATIC_ABERRATION) {
 			PostProcessing::ChromaticAberration(renderBuffer, CHROM_ABB_R_OFFSET, CHROM_ABB_G_OFFSET, CHROM_ABB_B_OFFSET);
 		}
-	}	
+	}
+
+	chrono::steady_clock::time_point ppend = chrono::steady_clock::now();
+	cout << "PP time:" << chrono::duration_cast<chrono::milliseconds>(ppend - ppbegin).count() << "[ms]" << endl;
+
 
 	for (int i = 0; i < SCRWIDTH; i++) for (int j = 0; j < SCRHEIGHT; j++)
 	{
