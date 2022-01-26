@@ -1253,6 +1253,7 @@ public:
 // Scenes.
 // TODO: Add scene manager.
 #include "src/Scenes/Scene.h"
+#include "src/Scenes/SceneManager.h"
 
 // Utils.
 #include "src/Utils/algebra.h"

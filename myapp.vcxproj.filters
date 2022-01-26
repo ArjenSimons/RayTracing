@@ -34,9 +34,6 @@
     <ClCompile Include="src\Utils\algebra.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scenes\Scene.cpp">
-      <Filter>src\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="src\Raytracing\RayTracer.cpp">
       <Filter>src\Raytracing</Filter>
     </ClCompile>
@@ -45,6 +42,9 @@
     </ClCompile>
     <ClCompile Include="src\Material\Material.cpp">
       <Filter>src\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\SceneManager.cpp">
+      <Filter>src\Scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="src\Material\Material.h">
       <Filter>src\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\SceneManager.h">
+      <Filter>src\Scenes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
