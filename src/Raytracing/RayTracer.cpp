@@ -240,6 +240,7 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 
 Color RayTracer::TraceDielectrics(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
 {
+	// TODO: Beer's law.
 	// Precalculate variables for refraction and fresnel formulas.
 	DielectricTerms terms = DielectricTerms(ray, i);
 
