@@ -104,13 +104,13 @@ void MyApp::Init()
 		bvhs.push_back(dragonInstance);
 		break;
 	case(Scenes::SBVH_TEST):
-		longPlaneMesh = make_shared<Mesh>("res/longPlane.obj");
-		model = new Model(float3(0, 0, 1), .2f, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		longPlaneMesh = make_shared<Mesh>("res/sbvhTest.obj");
+		model = new Model(float3(0, 0, 1), .1f, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
 		planeBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
 		planeBVH->ConstructBVH();
 		planeInstance = new BVHInstance(planeBVH);
-		planeInstance->RotateZ(45);
+		//planeInstance->RotateZ(45);
 		printf("# of tris = %i\n", model->GetTriangles()->size());
 
 		bvhs.push_back(planeInstance);

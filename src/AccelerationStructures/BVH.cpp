@@ -69,14 +69,28 @@ void BVH::RotateZ(float r)
 
 Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
 {
-	if (!RayAABBIntersect(r, node->bounds)) return dummyIntersection;
+
+	if (!RayAABBIntersect(r, node->bounds))
+	{
+		Intersection dummy;
+		dummy.nAABBandTriChecks = nChecks;
+		return dummy;
+	}
+	nChecks++;
 	if (node->isLeaf)
 	{
-		return GetClosestIntersectionInNode(r, node, nChecks);
+		//Intersection dummy;
+		//dummy.nAABBandTriChecks = nChecks;
+		////printf("nchecks: %i\n", dummy.nAABBandTriChecks);
+
+		//return dummy;
+		Intersection intersection = GetClosestIntersectionInNode(r, node, nChecks);
+		return intersection;
 	}
 	else
 	{
-		nChecks += 2;
+		//printf("oof");
+		//nChecks += 2;
 		Intersection left = TraverseInner(r, node->left, nChecks);
 		Intersection right = TraverseInner(r, node->right, nChecks);
 
@@ -97,11 +111,19 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 		if (intersection.intersect && (closest_intersection.intersect == false || intersection.t < closest_intersection.t))
 		{
 			closest_intersection = intersection;
+			//printf("hit i=%i\n", i);
+			nChecks++;
 		}
+		nChecks++;
 	}
-
-	nChecks += node->first + node->count;
+	//printf("checks %i\n", nChecks);
+	//nChecks += node->first + node->count;
 	closest_intersection.nAABBandTriChecks = nChecks;
+
+	//if (!closest_intersection.intersect) {
+	//	printf("ha %i", nChecks);
+	//}
+
 	return closest_intersection;
 }
 
@@ -129,7 +151,7 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 
 void BVH::SubdivideBVHNode(BVHNode* node)
 {
-	printf("\nnode Count: %i\n", node->count);
+	//printf("Node sa: %f\n", node->bounds.bmin3.x);
 	if (node->count == 1)
 	{
 		node->isLeaf = true;
@@ -296,8 +318,8 @@ bool BVH::Partition(BVHNode* node)
 		return false;
 	}
 
-	AABB unionRL = left->bounds.Intersection(right->bounds);
-	if (unionRL.Area() / node->bounds.Area() > spatialSplitConstraint) 
+	AABB intersectRL = left->bounds.Intersection(right->bounds);
+	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
 		//printf("union Area %f\n", unionRL.Area());
 		//TODO: Implement spatial splitting

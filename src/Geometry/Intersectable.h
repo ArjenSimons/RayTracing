@@ -10,6 +10,7 @@ struct Intersection
 	Substance sTo;
 	float2 uv;
 	uint nAABBandTriChecks;
+	uint lastStepCount;
 
 	Intersection()
 	{
@@ -18,6 +19,7 @@ struct Intersection
 		position = float3(0, 0, 0);
 		normal = float3(0, 0, 0);
 		nAABBandTriChecks = 0;
+		lastStepCount = 0;
 	}
 };
 
