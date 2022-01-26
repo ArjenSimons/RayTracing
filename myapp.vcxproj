@@ -132,7 +132,6 @@
     <ClCompile Include="src\myapp.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
     <ClCompile Include="src\Raytracing\RayTracer.cpp" />
-    <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Geometry\Sphere.cpp" />
     <ClCompile Include="template\template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
