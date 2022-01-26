@@ -8,8 +8,7 @@ BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool di
 
 void BVH::ConstructBVH()
 {
-
-	indices = new uInt[n];
+	indices.resize(n);
 	for (int i = 0; i < n; i++) indices[i] = i;
 	pool = new BVHNode[n * 2];
 	root = &pool[0];
@@ -25,6 +24,7 @@ void BVH::ConstructBVH()
 	if (diagnostics)
 	{
 		printf("Number of nodes: %i\n", countNodes(*root));
+		printf("Number of references %i\n", root->count);
 	}
 }
 
@@ -195,15 +195,8 @@ bool BVH::Partition(BVHNode* node)
 		node->isLeaf = true;
 		return false;
 	}
-
+	
 	int j = node->first - 1;
-
-	AABB intersectRL = left_right.first.Intersection(left_right.second);
-	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
-	{
-		//printf("union Area %f\n", unionRL.Area());
-		//TODO: Implement spatial splitting
-	}
 
 	switch (splitAxis)
 	{
@@ -235,6 +228,29 @@ bool BVH::Partition(BVHNode* node)
 			}
 		}
 		break;
+	}
+
+	AABB intersectRL = left_right.first.Intersection(left_right.second);
+	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
+	{
+		//printf("union Area %f\n", unionRL.Area());
+		//TODO: Implement spatial splitting
+
+		int createdReferenceCount = 0;
+
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			AABB aabb = (*primitives)[indices[i]].GetAABB();
+
+			if (aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+			{
+				//indices[node->count + createdReferenceCount] = indices[i];
+
+				//createdReferenceCount++;
+
+			}
+		}
+
 	}
 
 	BVHNode* left = node->left;

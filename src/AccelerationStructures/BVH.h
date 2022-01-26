@@ -15,7 +15,7 @@ private:
 private:
 	vector<Triangle>* primitives;
 	uInt n;
-	uInt* indices;
+	vector<uInt> indices;
 	uInt poolPtr;
 
 	int binCount = 4;
