@@ -26,12 +26,13 @@ private:
 	mat4 translation;
 	mat4 invTranslation;
 	
-
 	Intersection dummyIntersection;
 
 	bool diagnostics;
 	float3 minb = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+
+	float spatialSplitConstraint = 1;
 
 public:
 	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics);
