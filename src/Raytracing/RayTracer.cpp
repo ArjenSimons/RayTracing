@@ -144,26 +144,26 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 	Intersection intersection = GetNearestIntersection(ray);
 
-	Color rgb;
-	float value = static_cast<float>(intersection.nAABBandTriChecks) / 6000000.0f;
+	//Color rgb;
+	//float value = static_cast<float>(intersection.nAABBandTriChecks) / 6000000.0f;
 
-	/*if (intersection.nAABBandTriChecks > 20000000)
-		printf("nchecks %i\n", intersection.nAABBandTriChecks);*/
+	///*if (intersection.nAABBandTriChecks > 20000000)
+	//	printf("nchecks %i\n", intersection.nAABBandTriChecks);*/
 
-	
-	if (value > 0.5) {
-		value -= 0.5;
-		rgb.value.z = 0;
-		rgb.value.y = (1.0f - 2.0f * value);
-		rgb.value.x = (2.0f * value);
-	}
-	if (value <= 0.5) {
-		rgb.value.z = (1.0f - 2.0f * value);
-		rgb.value.y = (2.0f * value);
-		rgb.value.x = 0;
-	}
+	//
+	//if (value > 0.5) {
+	//	value -= 0.5;
+	//	rgb.value.z = 0;
+	//	rgb.value.y = (1.0f - 2.0f * value);
+	//	rgb.value.x = (2.0f * value);
+	//}
+	//if (value <= 0.5) {
+	//	rgb.value.z = (1.0f - 2.0f * value);
+	//	rgb.value.y = (2.0f * value);
+	//	rgb.value.x = 0;
+	//}
 
-	return rgb;
+	//return rgb;
 
 	if (!intersection.intersect)
 	{

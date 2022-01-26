@@ -32,6 +32,7 @@ private:
 	float3 minb = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 
+	//1.0e-5 for optimal sbvh, 1 for full bvh
 	float spatialSplitConstraint = 1;
 
 public:

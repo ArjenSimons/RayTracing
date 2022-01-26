@@ -5,7 +5,8 @@ enum class Scenes
 {
 	ANIM_SETUP,
 	BUDDHA_SETUP,
-	BVH_TEST
+	BVH_TEST,
+	SBVH_TEST
 };
 
 TheApp* CreateApp() { return new MyApp(); }
@@ -23,13 +24,15 @@ vector<BVHInstance*> buddhas;
 BVH* buddha;
 BVH* dragonBVH;
 BVH* bunnyBVH;
+BVH* planeBVH;
 BVHInstance* dragonInstance;
 BVHInstance* dragonInstance1;
 BVHInstance* bunnyInstance;
+BVHInstance* planeInstance;
 Scene* scene;
 
 int x = 0;
-Scenes sceneType = Scenes::BVH_TEST;
+Scenes sceneType = Scenes::SBVH_TEST;
 
 // -----------------------------------------------------------
 // Initialize the application
@@ -53,6 +56,7 @@ void MyApp::Init()
 	//shared_ptr<ImageTexture> brickTexture = nullptr;
 	shared_ptr<Mesh> dragonMesh;
 	shared_ptr<Mesh> bunnyMesh;
+	shared_ptr<Mesh> longPlaneMesh;
 
 	switch (sceneType)
 	{
@@ -98,6 +102,18 @@ void MyApp::Init()
 		dragonInstance->RotateY(90);
 		//dragonInstance->Translate(float3(0, 0, 0));
 		bvhs.push_back(dragonInstance);
+		break;
+	case(Scenes::SBVH_TEST):
+		longPlaneMesh = make_shared<Mesh>("res/longPlane.obj");
+		model = new Model(float3(0, 0, 1), .2f, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		planeBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+
+		planeBVH->ConstructBVH();
+		planeInstance = new BVHInstance(planeBVH);
+		planeInstance->RotateZ(45);
+		printf("# of tris = %i\n", model->GetTriangles()->size());
+
+		bvhs.push_back(planeInstance);
 		break;
 	case(Scenes::BUDDHA_SETUP):
 		shared_ptr<Mesh> buddhaMesh = make_shared<Mesh>("res/buddha.obj");

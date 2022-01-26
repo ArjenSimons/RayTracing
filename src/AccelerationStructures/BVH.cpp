@@ -129,7 +129,8 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 
 void BVH::SubdivideBVHNode(BVHNode* node)
 {
-	if (node->count < 3)
+	printf("\nnode Count: %i\n", node->count);
+	if (node->count == 1)
 	{
 		node->isLeaf = true;
 		return;
