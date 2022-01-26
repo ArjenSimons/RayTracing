@@ -163,7 +163,7 @@ void MyApp::Init()
 		scene->AddLightSource(light);
 	}
 
-	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0, 5, THREADING_DISABLED, MSAA::NONE);
 }
 
 // -----------------------------------------------------------

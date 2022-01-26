@@ -8,7 +8,13 @@ BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool di
 
 void BVH::ConstructBVH()
 {
-	indices.resize(n);
+	//Allocate extra memory for indices when constructing the sbvh
+	if (spatialSplitConstraint == 1) 
+		indices.resize(n); 
+	else
+		indices.resize(n * 1.2);
+
+
 	for (int i = 0; i < n; i++) indices[i] = i;
 	pool = new BVHNode[n * 2];
 	root = &pool[0];
@@ -237,13 +243,30 @@ bool BVH::Partition(BVHNode* node)
 		//TODO: Implement spatial splitting
 
 		int createdReferenceCount = 0;
+		printf("start\n");
 
-		for (int i = node->first; i < node->first + node->count; i++)
+		int end = node->first + node->count;
+
+		for (int i = node->first; i < end; i++)
 		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
+			Triangle tri = (*primitives)[indices[i]];
+
+			aabb = tri.GetAABB();
 
 			if (aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 			{
+				if (tri.GetCentroid().x <= splitPos) 
+				{
+					indices.insert(indices.begin()+ node->first + 1, indices[i]);
+					j++;
+				}
+				else 
+				{
+					indices.insert(indices.begin() + node->first + j - node->first + 2, indices[i]);
+				}
+				node->count += 1;
+
+				//printf("increment\n");
 				//indices[node->count + createdReferenceCount] = indices[i];
 
 				//createdReferenceCount++;

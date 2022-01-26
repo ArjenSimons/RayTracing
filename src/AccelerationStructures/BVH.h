@@ -33,7 +33,7 @@ private:
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 
 	//1.0e-5 for optimal sbvh, 1 for full bvh
-	float spatialSplitConstraint = 1;
+	float spatialSplitConstraint = 1.0e-5f;
 
 public:
 	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics);
