@@ -178,13 +178,90 @@ bool BVH::Partition(BVHNode* node)
 	AABB aabb;
 	float lowestCost = minb.x;
 	float bestBinPos;
-	float axisWidths[3] = { node->bounds.bmax3.x - node->bounds.bmin3.x, node->bounds.bmax3.y - node->bounds.bmin3.y, node->bounds.bmax3.z - node->bounds.bmin3.z };
-	float binPositions[3] = { node->bounds.bmin3.x, node->bounds.bmin3.y, node->bounds.bmin3.z };
+	
 	//Binning
-	AABB bestLeft, bestRight;
-
 	int splitAxis = node->bounds.LongestAxis();
 
+	pair<AABB, AABB> left_right = SplitAABB(node, splitAxis, lowestCost, bestBinPos);
+
+	//float parentArea = node->bounds.Area();
+	//float parentCost = parentArea * node->count;
+	//printf("parentCost: %f\n", parentCost);
+	//printf("parentArea: %f\n", parentArea);
+	if (lowestCost >= node->bounds.Area() * node->count)
+	{
+		node->left = nullptr;
+		node->right = nullptr;
+		node->isLeaf = true;
+		return false;
+	}
+
+	int j = node->first - 1;
+
+	AABB intersectRL = left_right.first.Intersection(left_right.second);
+	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
+	{
+		//printf("union Area %f\n", unionRL.Area());
+		//TODO: Implement spatial splitting
+	}
+
+	switch (splitAxis)
+	{
+	case(0):
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			if ((*primitives)[indices[i]].GetCentroid().x < bestBinPos)
+			{
+				std::swap(indices[++j], indices[i]);
+			}
+		}
+
+		break;
+	case(1):
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			if ((*primitives)[indices[i]].GetCentroid().y < bestBinPos)
+			{
+				std::swap(indices[++j], indices[i]);
+			}
+		}
+		break;
+	case(2):
+		for (int i = node->first; i < node->first + node->count; i++)
+		{
+			if ((*primitives)[indices[i]].GetCentroid().z < bestBinPos)
+			{
+				std::swap(indices[++j], indices[i]);
+			}
+		}
+		break;
+	}
+
+	BVHNode* left = node->left;
+	left->count = j - node->first + 1;
+	left->first = node->first;
+	left->bounds = left_right.first;// CalculateBounds(left->first, left->count);
+
+	BVHNode* right = node->right;
+	right->count = node->count - left->count;
+	right->first = left->first + left->count;
+	right->bounds = left_right.second;// CalculateBounds(right->first, right->count);
+
+	if (left->count == node->count || right->count == node->count) {
+		node->left = nullptr;
+		node->right = nullptr;
+		node->isLeaf = true;
+		return false;
+	}
+	return true;
+}
+
+pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
+{
+	AABB bestLeft, bestRight;
+
+	float axisWidths[3] = { node->bounds.bmax3.x - node->bounds.bmin3.x, node->bounds.bmax3.y - node->bounds.bmin3.y, node->bounds.bmax3.z - node->bounds.bmin3.z };
+	float binPositions[3] = { node->bounds.bmin3.x, node->bounds.bmin3.y, node->bounds.bmin3.z };
 	float binDist = axisWidths[splitAxis] * iBinCount;
 
 	for (int j = 0; j < binCount - 1; j++)
@@ -255,77 +332,7 @@ bool BVH::Partition(BVHNode* node)
 		}
 	}
 
-	//float parentArea = node->bounds.Area();
-	//float parentCost = parentArea * node->count;
-	//printf("parentCost: %f\n", parentCost);
-	//printf("parentArea: %f\n", parentArea);
-	if (lowestCost >= node->bounds.Area() * node->count)
-	{
-		node->left = nullptr;
-		node->right = nullptr;
-		node->isLeaf = true;
-		return false;
-	}
-
-	int j = node->first - 1;
-
-	switch (splitAxis)
-	{
-	case(0):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().x < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-
-		break;
-	case(1):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().y < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
-	case(2):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().z < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
-	}
-
-	BVHNode* left = node->left;
-	left->count = j - node->first + 1;
-	left->first = node->first;
-	left->bounds = bestLeft;// CalculateBounds(left->first, left->count);
-
-	BVHNode* right = node->right;
-	right->count = node->count - left->count;
-	right->first = left->first + left->count;
-	right->bounds = bestRight;// CalculateBounds(right->first, right->count);
-
-	if (left->count == node->count || right->count == node->count) {
-		node->left = nullptr;
-		node->right = nullptr;
-		node->isLeaf = true;
-		return false;
-	}
-
-	AABB intersectRL = left->bounds.Intersection(right->bounds);
-	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
-	{
-		//printf("union Area %f\n", unionRL.Area());
-		//TODO: Implement spatial splitting
-	}
-
-	return true;
+	return make_pair(bestLeft, bestRight);
 }
 
 int BVH::countNodes(const BVHNode& node) const

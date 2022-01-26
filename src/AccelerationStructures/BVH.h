@@ -53,6 +53,7 @@ private:
 	AABB CalculateBounds(uint32_t first, uint32_t count);
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);
+	pair<AABB, AABB> SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos);
 	int countNodes(const BVHNode& node) const;
 };
 
