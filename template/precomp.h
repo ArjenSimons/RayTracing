@@ -1261,5 +1261,8 @@ public:
 // Renderers.
 #include "src/Raytracing/RayTracer.h"
 
+// Post processing
+#include "src/PostProcessing/PostProcessing.h"
+
 
 // EOF

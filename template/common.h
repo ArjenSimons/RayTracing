@@ -2,6 +2,23 @@
 #define SCRWIDTH	1280
 #define SCRHEIGHT	720
 
+#define MAX_RECURSIONS 20
+
+#define POSTPROCESSING true
+#define GAMMA_CORRECTION true
+#define GAMMA 0.7f
+
+#define VIGNETTING false
+#define VIGNETTE_RADIUS .6f
+#define VIGNETTE_SMOOTHNESS .3f
+#define VIGNETTE_INTENSITY 1.f
+
+#define CHROMATIC_ABERRATION true
+#define CHROM_ABB_R_OFFSET int2(1,1)
+#define CHROM_ABB_G_OFFSET int2(-1,1)
+#define CHROM_ABB_B_OFFSET int2(-1,-1)
+
+
 // IMPORTANT NOTE ON OPENCL COMPATIBILITY ON OLDER LAPTOPS:
 // Without a GPU, a laptop needs at least a 'Broadwell' Intel CPU (5th gen, 2015):
 // Intel's OpenCL implementation 'NEO' is not available on older devices.
