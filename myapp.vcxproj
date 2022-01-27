@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="src\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Utils\algebra.cpp" />
     <ClCompile Include="src\AccelerationStructures\BVH.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\PostProcessing\PostProcessing.h" />
     <ClInclude Include="src\Utils\algebra.h" />
     <ClInclude Include="src\AccelerationStructures\BVH.h" />
     <ClInclude Include="src\Camera\Camera.h" />
