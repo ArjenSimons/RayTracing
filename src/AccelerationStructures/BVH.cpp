@@ -395,9 +395,9 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 		AABB rightClipBox(rightMin, node->bounds.bmax3);		
 
 
-		float3* corners = tri.GetCorners();
+		float3* vertices = tri.GetVertices();
 
-		if (corners[0].x <= binPos && corners[1].x <= binPos && corners[2].x <= binPos) //All points left
+		if (vertices[0].x <= binPos && vertices[1].x <= binPos && vertices[2].x <= binPos) //All points left
 		{
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
@@ -408,7 +408,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
 			leftCount++;
 		}
-		else if (corners[0].x > binPos && corners[1].x > binPos && corners[2].x > binPos) //All points right
+		else if (vertices[0].x > binPos && vertices[1].x > binPos && vertices[2].x > binPos) //All points right
 		{
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
