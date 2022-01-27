@@ -292,7 +292,7 @@ bool BVH::Partition(BVHNode* node)
 		node->isLeaf = true;
 		return false;
 	}
-	return true;
+return true;
 }
 
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
@@ -383,11 +383,79 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	float3 rightMinBound = minb;
 	float3 rightMaxBound = maxb;
 	int leftCount = 0;
+	int rightCount = 0;
 
 	for (int i = node->first; i < node->first + node->count; i++)
 	{
+		Triangle tri = (*primitives)[indices[i]];
+		//AABB aabb = (*primitives)[indices[i]].GetAABB();
+		float3 leftMax = float3(binPos, node->bounds.bmax3.y, node->bounds.bmax3.y);
+		float3 rightMin = float3(binPos, node->bounds.bmin3.y, node->bounds.bmin3.y);
+		AABB leftClipBox(node->bounds.bmin3, leftMax);
+		AABB rightClipBox(rightMin, node->bounds.bmax3);		
+
+
+		float3* corners = tri.GetCorners();
+
+		if (corners[0].x <= binPos && corners[1].x <= binPos && corners[2].x <= binPos) //All points left
+		{
+			AABB aabb = (*primitives)[indices[i]].GetAABB();
+			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
+			leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
+			leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
+			leftMaxBound.x = max(leftMaxBound.x, aabb.bmax3.x);
+			leftMaxBound.y = max(leftMaxBound.y, aabb.bmax3.y);
+			leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
+			leftCount++;
+		}
+		else if (corners[0].x > binPos && corners[1].x > binPos && corners[2].x > binPos) //All points right
+		{
+			AABB aabb = (*primitives)[indices[i]].GetAABB();
+			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
+			rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
+			rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
+			rightMaxBound.x = max(rightMaxBound.x, aabb.bmax3.x);
+			rightMaxBound.y = max(rightMaxBound.y, aabb.bmax3.y);
+			rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
+			rightCount++;
+		}
+		else //Some points right, some left
+		{
+			//LeftBox
+			vector<float3> leftPolyVerts = ClipTriangle(tri, leftClipBox);
+			for (float3 p : leftPolyVerts)
+			{
+				leftMinBound.x = min(leftMinBound.x, p.x);
+				leftMinBound.y = min(leftMinBound.y, p.y);
+				leftMinBound.z = min(leftMinBound.z, p.z);
+				leftMaxBound.x = max(leftMaxBound.x, p.x);
+				leftMaxBound.y = max(leftMaxBound.y, p.y);
+				leftMaxBound.z = max(leftMaxBound.z, p.z);
+				leftCount++;
+			}
+
+			//RightBox
+			vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
+			for (float3 p : rightPolyVerts)
+			{
+				rightMinBound.x = min(rightMinBound.x, p.x);
+				rightMinBound.y = min(rightMinBound.y, p.y);
+				rightMinBound.z = min(rightMinBound.z, p.z);
+				rightMaxBound.x = max(rightMaxBound.x, p.x);
+				rightMaxBound.y = max(rightMaxBound.y, p.y);
+				rightMaxBound.z = max(rightMaxBound.z, p.z);
+				rightCount++;
+			}
+		}
 
 	}
+}
+
+vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
+{
+	vector<float3> tris;
+	//TODO: implement all cases;
+	return tris;
 }
 
 int BVH::countNodes(const BVHNode& node) const

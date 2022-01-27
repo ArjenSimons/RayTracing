@@ -55,6 +55,7 @@ private:
 	bool Partition(BVHNode* node);
 	pair<AABB, AABB> SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos);
 	pair<AABB, AABB> SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos);
+	vector<float3> ClipTriangle(Triangle& tri, AABB& clipBox);
 	int countNodes(const BVHNode& node) const;
 };
 
