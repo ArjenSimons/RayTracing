@@ -3,14 +3,11 @@
 class RayTracer
 {
 private:
-	float2 uv[SCRWIDTH][SCRHEIGHT];
 	float uvX;
 	float uvY;
 	float df;
 
 	Color renderBuffer[SCRWIDTH][SCRHEIGHT];
-	Color tempBuffer[SCRWIDTH][SCRHEIGHT];
-
 	unsigned int nThreads = processor_count * 4;
 	ThreadingStatus threadingStatus;
 	ThreadPool threadPool;
@@ -20,8 +17,9 @@ private:
 	MSAA msaaStatus;
 
 	Scene* scene;
-	unsigned int maxBounces;
+	unsigned int maxBounces = MAX_RECURSIONS;
 public:
+	float2 uv[SCRWIDTH][SCRHEIGHT];
 	Camera cam;
 	//RayTracer();
 	RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus);
@@ -29,11 +27,8 @@ public:
 
 	void SetScene(Scene* scene);
 
-	void Render();
-	void Render(unsigned int yStart, unsigned int yEnd);
-	void AddVignette(float outerRadius, float smoothness, float intensity);
-	void AddGammaCorrection(float gamma);
-	void AddChromaticAberration(int2 redOffset, int2 greenOffset, int2 blueOffset);
+	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT]);
+	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int yStart, unsigned int yEnd);
 	Color GetBufferValue(int& i, int& j) const { return renderBuffer[i][j]; }
 	Color Trace(Ray &ray, unsigned int bounceDepth = 0);
 
@@ -43,7 +38,6 @@ public:
 private:
 	Intersection GetNearestIntersection(Ray& ray);
 	Color DirectIllumination(float3 point, float3 normal);
-	Color Refraction(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
-	float3 Reflect(const float3& dir, const float3& normal) const;
+	Color TraceDielectrics(const Ray& ray, const Intersection& intersection, unsigned int bounceDepth);
 	bool RayIsBlocked(Ray& ray, float d2, LightSource* l) const;
 };

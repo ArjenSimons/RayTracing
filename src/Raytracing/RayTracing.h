@@ -97,6 +97,7 @@ inline float Absorption(Substance substance)
 	}
 }
 
+// TODO: Replace this struct by making color an alias of float3. Or just leave colors as float3 values.
 struct Color
 {
 	float3 value;
@@ -150,4 +151,6 @@ struct Color
 	{
 		return float3(value.x * rhs, value.y * rhs, value.z * rhs);
 	}
+
+	friend inline void operator+=(Color& a, Color b) { a.value += b.value; }
 };

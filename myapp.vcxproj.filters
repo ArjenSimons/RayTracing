@@ -45,6 +45,9 @@
     </ClCompile>
     <ClCompile Include="src\Scenes\SceneManager.cpp">
       <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClCompile Include="src\PostProcessing\PostProcessing.cpp">
+      <Filter>src\PostProcessing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +105,12 @@
     <ClInclude Include="src\Scenes\SceneManager.h">
       <Filter>src\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="src\PostProcessing\PostProcessing.h">
+      <Filter>src\PostProcessing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\RayUtils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -150,6 +159,9 @@
     </Filter>
     <Filter Include="src\Material">
       <UniqueIdentifier>{e24332fd-edc2-46be-9c7f-eac63a15d9a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\PostProcessing">
+      <UniqueIdentifier>{728179cc-2350-4c34-96ad-96deaebb7991}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1257,9 +1257,13 @@ public:
 
 // Utils.
 #include "src/Utils/algebra.h"
+#include "src/Utils/RayUtils.h"
 
 // Renderers.
 #include "src/Raytracing/RayTracer.h"
+
+// Post processing
+#include "src/PostProcessing/PostProcessing.h"
 
 
 // EOF

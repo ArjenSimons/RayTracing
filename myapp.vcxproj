@@ -124,6 +124,7 @@
   <!-- END Custom section -->
   <ItemGroup>
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
+    <ClCompile Include="src\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Utils\algebra.cpp" />
     <ClCompile Include="src\AccelerationStructures\BVH.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Scenes\SceneManager.h" />
+    <ClInclude Include="src\PostProcessing\PostProcessing.h" />
     <ClInclude Include="src\Utils\algebra.h" />
     <ClInclude Include="src\AccelerationStructures\BVH.h" />
     <ClInclude Include="src\Camera\Camera.h" />
@@ -159,6 +161,7 @@
     <ClInclude Include="src\Raytracing\RayTracer.h" />
     <ClInclude Include="src\Raytracing\RayTracing.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Utils\RayUtils.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
     <ClInclude Include="src\Texturing\Texture.h" />
