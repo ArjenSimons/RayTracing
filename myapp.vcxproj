@@ -160,6 +160,7 @@
     <ClInclude Include="src\Raytracing\RayTracer.h" />
     <ClInclude Include="src\Raytracing\RayTracing.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Utils\RayUtils.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
     <ClInclude Include="src\Texturing\Texture.h" />

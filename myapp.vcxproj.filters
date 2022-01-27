@@ -105,6 +105,9 @@
     <ClInclude Include="src\PostProcessing\PostProcessing.h">
       <Filter>src\PostProcessing</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utils\RayUtils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">

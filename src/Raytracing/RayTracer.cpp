@@ -118,7 +118,7 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 		if (intersection.sTo != SOLID)
 		{
-			environment.value += Refraction(ray, intersection, bounceDepth).value;
+			environment.value += TraceDielectrics(ray, intersection, bounceDepth).value;
 		}
 		else 
 		{
@@ -190,54 +190,43 @@ Color RayTracer::DirectIllumination(float3 pos, float3 N)
 	return out;
 }
 
-Color RayTracer::Refraction(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
+Color RayTracer::TraceDielectrics(const Ray& ray, const Intersection& i, unsigned int bounceDepth)
 {
-	float n1 = RefractionIndex(ray.substance);
-	float n2 = RefractionIndex(i.sTo);
+	// TODO: Beer's law.
+	// Precalculate variables for refraction and fresnel formulas.
+	DielectricTerms terms = DielectricTerms(ray, i);
 
-	float indexRatio = n1/ n2;
-	float3 D = ray.Dir * -1;
-	float cosi = dot(i.normal, D);
-
-	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
-
-	float energy = ray.e * exp(-Absorption(ray.substance) * i.t);
-
-	if (k < 0) //TIR
-	{
-		return Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy, ray.substance), bounceDepth + 1);
+	// Reflection and transmission coeficcients.
+	float Fr, Ft;
+	
+	// TIR: Total internal reflection. No need to use fresnel for Fr and Ft.
+	if (terms.k < 0) {
+		Fr = 1.f;
+		Ft = 0.f;
+	}
+	// No TIR, use fresnel to determine Fr and Ft.
+	else {
+		Fresnel(terms, Fr, Ft);
 	}
 
-	//Fresnel
-	float sint = indexRatio * sqrtf(max(0.f, 1 - cosi * cosi));
-	float cost = sqrt(max(0.0f, 1 - sint * sint));
-	cosi = fabsf(cosi);
+	Color color = Color();
 
-	float n1TimesAngle1 = n1 * cosi;
-	float n1TimesAngle2 = n1 * cost;
-	float n2TimesAngle1 = n2 * cosi;
-	float n2TimesAngle2 = n2 * cost;
+	// Reflection
+	if (Fr > 0) {
+		//Reflect 
+		float3 reflectDir = Reflect(ray.Dir, i.normal);
+		Color reflectCol = Fr * Trace(Ray(i.position, reflectDir, terms.energy * Fr, ray.substance), bounceDepth + 1).value;
+		color += reflectCol;
+	}
 
-	float sPolarizedSqrd = (n1TimesAngle1 - n2TimesAngle2) / (n1TimesAngle1 + n2TimesAngle2);
-	float pPolarizedSqrd = (n1TimesAngle2 - n2TimesAngle1) / (n1TimesAngle2 + n2TimesAngle1);
+	// Transmission (refraction)
+	if (Ft > 0) {
+		float3 refractDir = Refract(ray.Dir, i.normal, terms);
+		Color refractCol = Ft * Trace(Ray(i.position, refractDir, terms.energy * Ft, i.sTo), bounceDepth + 1).value;
+		color += refractCol;
+	}
 
-	float Fr = energy * .5f * (sPolarizedSqrd * sPolarizedSqrd + pPolarizedSqrd * pPolarizedSqrd);
-	float Ft = energy - Fr;
-
-
-	//Reflect 
-	Color reflect = Fr * Trace(Ray(i.position, Reflect(ray.Dir, i.normal), energy * Fr, ray.substance), bounceDepth + 1).value;
-
-	//Refract
-	float3 dir = indexRatio * ray.Dir + i.normal * (indexRatio * cosi - sqrt(k));
-	Color refract = Ft * Trace(Ray(i.position, dir, energy, i.sTo), bounceDepth).value;
-
-	return refract + reflect;
-}
-
-float3 RayTracer::Reflect(const float3& dir, const float3& N) const
-{
-	return dir - 2 * dot(dir, N) * N;
+	return color;
 }
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
