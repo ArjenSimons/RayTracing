@@ -374,6 +374,22 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 	return make_pair(bestLeft, bestRight);
 }
 
+pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos)
+{
+	AABB bestLeft, bestRight;
+
+	float3 leftMinBound = minb;
+	float3 leftMaxBound = maxb;
+	float3 rightMinBound = minb;
+	float3 rightMaxBound = maxb;
+	int leftCount = 0;
+
+	for (int i = node->first; i < node->first + node->count; i++)
+	{
+
+	}
+}
+
 int BVH::countNodes(const BVHNode& node) const
 {
 	if (node.isLeaf) return 1;
