@@ -45,7 +45,7 @@
     </ClCompile>
     <ClCompile Include="src\Scenes\SceneManager.cpp">
       <Filter>src\Scenes</Filter>
-    </ClInclude>
+    </ClCompile>
     <ClCompile Include="src\PostProcessing\PostProcessing.cpp">
       <Filter>src\PostProcessing</Filter>
     </ClCompile>
