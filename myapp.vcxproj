@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="src\Scenes\SceneManager.cpp" />
     <ClCompile Include="src\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Utils\algebra.cpp" />
     <ClCompile Include="src\AccelerationStructures\BVH.cpp" />
@@ -133,7 +134,6 @@
     <ClCompile Include="src\myapp.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
     <ClCompile Include="src\Raytracing\RayTracer.cpp" />
-    <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Geometry\Sphere.cpp" />
     <ClCompile Include="template\template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -146,6 +146,7 @@
     <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Scenes\SceneManager.h" />
     <ClInclude Include="src\PostProcessing\PostProcessing.h" />
     <ClInclude Include="src\Utils\algebra.h" />
     <ClInclude Include="src\AccelerationStructures\BVH.h" />
