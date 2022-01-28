@@ -237,44 +237,57 @@ bool BVH::Partition(BVHNode* node)
 	}
 
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
+	printf("before spatial area: %f\n", intersectRL.Area());
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
-		//printf("union Area %f\n", unionRL.Area());
-		//TODO: Implement spatial splitting
+		float spatialCost;
+		pair<AABB, AABB> spatial_left_right = SpatialSplitAABB(node, splitAxis, spatialCost, bestBinPos);
+		printf("spatial cost: %i\n", spatialCost);
 
-		int createdReferenceCount = 0;
-		printf("start\n");
-
-		int end = node->first + node->count;
-
-		for (int i = node->first; i < end; i++)
+		if (spatialCost < lowestCost) 
 		{
-			Triangle tri = (*primitives)[indices[i]];
+			left_right.first = spatial_left_right.first;
+			left_right.second = spatial_left_right.second;
 
-			aabb = tri.GetAABB();
+			//printf("union Area %f\n", unionRL.Area());
+			//TODO: Implement spatial splitting
 
-			if (aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+			int createdReferenceCount = 0;
+			printf("start\n");
+
+			int end = node->first + node->count;
+
+			for (int i = node->first; i < end; i++)
 			{
-				if (tri.GetCentroid().x <= splitPos) 
+				Triangle tri = (*primitives)[indices[i]];
+
+				aabb = tri.GetAABB();
+
+				if (aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 				{
-					indices.insert(indices.begin()+ node->first + 1, indices[i]);
-					j++;
+					if (tri.GetCentroid().x <= splitPos)
+					{
+						indices.insert(indices.begin() + node->first + 1, indices[i]);
+						j++;
+					}
+					else
+					{
+						indices.insert(indices.begin() + node->first + j - node->first + 2, indices[i]);
+					}
+					node->count += 1;
+
+					//printf("increment\n");
+					//indices[node->count + createdReferenceCount] = indices[i];
+
+					//createdReferenceCount++;
+
 				}
-				else 
-				{
-					indices.insert(indices.begin() + node->first + j - node->first + 2, indices[i]);
-				}
-				node->count += 1;
-
-				//printf("increment\n");
-				//indices[node->count + createdReferenceCount] = indices[i];
-
-				//createdReferenceCount++;
-
 			}
 		}
-
 	}
+	AABB intersect = left_right.first.Intersection(left_right.second);
+	printf("after spatial area: %f\n", intersect.Area());
+
 
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
@@ -447,8 +460,19 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 				rightCount++;
 			}
 		}
-
 	}
+
+	AABB left = AABB(leftMinBound, leftMaxBound);
+	AABB right = AABB(rightMinBound, rightMaxBound);
+	//SAH
+	float leftArea = left.Area();
+	float rightArea = right.Area();
+	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
+	rightArea = isinf(rightArea) ? 0 : rightArea;
+
+	lowestSpatialCost = leftArea * leftCount + rightArea * rightCount;
+
+	return make_pair(left, right);
 }
 
 //Sutherland-Hodgman Algorithm: https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
@@ -457,16 +481,23 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	vector<float3> out;
 	//TODO: implement all cases;
 	float3* vertices = tri.GetVertices();
+	out.push_back(vertices[0]);
+	out.push_back(vertices[1]);
+	out.push_back(vertices[2]);
 
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 3; j++)
-		{
-			float p1Dist = clipPlanes[i].Distance(vertices[j]);
-			float p2Dist = clipPlanes[i].Distance(vertices[j + 1]);
+		vector<float3> input = out;
+		out.clear();
 
+		float3 startPoint = input.back();
+
+		for (float3 endPoint : input)
+		{
+			float p1Dist = clipPlanes[i].Distance(startPoint);
+			float p2Dist = clipPlanes[i].Distance(endPoint);
 			bool p1InFront = p1Dist >= 0;
 			bool p1Behind = !p1InFront;
 			bool p2InFront = p2Dist >= 0;
@@ -474,21 +505,22 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 
 			if (p1InFront && p2InFront) 
 			{
-				out.push_back(vertices[i + 1]);
+				out.push_back(endPoint);
 			}
 			else if (p1InFront && p2Behind) 
 			{
-				float alpha = p1Dist / (p1Dist + p2Dist);
-				float3 intersection = lerp(vertices[j], vertices[j + 1], alpha);
+				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
+				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
 			}
 			else if (p1Behind && p2InFront)
 			{
-				float alpha = p1Dist / (p1Dist + p2Dist);
-				float3 intersection = lerp(vertices[j], vertices[j + 1], alpha);
+				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
+				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
-				out.push_back(vertices[i + 1]);
+				out.push_back(endPoint);
 			}
+			endPoint = startPoint;
 		}
 	}
 	return out;
@@ -496,21 +528,21 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 
 ClipPlane* BVH::GetClipPlanes(AABB& clipBox)
 {
-	ClipPlane out[6] = {};
+	ClipPlane out[4] = {};
 
 	out[0].p = clipBox.bmin3;
 	out[0].n = float3(1, 0, 0);
 	out[1].p = clipBox.bmin3;
 	out[1].n = float3(0, 1, 0);
-	out[2].p = clipBox.bmin3;
-	out[2].n = float3(0, 0, 1);
+	//out[2].p = clipBox.bmin3;
+	//out[2].n = float3(0, 0, 1);
 
+	out[2].p = clipBox.bmax3;
+	out[2].n = float3(-1, 0, 0);
 	out[3].p = clipBox.bmax3;
-	out[3].n = float3(-1, 0, 0);
-	out[4].p = clipBox.bmax3;
-	out[4].n = float3(0, -1, 0);
-	out[5].p = clipBox.bmax3;
-	out[5].n = float3(0, 0, -1);
+	out[3].n = float3(0, -1, 0);
+	//out[5].p = clipBox.bmax3;
+	//out[5].n = float3(0, 0, -1);
 
 	return out;
 }
