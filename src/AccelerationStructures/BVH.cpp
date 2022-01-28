@@ -457,9 +457,36 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	vector<float3> out;
 	//TODO: implement all cases;
 	float3* vertices = tri.GetVertices();
+	//out.push_back(vertices[0]);
+	//out.push_back(vertices[1]);
+	//out.push_back(vertices[2]);
+
+	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
+
 	for (int i = 0; i < 6; i++)
 	{
-		
+		for (int j = 0; j < 3; j++)
+		{
+			//vertices[j] = p1, vertices [j + 1] = p2;
+			bool p1InFront = clipPlanes[i].Distance(vertices[j]) >= 0;
+			bool p1Behind = !p1InFront;
+			bool p2InFront = clipPlanes[i].Distance(vertices[i + 1]) >= 0;
+			bool p2Behind = !p2InFront;
+
+			if (p1InFront && p2InFront) 
+			{
+				out.push_back(vertices[i + 1]);
+			}
+			else if (p1InFront && p2Behind) 
+			{
+				//Push intersection point
+			}
+			else if (p1Behind && p2InFront)
+			{
+				//Push intersection point
+				out.push_back(vertices[i + 1]);
+			}
+		}
 	}
 
 
@@ -469,6 +496,20 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 ClipPlane* BVH::GetClipPlanes(AABB& clipBox)
 {
 	ClipPlane out[6] = {};
+
+	out[0].p = clipBox.bmin3;
+	out[0].n = float3(1, 0, 0);
+	out[1].p = clipBox.bmin3;
+	out[1].n = float3(0, 1, 0);
+	out[2].p = clipBox.bmin3;
+	out[2].n = float3(0, 0, 1);
+
+	out[3].p = clipBox.bmax3;
+	out[3].n = float3(-1, 0, 0);
+	out[4].p = clipBox.bmax3;
+	out[4].n = float3(0, -1, 0);
+	out[5].p = clipBox.bmax3;
+	out[5].n = float3(0, 0, -1);
 
 	return out;
 }

@@ -5,9 +5,10 @@ struct ClipPlane
 	float3 p;
 	float3 n;
 
-	ClipPlane(float3 p, float3 n)
-		: p(p), n(n)
-	{};
+	float Distance(float3& point) const
+	{
+		return dot(n, point - p);
+	}
 };
 
 class BVH
