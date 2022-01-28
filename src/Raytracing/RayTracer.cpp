@@ -10,8 +10,8 @@
 //	//}
 //}
 
-RayTracer::RayTracer(Scene* scene, float distortion, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
-	: scene(scene), df(clamp(distortion, 0.0f, 1.0f)), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
+RayTracer::RayTracer(Scene* scene, unsigned int maxBounces, ThreadingStatus threadingStatus, MSAA msaaStatus)
+	: scene(scene), maxBounces(maxBounces), threadingStatus(threadingStatus), threadPool(processor_count), msaaStatus(msaaStatus)
 {
 	//renderBuffer = std::vector<std::vector<float3>>(SCRWIDTH, std::vector<float3>(SCRHEIGHT, float3(0, 0, 0)));
 	cam = Camera();
@@ -270,21 +270,28 @@ Ray RayTracer::GetUVRay(const float2& uv) const
 		yOffset = RandomFloat() * uvY;
 	}
 
-	return Ray(cam.pos, normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos), 1, AIR, 0, 100);
+	float3 rayDir = normalize((cam.p0 + (uv.x + xOffset) * (cam.p1 - cam.p0) + (uv.y + yOffset) * (cam.p2 - cam.p0)) - cam.pos);
+	Ray ray = Ray(cam.pos, rayDir, 1, AIR, 0, 100);
 
+	float df = clamp(LENS_DISTORTION, 0.0f, 1.0f);
+
+	if (df == 0) {
+		return ray;
+	}
+	
 	// Calculate lens distortion
 	// indexRatio determines the degree of distortion
 	// Because df is clamped on [0..1], 0.5 <= ratio <= 1 will always hold true
 	// The same code can in theory be used to implement a pincushion distortion, if a ratio > 1 is used
 	// however, our code currently does not support this.
-	//float indexRatio = 1 / (1 + df); 
-	//float3 D = ray.Dir * -1;
-	//float cosi = dot(cam.viewDir, D);
-	//float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
-	//cosi = fabsf(cosi);
+	float indexRatio = 1 / (1 + df);
+	float3 D = rayDir * -1;
+	float cosi = dot(cam.viewDir, D);
+	float k = 1 - ((indexRatio * indexRatio) * (1 - cosi * cosi));
+	cosi = fabsf(cosi);
 
-	//float3 dir = indexRatio * ray.Dir + cam.viewDir * (indexRatio * cosi - sqrt(k));
-	//ray.Dir = normalize(dir);
+	float3 dir = indexRatio * rayDir + cam.viewDir * (indexRatio * cosi - sqrt(k));
+	ray.Dir = normalize(dir);
 
-	//return ray;
+	return ray;
 }
