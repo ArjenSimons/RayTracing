@@ -451,15 +451,12 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	}
 }
 
-//Modified version of the Sutherland-Hodgman Algorithm: https://www.geeksforgeeks.org/polygon-clipping-sutherland-hodgman-algorithm-please-change-bmp-images-jpeg-png/
+//Sutherland-Hodgman Algorithm: https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
 vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 {
 	vector<float3> out;
 	//TODO: implement all cases;
 	float3* vertices = tri.GetVertices();
-	//out.push_back(vertices[0]);
-	//out.push_back(vertices[1]);
-	//out.push_back(vertices[2]);
 
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
 
@@ -467,10 +464,12 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			//vertices[j] = p1, vertices [j + 1] = p2;
-			bool p1InFront = clipPlanes[i].Distance(vertices[j]) >= 0;
+			float p1Dist = clipPlanes[i].Distance(vertices[j]);
+			float p2Dist = clipPlanes[i].Distance(vertices[j + 1]);
+
+			bool p1InFront = p1Dist >= 0;
 			bool p1Behind = !p1InFront;
-			bool p2InFront = clipPlanes[i].Distance(vertices[i + 1]) >= 0;
+			bool p2InFront = p2Dist >= 0;
 			bool p2Behind = !p2InFront;
 
 			if (p1InFront && p2InFront) 
@@ -479,17 +478,19 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			}
 			else if (p1InFront && p2Behind) 
 			{
-				//Push intersection point
+				float alpha = p1Dist / (p1Dist + p2Dist);
+				float3 intersection = lerp(vertices[j], vertices[j + 1], alpha);
+				out.push_back(intersection);
 			}
 			else if (p1Behind && p2InFront)
 			{
-				//Push intersection point
+				float alpha = p1Dist / (p1Dist + p2Dist);
+				float3 intersection = lerp(vertices[j], vertices[j + 1], alpha);
+				out.push_back(intersection);
 				out.push_back(vertices[i + 1]);
 			}
 		}
 	}
-
-
 	return out;
 }
 

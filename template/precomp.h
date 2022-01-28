@@ -1256,6 +1256,7 @@ public:
 
 // Utils.
 #include "src/Utils/algebra.h"
+#include "src/Utils/MathUtil.h"
 
 // Renderers.
 #include "src/Raytracing/RayTracer.h"
