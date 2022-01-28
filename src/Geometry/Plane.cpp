@@ -21,7 +21,7 @@ Intersection Plane::Intersect(Ray ray)
 	{
 		out.t = (dot((position - ray.Origin), normal)) / denom;
 
-		if (out.t > 0)
+		if (out.t > 0.001f)
 		{
 			out.intersect = true;
 			out.position = ray.Origin + out.t * ray.Dir;
