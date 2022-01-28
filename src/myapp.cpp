@@ -20,7 +20,7 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::AnimationTest();
+	scene = SceneManager::CornellBox();
 	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
 }
 
