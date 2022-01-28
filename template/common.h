@@ -2,9 +2,13 @@
 #define SCRWIDTH	1280
 #define SCRHEIGHT	720
 
+// TODO: Add global epsilon.
+//#define RAY_EPSILON = 0.001f
 #define MAX_RECURSIONS 20
 
-#define POSTPROCESSING true
+#define LENS_DISTORTION 0.5f
+
+#define POSTPROCESSING false
 #define GAMMA_CORRECTION true
 #define GAMMA 0.7f
 

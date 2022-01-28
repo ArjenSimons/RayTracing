@@ -20,8 +20,8 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::BvhStressTest();
-	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
+	scene = SceneManager::AnimationTest();
+	rayTracer = new RayTracer(scene, 5, THREADING_ENABLED, MSAA::NONE);
 }
 
 // -----------------------------------------------------------
