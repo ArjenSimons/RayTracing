@@ -145,6 +145,7 @@
     <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="MathUtil.h" />
     <ClInclude Include="src\Utils\algebra.h" />
     <ClInclude Include="src\AccelerationStructures\BVH.h" />
     <ClInclude Include="src\Camera\Camera.h" />

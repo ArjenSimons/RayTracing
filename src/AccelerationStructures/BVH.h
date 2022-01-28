@@ -1,5 +1,15 @@
 #pragma once
 
+struct ClipPlane
+{
+	float3 p;
+	float3 n;
+
+	ClipPlane(float3 p, float3 n)
+		: p(p), n(n)
+	{};
+};
+
 class BVH
 {
 private:
@@ -56,6 +66,7 @@ private:
 	pair<AABB, AABB> SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos);
 	pair<AABB, AABB> SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos);
 	vector<float3> ClipTriangle(Triangle& tri, AABB& clipBox);
+	ClipPlane* GetClipPlanes(AABB& clipBox);
 	int countNodes(const BVHNode& node) const;
 };
 

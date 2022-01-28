@@ -451,11 +451,26 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	}
 }
 
+//Modified version of the Sutherland-Hodgman Algorithm: https://www.geeksforgeeks.org/polygon-clipping-sutherland-hodgman-algorithm-please-change-bmp-images-jpeg-png/
 vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 {
-	vector<float3> tris;
+	vector<float3> out;
 	//TODO: implement all cases;
-	return tris;
+	float3* vertices = tri.GetVertices();
+	for (int i = 0; i < 6; i++)
+	{
+		
+	}
+
+
+	return out;
+}
+
+ClipPlane* BVH::GetClipPlanes(AABB& clipBox)
+{
+	ClipPlane out[6] = {};
+
+	return out;
 }
 
 int BVH::countNodes(const BVHNode& node) const
