@@ -145,7 +145,7 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 
 Intersection RayTracer::GetNearestIntersection(Ray& ray)
 {
-	return scene->GetBVH()->Traverse(ray);
+	return scene->Intersect(ray);
 
 	Intersection closest_intersection;
 
@@ -154,7 +154,7 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 		Intersection* intersection;
 		intersection = &obj->Intersect(ray);
 
-		if (intersection->intersect && intersection->t != 0 && intersection->t < closest_intersection.t)
+		if (intersection->intersect && intersection->t > 0.001f && intersection->t < closest_intersection.t)
 		{
 			closest_intersection = *intersection;
 		}
@@ -164,11 +164,11 @@ Intersection RayTracer::GetNearestIntersection(Ray& ray)
 
 Color RayTracer::DirectIllumination(float3 pos, float3 N)
 {
-	Color out = float3(1, 1, 1);
+	Color out = float3(0, 0, 0);
 
-	float cosa = clamp(dot(N, normalize(-float3(.2f, -.8f, .1f))), 0.0, 1.0);
+	//float cosa = clamp(dot(N, normalize(-float3(.2f, -.8f, .1f))), 0.0, 1.0);
 
-	return out * cosa;
+	//return out * cosa;
 
 	for (LightSource* light : scene->GetLights())
 	{
@@ -231,10 +231,12 @@ Color RayTracer::TraceDielectrics(const Ray& ray, const Intersection& i, unsigne
 
 bool RayTracer::RayIsBlocked(Ray& ray, float d2, LightSource* l) const
 {
+
+
 	bool isDirectional = typeid(*l) == typeid(DirectionalLight);
 	bool isSpotLight = typeid(*l) == typeid(SpotLight);
 
-	Intersection i = scene->GetBVH()->Traverse(ray);
+	Intersection i = scene->Intersect(ray);
 
 	if (isDirectional)
 	{
