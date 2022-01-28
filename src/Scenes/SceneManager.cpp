@@ -89,3 +89,45 @@ Scene* SceneManager::BvhStressTest() {
 	Scene* scene = new Scene(objects, lights, topBVH);
 	return scene;
 }
+
+Scene* SceneManager::CornellBox() {
+	// Colortextures
+	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+
+	// Specular material and diffuse material.
+	Material mirrorMat = Material(Color(1, 0.9f, 0.9f), colorTexture, 1.f);
+	Material glassMat = Material(Color(.95f, .95f, .95f), colorTexture);
+	Material offWhiteMat = Material(Color(.85f, .85f, .85f), colorTexture);
+	Material redMat = Material(Color(.95f, .1f, .2f), colorTexture);
+	Material blueMat = Material(Color(.1f, .2f, .95f), colorTexture);
+	Material blackMat = Material(Color(0, 0, 0), colorTexture);
+
+	// Four walls, ceiling, floor.
+	Plane* floor = new Plane(float3(0, -3, 0), float3(0, 1, 0), SOLID, offWhiteMat);
+	Plane* ceiling = new Plane(float3(0, 5, 0), float3(0, -1, 0), SOLID, offWhiteMat);
+	Plane* back_wall = new Plane(float3(0, 0, 7), float3(0, 0, -1), SOLID, offWhiteMat);
+	Plane* left_wall = new Plane(float3(-4, 0, 0), float3(1, 0, 0), SOLID, redMat);
+	Plane* right_wall = new Plane(float3(4, 0, 0), float3(-1, 0, 0), SOLID, blueMat);
+	Plane* fourth_wall = new Plane(float3(0, 0, -1), float3(0, 0, 1), SOLID, blackMat);
+
+
+	// Two spheres, one pure specular, one dielectric.
+	Sphere* mirrorSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, mirrorMat);
+	Sphere* glassSphere = new Sphere(float3(2, -2, 4), 1.f, GLASS, glassMat);
+
+	// TODO: For the path tracer, One area light.
+	PointLight * pointLight = new PointLight(float3(0, 4.5f, 4), 20, float3(1, 1, 1));
+	//DirectionalLight* directionalLight = new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
+
+	// TODO: Add objects, lights, bvh
+	vector<Intersectable*> objects = { floor, ceiling, back_wall, left_wall, right_wall, fourth_wall, mirrorSphere, glassSphere };
+	vector<LightSource*> lights = { pointLight };
+
+	Scene* scene = new Scene(objects, lights);
+
+	return scene;
+}
+
+Scene* SceneManager::BeersLaw() {
+	return new Scene();
+}
