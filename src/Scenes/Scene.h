@@ -5,13 +5,17 @@ class Scene
 private: 
 	vector<Intersectable*> objects;
 	vector<LightSource*> lightSources;
-	TopLevelBVH* topBVH;
+	TopLevelBVH* topBVH = nullptr;
 	function<void(float)> animations;
 public:
 
-	Scene(vector<Intersectable*> objects, vector<LightSource*> lightSources, TopLevelBVH* topBVH) {
+	Scene(vector<Intersectable*> objects, vector<LightSource*> lightSources) {
 		this->objects = objects;
 		this->lightSources = lightSources;
+	};
+	Scene(vector<Intersectable*> objects, vector<LightSource*> lightSources, TopLevelBVH* topBVH) 
+		: Scene(objects, lightSources) 
+	{
 		this->topBVH = topBVH;
 	};
 	Scene() {}
@@ -39,6 +43,26 @@ public:
 		if (animations) {
 			animations(deltaTime); 
 		}
+	}
+
+	// Traverse the BVH, then traverse the extra primitives in the scene.
+	Intersection Intersect(Ray& r) {
+		Intersection closest_intersection;
+
+	/*	if (topBVH != nullptr) {
+			closest_intersection = topBVH->Traverse(r);
+		}*/
+
+		for (Intersectable * geometry : objects)
+		{
+			Intersection intersection = geometry->Intersect(r);
+
+			if (intersection.intersect && intersection.t != 0 && intersection.t < closest_intersection.t)
+			{
+				closest_intersection = intersection;
+			}
+		}
+		return closest_intersection;
 	}
 
 	inline vector<Intersectable*> GetObjects() const { return objects; }
