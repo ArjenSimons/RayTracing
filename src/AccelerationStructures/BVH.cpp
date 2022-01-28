@@ -88,6 +88,7 @@ Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
 		//Intersection dummy;
 		//dummy.nAABBandTriChecks = nChecks;
 		////printf("nchecks: %i\n", dummy.nAABBandTriChecks);
+		//nChecks++;
 
 		//return dummy;
 		Intersection intersection = GetClosestIntersectionInNode(r, node, nChecks);
@@ -120,7 +121,7 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 			//printf("hit i=%i\n", i);
 			nChecks++;
 		}
-		nChecks++;
+		//nChecks++;
 	}
 	//printf("checks %i\n", nChecks);
 	//nChecks += node->first + node->count;
@@ -236,13 +237,14 @@ bool BVH::Partition(BVHNode* node)
 		break;
 	}
 
+	printf("lowestCost: %f\n", lowestCost);
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
 	printf("before spatial area: %f\n", intersectRL.Area());
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
-		float spatialCost;
+		float spatialCost = 0;
 		pair<AABB, AABB> spatial_left_right = SpatialSplitAABB(node, splitAxis, spatialCost, bestBinPos);
-		printf("spatial cost: %i\n", spatialCost);
+		printf("spatial cost: %f\n", spatialCost);
 
 		if (spatialCost < lowestCost) 
 		{
@@ -267,12 +269,12 @@ bool BVH::Partition(BVHNode* node)
 				{
 					if (tri.GetCentroid().x <= splitPos)
 					{
-						indices.insert(indices.begin() + node->first + 1, indices[i]);
-						j++;
+						indices.insert(indices.begin() + j + 2, indices[i]);
 					}
 					else
 					{
-						indices.insert(indices.begin() + node->first + j - node->first + 2, indices[i]);
+						indices.insert(indices.begin() + node->first + 1, indices[i]);
+						j++;
 					}
 					node->count += 1;
 
@@ -287,7 +289,7 @@ bool BVH::Partition(BVHNode* node)
 	}
 	AABB intersect = left_right.first.Intersection(left_right.second);
 	printf("after spatial area: %f\n", intersect.Area());
-
+	cout << intersect.Area() << "yeet" << endl;
 
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
@@ -305,7 +307,17 @@ bool BVH::Partition(BVHNode* node)
 		node->isLeaf = true;
 		return false;
 	}
-return true;
+
+	printf("---top---\n");
+	printf("parent: %f\n", node->bounds.bmax3.y);
+	printf("left: %f\n", left->bounds.bmax3.y);
+	printf("right: %f\n", right->bounds.bmax3.y);
+	printf("---bot---\n");
+	printf("parent: %f\n", node->bounds.bmin3.y);
+	printf("left: %f\n", left->bounds.bmin3.y);
+	printf("right: %f\n", right->bounds.bmin3.y);
+	printf("------------\n");
+	return true;
 }
 
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
@@ -383,6 +395,7 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			bestRight = right;
 		}
 	}
+	printf("leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", bestLeft.Area(), bestRight.Area());
 
 	return make_pair(bestLeft, bestRight);
 }
@@ -444,8 +457,8 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 				leftMaxBound.x = max(leftMaxBound.x, p.x);
 				leftMaxBound.y = max(leftMaxBound.y, p.y);
 				leftMaxBound.z = max(leftMaxBound.z, p.z);
-				leftCount++;
 			}
+			leftCount++;
 
 			//RightBox
 			vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
@@ -457,8 +470,8 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 				rightMaxBound.x = max(rightMaxBound.x, p.x);
 				rightMaxBound.y = max(rightMaxBound.y, p.y);
 				rightMaxBound.z = max(rightMaxBound.z, p.z);
-				rightCount++;
 			}
+			rightCount++;
 		}
 	}
 
@@ -470,7 +483,9 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
-	lowestSpatialCost = leftArea * leftCount + rightArea * rightCount;
+	printf("leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
+	float cost = leftArea * leftCount + rightArea * rightCount;;
+	lowestSpatialCost = cost;
 
 	return make_pair(left, right);
 }
@@ -481,9 +496,9 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	vector<float3> out;
 	//TODO: implement all cases;
 	float3* vertices = tri.GetVertices();
-	out.push_back(vertices[0]);
-	out.push_back(vertices[1]);
 	out.push_back(vertices[2]);
+	out.push_back(vertices[1]);
+	out.push_back(vertices[0]);
 
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
 
