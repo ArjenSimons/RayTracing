@@ -18,7 +18,7 @@ private:
 	{
 		AABB bounds;
 		bool isLeaf;
-		BVHNode* left, * right;
+		BVHNode* parent, * left, * right;
 		uint32_t first;
 		uint32_t count;
 	};
@@ -45,6 +45,7 @@ private:
 
 	//1.0e-5 for optimal sbvh, 1 for full bvh
 	float spatialSplitConstraint = 1.0e-5f;
+	int spatialSplitCount = 0;
 
 public:
 	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics);
@@ -64,6 +65,8 @@ private:
 	AABB CalculateBounds(uint32_t first, uint32_t count);
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);
+	void UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount);
+	void UpdateBVHNodeCounts(BVHNode* node, int amount);
 	pair<AABB, AABB> SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos);
 	pair<AABB, AABB> SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos);
 	vector<float3> ClipTriangle(Triangle& tri, AABB& clipBox);
