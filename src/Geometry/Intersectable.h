@@ -121,6 +121,7 @@ public:
 	~Triangle() = default;
 	Intersection Intersect(Ray ray) override;
 	AABB GetAABB() const { return aabb; }
+	float3 GetNormal() const { return normal; }
 	float3 GetCentroid() const { return centroid; }
 	float3* GetVertices() const { float3 positions[3] = { position, position2, position3 }; return positions; }
 private:

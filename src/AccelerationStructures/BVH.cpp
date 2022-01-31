@@ -161,6 +161,7 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 	//printf("Node sa: %f\n", node->bounds.bmin3.x);
 	if (node->count == 1)
 	{
+		printf("leaf ref count: %i\n", node->count);
 		node->isLeaf = true;
 		return;
 	}
@@ -173,6 +174,9 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 	{
 		SubdivideBVHNode(node->left);
 		SubdivideBVHNode(node->right);
+	}
+	else {
+		printf("leaf ref count: %i\n", node->count);
 	}
 }
 
@@ -301,13 +305,8 @@ bool BVH::Partition(BVHNode* node)
 	right->first = left->first + left->count;
 	right->bounds = left_right.second;// CalculateBounds(right->first, right->count);
 
-	if (left->count == node->count || right->count == node->count) {
-		node->left = nullptr;
-		node->right = nullptr;
-		node->isLeaf = true;
-		return false;
-	}
 
+	printf("-----Y-------\n");
 	printf("---top---\n");
 	printf("parent: %f\n", node->bounds.bmax3.y);
 	printf("left: %f\n", left->bounds.bmax3.y);
@@ -316,7 +315,24 @@ bool BVH::Partition(BVHNode* node)
 	printf("parent: %f\n", node->bounds.bmin3.y);
 	printf("left: %f\n", left->bounds.bmin3.y);
 	printf("right: %f\n", right->bounds.bmin3.y);
-	printf("------------\n");
+	printf("-----X-------\n");
+	printf("parent: %f\n", node->bounds.bmax3.x);
+	printf("left: %f\n", left->bounds.bmax3.x);
+	printf("right: %f\n", right->bounds.bmax3.x);
+	printf("---bot---\n");
+	printf("parent: %f\n", node->bounds.bmin3.x);
+	printf("left: %f\n", left->bounds.bmin3.x);
+	printf("right: %f\n", right->bounds.bmin3.x);
+	printf("--------------\n");
+
+	if (left->count == node->count || right->count == node->count) {
+		node->left = nullptr;
+		node->right = nullptr;
+		node->isLeaf = true;
+		return false;
+	}
+
+
 	return true;
 }
 
@@ -494,21 +510,30 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 {
 	vector<float3> out;
-	//TODO: implement all cases;
 	float3* vertices = tri.GetVertices();
+
+	//TODO: Order tris accordingly (maybe) if running into future problems
 	out.push_back(vertices[2]);
 	out.push_back(vertices[1]);
 	out.push_back(vertices[0]);
 
+	//printf("\nTRI ORDERS:\n");
+	//printf("%f\n", vertices[0].x);
+	//printf("%f\n", vertices[1].x);
+	//printf("%f\n", vertices[2].x);
+
+
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
 
-	for (int i = 0; i < 4; i++)
+	//cout << "clipBox: " << clipBox.bmin3.x << ", " << clipBox.bmin3.y << " | " << clipBox.bmax3.x << ", " << clipBox.bmax3.y << endl;
+
+	for (int i = 0; i < 6; i++)
 	{
 		vector<float3> input = out;
 		out.clear();
 
 		float3 startPoint = input.back();
-
+		//cout << "SIZE: " << input.size() << endl;
 		for (float3 endPoint : input)
 		{
 			float p1Dist = clipPlanes[i].Distance(startPoint);
@@ -518,15 +543,20 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			bool p2InFront = p2Dist >= 0;
 			bool p2Behind = !p2InFront;
 
+			cout << startPoint.x << ", " << startPoint.y << " | " << endPoint.x << ", " << endPoint.y << endl;
+
 			if (p1InFront && p2InFront) 
 			{
 				out.push_back(endPoint);
+
+				//printf("both\n");
 			}
 			else if (p1InFront && p2Behind) 
 			{
 				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
+				//printf("p1\n");
 			}
 			else if (p1Behind && p2InFront)
 			{
@@ -534,30 +564,41 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
 				out.push_back(endPoint);
+				//printf("p2\n");
+
 			}
-			endPoint = startPoint;
+			else {
+				//printf("none\n");
+			}
+			startPoint = endPoint;
 		}
 	}
+	/*cout << "OUTPUT" << endl;
+	for (float3 endPoint : out) {
+		cout << "out: " << endPoint.x << ", " << endPoint.y << endl;
+
+	}*/
+
 	return out;
 }
 
 ClipPlane* BVH::GetClipPlanes(AABB& clipBox)
 {
-	ClipPlane out[4] = {};
+	ClipPlane out[6] = {};
 
 	out[0].p = clipBox.bmin3;
 	out[0].n = float3(1, 0, 0);
 	out[1].p = clipBox.bmin3;
 	out[1].n = float3(0, 1, 0);
-	//out[2].p = clipBox.bmin3;
-	//out[2].n = float3(0, 0, 1);
+	out[2].p = clipBox.bmin3;
+	out[2].n = float3(0, 0, 1);
 
-	out[2].p = clipBox.bmax3;
-	out[2].n = float3(-1, 0, 0);
 	out[3].p = clipBox.bmax3;
-	out[3].n = float3(0, -1, 0);
-	//out[5].p = clipBox.bmax3;
-	//out[5].n = float3(0, 0, -1);
+	out[3].n = float3(-1, 0, 0);
+	out[4].p = clipBox.bmax3;
+	out[4].n = float3(0, -1, 0);
+	out[5].p = clipBox.bmax3;
+	out[5].n = float3(0, 0, -1);
 
 	return out;
 }
