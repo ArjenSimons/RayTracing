@@ -104,8 +104,8 @@ void MyApp::Init()
 		bvhs.push_back(dragonInstance);
 		break;
 	case(Scenes::SBVH_TEST):
-		longPlaneMesh = make_shared<Mesh>("res/tree.obj");
-		model = new Model(float3(0, 0, 1), 1, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		longPlaneMesh = make_shared<Mesh>("res/bunny.obj");
+		model = new Model(float3(0, 0, 1), 4, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
 		planeBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
 		planeBVH->ConstructBVH();

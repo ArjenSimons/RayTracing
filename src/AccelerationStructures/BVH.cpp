@@ -269,55 +269,61 @@ bool BVH::Partition(BVHNode* node)
 			int end = node->first + node->count;
 			int spatialSplitCount = 0;
 
+			vector<uInt> inds(indices.begin() + node->first, indices.begin() + end);
 
-			for (int i = node->first; i < end; i++)
+			for (int i = 0; i < node->count; i++)
 			{
-				Triangle tri = (*primitives)[indices[i]];
+				Triangle tri = (*primitives)[inds[i]];
 
 				aabb = tri.GetAABB();
+				float3* verts = tri.GetVertices();
 
+				//points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f
 				switch (splitAxis)
 				{
 				case(0):
-					if (aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+					if (!(verts[0].x <= splitPos + 0.01f && verts[1].x <= splitPos + 0.01f && verts[2].x <= splitPos + 0.01f)
+						&& !(verts[0].x >= splitPos - 0.01f && verts[1].x >= splitPos - 0.01f && verts[2].x >= splitPos - 0.01f))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
 						if (tri.GetCentroid().x <= splitPos)
 						{
-							indices.insert(indices.begin() + j + 2, indices[i]);
+							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
 						else
 						{
-							indices.insert(indices.begin() + node->first + 1, indices[i]);
+							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
 						spatialSplitCount += 1;
 					}
 					break;
 				case(1):
-					if (aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
+					if (!(verts[0].y <= splitPos + 0.01f && verts[1].y <= splitPos + 0.01f && verts[2].y <= splitPos + 0.01f)
+						&& !(verts[0].y >= splitPos - 0.01f && verts[1].y >= splitPos - 0.01f && verts[2].y >= splitPos - 0.01f))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
 						if (tri.GetCentroid().y <= splitPos)
 						{
-							indices.insert(indices.begin() + j + 2, indices[i]);
+							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
 						else
 						{
-							indices.insert(indices.begin() + node->first + 1, indices[i]);
+							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
 						spatialSplitCount += 1;
 					}
 					break;
 				case(2):
-					if (aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
+					if (!(verts[0].z <= splitPos + 0.01f && verts[1].z <= splitPos + 0.01f && verts[2].z <= splitPos + 0.01f)
+						&& !(verts[0].z >= splitPos - 0.01f && verts[1].z >= splitPos - 0.01f && verts[2].z >= splitPos - 0.01f))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
 						if (tri.GetCentroid().z <= splitPos)
 						{
-							indices.insert(indices.begin() + j + 2, indices[i]);
+							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
 						else
 						{
-							indices.insert(indices.begin() + node->first + 1, indices[i]);
+							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
 						spatialSplitCount += 1;
@@ -325,9 +331,13 @@ bool BVH::Partition(BVHNode* node)
 					break;
 				}
 			}
+			printf("root count before: %i\n", root->count);
+			printf("count before: %i\n", node->count);
 			//printf("hahahahahahahahahhahahahaa\n");
 			UpdateBVHNodeCounts(node, spatialSplitCount);
-
+			printf("ExitNodeCount: %i\n", node->count);
+			printf("root count after: %i\n", root->count);
+			printf("count after: %i\n", node->count);
 		}
 	}
 	AABB intersect = left_right.first.Intersection(left_right.second);
@@ -629,7 +639,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
-	//printf("leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
+	printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
 	float cost = leftArea * leftCount + rightArea * rightCount;;
 	lowestSpatialCost = cost;
 
