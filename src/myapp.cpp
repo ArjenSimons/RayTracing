@@ -23,7 +23,7 @@ void MyApp::Init()
 void MyApp::Tick(float deltaTime)
 {
 	// clear the screen to black
-	screen->Clear(0);
+	//screen->Clear(0);
 
 	// Animate scene and move camera.
 	bool animated = scene->Animate(deltaTime);
