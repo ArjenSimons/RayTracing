@@ -105,7 +105,7 @@ void MyApp::Init()
 		break;
 	case(Scenes::SBVH_TEST):
 		longPlaneMesh = make_shared<Mesh>("res/tree.obj");
-		model = new Model(float3(0, 0, 1), 1.0f, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
+		model = new Model(float3(0, 0, 1), 1, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
 		planeBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
 		planeBVH->ConstructBVH();
@@ -163,7 +163,7 @@ void MyApp::Init()
 		scene->AddLightSource(light);
 	}
 
-	rayTracer = new RayTracer(scene, 0, 5, THREADING_DISABLED, MSAA::NONE);
+	rayTracer = new RayTracer(scene, 0, 5, THREADING_ENABLED, MSAA::NONE);
 }
 
 // -----------------------------------------------------------

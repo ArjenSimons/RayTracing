@@ -399,9 +399,9 @@ void BVH::UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount)
 void BVH::UpdateBVHNodeCounts(BVHNode* node, int amount)
 {
 	node->count += amount;
-	/*printf("UPDATING REFERENCES\n");
+	//printf("UPDATING REFERENCES\n");
 	if (node->parent != nullptr)
-		UpdateBVHNodeCounts(node->parent, amount);*/
+		UpdateBVHNodeCounts(node->parent, amount);
 }
 
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
@@ -650,7 +650,7 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	//printf("%f\n", vertices[1].x);
 	//printf("%f\n", vertices[2].x);
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
-	printf("\n === CLIPPING START ==== \n");
+	//printf("\n === CLIPPING START ==== \n");
 	for (int i = 0; i < 6; i++)
 	{
 		vector<float3> input = out;
@@ -661,20 +661,20 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			return input;
 		}
 
-		printf("size: %i\n", input.size());
+		//printf("size: %i\n", input.size());
 		float3 startPoint = input.back();
 
 		for (float3 endPoint : input)
 		{
-			printf("========loopStart===========\n");
-			printf("clipPlane normal: %f, %f, %f\n", clipPlanes[i].n.x, clipPlanes[i].n.y, clipPlanes[i].n.z);
-			printf("clipPlane pos: %f, %f, %f\n", clipPlanes[i].p.x, clipPlanes[i].p.y, clipPlanes[i].p.z);
-			printf("startPoint: %f, %f, %f\n", startPoint.x, startPoint.y, startPoint.z);
-			printf("endPoint: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
+			//printf("========loopStart===========\n");
+			//printf("clipPlane normal: %f, %f, %f\n", clipPlanes[i].n.x, clipPlanes[i].n.y, clipPlanes[i].n.z);
+			//printf("clipPlane pos: %f, %f, %f\n", clipPlanes[i].p.x, clipPlanes[i].p.y, clipPlanes[i].p.z);
+			//printf("startPoint: %f, %f, %f\n", startPoint.x, startPoint.y, startPoint.z);
+			//printf("endPoint: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
 			float p1Dist = clipPlanes[i].Distance(startPoint);
 			float p2Dist = clipPlanes[i].Distance(endPoint);
-			printf("p1Dist: %f\n", p1Dist);
-			printf("p2Dist: %f\n", p2Dist);
+			//printf("p1Dist: %f\n", p1Dist);
+			//printf("p2Dist: %f\n", p2Dist);
 			bool p1InFront = p1Dist >= -.001f;
 			bool p1Behind = !p1InFront;
 			bool p2InFront = p2Dist >= -.001f;
@@ -683,16 +683,16 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			if (p1InFront && p2InFront) 
 			{
 				out.push_back(endPoint);
-				printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
-				printf("Inside\n");
+				//printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
+				//printf("Inside\n");
 			}
 			else if (p1InFront && p2Behind) 
 			{
 				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
-				printf("Inside\n");
-				printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
+				//printf("Inside\n");
+				//printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
 
 			}
 			else if (p1Behind && p2InFront)
@@ -701,21 +701,21 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
 				out.push_back(endPoint);
-				printf("Inside\n");
-				printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
-				printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
+				//printf("Inside\n");
+				//printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
+				//printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
 			}
-			else
-			{
-				printf("OUTSIDE\n");
-			}
+			//else
+			//{
+			//	  printf("OUTSIDE\n");
+			//}
 
 			startPoint = endPoint;
 		}
-		cout << "OUTPUT" << endl;
+		/*cout << "OUTPUT" << endl;
 		for (float3 endPoint : out) {
 			cout << "out: " << endPoint.x << ", " << endPoint.y << ", " << endPoint.z << endl;
-		}
+		}*/
 	}
 
 

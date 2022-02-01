@@ -143,32 +143,29 @@ Color RayTracer::Trace(Ray& ray, unsigned int bounceDepth)
 	float3 sky(.4, .7, .8);
 
 	Intersection intersection = GetNearestIntersection(ray);
-
-	//if (intersection.nAABBandTriChecks > 0 && !intersection.intersect)
-		//printf("ha gotcha + %i\n", intersection.nAABBandTriChecks);
 	
-	//Color rgb;
-	//float value = max(0.0f, (static_cast<float>(intersection.nAABBandTriChecks)) / (5.0f)); //static_cast<float>(intersection.nAABBandTriChecks) / 300.0f;
-	////rgb = float3(1, 1, 1);
-	////if (intersection.nAABBandTriChecks >= 4) {
-	////	//printf("nchecks %i\n", intersection.nAABBandTriChecks);
-	////	return rgb;
-	////}
-
-	//
-	//if (value > 0.5) {
-	//	value -= 0.5;
-	//	rgb.value.z = 0;
-	//	rgb.value.y = (1.0f - 2.0f * value);
-	//	rgb.value.x = (2.0f * value);
-	//}
-	//if (value <= 0.5) {
-	//	rgb.value.z = (1.0f - 2.0f * value);
-	//	rgb.value.y = (2.0f * value);
-	//	rgb.value.x = 0;
+	Color rgb;
+	float value = max(0.0f, (static_cast<float>(intersection.nAABBandTriChecks)) / (5.0f)); //static_cast<float>(intersection.nAABBandTriChecks) / 300.0f;
+	//rgb = float3(1, 1, 1);
+	//if (intersection.nAABBandTriChecks >= 4) {
+	//	//printf("nchecks %i\n", intersection.nAABBandTriChecks);
+	//	return rgb;
 	//}
 
-	//return rgb;
+	
+	if (value > 0.5) {
+		value -= 0.5;
+		rgb.value.z = 0;
+		rgb.value.y = (1.0f - 2.0f * value);
+		rgb.value.x = (2.0f * value);
+	}
+	if (value <= 0.5) {
+		rgb.value.z = (1.0f - 2.0f * value);
+		rgb.value.y = (2.0f * value);
+		rgb.value.x = 0;
+	}
+
+	return rgb;
 
 	if (!intersection.intersect)
 	{
