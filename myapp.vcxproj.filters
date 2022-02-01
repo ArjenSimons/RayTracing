@@ -34,9 +34,6 @@
     <ClCompile Include="src\Utils\algebra.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Raytracing\RayTracer.cpp">
-      <Filter>src\Raytracing</Filter>
-    </ClCompile>
     <ClCompile Include="src\Camera\Camera.cpp">
       <Filter>src\Camera</Filter>
     </ClCompile>
@@ -48,6 +45,15 @@
     </ClCompile>
     <ClCompile Include="src\PostProcessing\PostProcessing.cpp">
       <Filter>src\PostProcessing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Raytracing\RayTracer.cpp">
+      <Filter>src\Raytracing</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Raytracing\Whitted\WhittedRayTracer.cpp">
+      <Filter>src\Raytracing\Whitted</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Raytracing\PathTracer\PathTracer.cpp">
+      <Filter>src\Raytracing\PathTracer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,9 +93,6 @@
     <ClInclude Include="src\Scenes\Scene.h">
       <Filter>src\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="src\Raytracing\RayTracer.h">
-      <Filter>src\Raytracing</Filter>
-    </ClInclude>
     <ClInclude Include="src\Raytracing\RayTracing.h">
       <Filter>src\Raytracing</Filter>
     </ClInclude>
@@ -110,6 +113,21 @@
     </ClInclude>
     <ClInclude Include="src\Utils\RayUtils.h">
       <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils\DiffuseUtils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Raytracing\RayTracer.h">
+      <Filter>src\Raytracing</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Raytracing\Whitted\WhittedRayTracer.h">
+      <Filter>src\Raytracing\Whitted</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Raytracing\PathTracer\Accumulator.h">
+      <Filter>src\Raytracing\PathTracer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Raytracing\PathTracer\PathTracer.h">
+      <Filter>src\Raytracing\PathTracer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +180,15 @@
     </Filter>
     <Filter Include="src\PostProcessing">
       <UniqueIdentifier>{728179cc-2350-4c34-96ad-96deaebb7991}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Raytracing\DirectIlluminationSampler">
+      <UniqueIdentifier>{bd02aff6-ccba-40c2-bc62-af80e4d6ca35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Raytracing\PathTracer">
+      <UniqueIdentifier>{49b05351-88e1-49b3-95df-82efb772c435}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Raytracing\Whitted">
+      <UniqueIdentifier>{6091f9fd-c654-4b3b-abb2-12df8543714a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
