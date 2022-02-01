@@ -37,21 +37,27 @@ public:
 		this->animations = animations; 
 	}
 
-	inline void Animate(float deltaTime) {
+	inline void AddAreaLight(Intersectable* object) {
+		objects.push_back(object);
+	}
+
+	inline bool Animate(float deltaTime) {
 		int i = 0;
 		// Check if the std::function exists using its implicit bool conversion.
 		if (animations) {
 			animations(deltaTime); 
+			return true;
 		}
+		return false;
 	}
 
 	// Traverse the BVH, then traverse the extra primitives in the scene.
 	Intersection Intersect(Ray& r) {
 		Intersection closest_intersection;
 
-	/*	if (topBVH != nullptr) {
+		if (topBVH != nullptr) {
 			closest_intersection = topBVH->Traverse(r);
-		}*/
+		}
 
 		for (Intersectable * geometry : objects)
 		{

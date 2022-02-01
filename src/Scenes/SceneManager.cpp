@@ -3,14 +3,13 @@
 
 Scene * SceneManager::AnimationTest() {
 	//Textures
-	auto redTexture = make_shared<ColorTexture>(Color(.45, .12, .12));
-	auto greenTexture = make_shared<ColorTexture>(Color(.12, .45, .15));
+	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 
 	shared_ptr<Mesh> dragonMesh = make_shared<Mesh>("res/dragon.obj");
 	shared_ptr<Mesh> bunnyMesh = make_shared<Mesh>("res/bunny.obj");
 
-	Model * model = new Model(float3(0, -1, 4), 2, dragonMesh, SOLID, Material(float3(1, 1, 1), redTexture));
-	Model * bunnyModel = new Model(float3(-3, -1, 3), 5, bunnyMesh, SOLID, Material(float3(1, 1, 1), greenTexture));
+	Model * model = new Model(float3(0, -1, 4), 2, dragonMesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
+	Model * bunnyModel = new Model(float3(-3, -1, 3), 5, bunnyMesh, SOLID, Material(Color(.12, .45, .15), colorTexture));
 
 	BVH * dragonBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 	BVH * bunnyBVH = new BVH(bunnyModel->GetTriangles(), bunnyModel->GetTriangles()->size(), bunnyModel->GetTranslation(), false);
@@ -34,10 +33,11 @@ Scene * SceneManager::AnimationTest() {
 
 	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
 
+	PointLight* pointLight = new PointLight(float3(-1, 3, 0), 10, float3(1, 1, 1));
+	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
+
 	vector<Intersectable*> objects;
-	vector<LightSource*> lights;
-	lights.push_back(new PointLight(float3(-1, 3, 0), 10, float3(1, 1, 1)));
-	lights.push_back(new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1)));
+	vector<LightSource*> lights = { pointLight, directionalLight };
 
 	Scene * scene = new Scene(objects, lights, topBVH);
 
@@ -128,6 +128,10 @@ Scene* SceneManager::CornellBox() {
 	return scene;
 }
 
-Scene* SceneManager::BeersLaw() {
-	return new Scene();
+Scene* SceneManager::CornellBoxAreaLight() {
+	Sphere* areaLight = new Sphere(float3(0, 5, 4), 2.f, LIGHT, Material(Color(1,1,1), 10));
+
+	Scene* scene = CornellBox();
+	scene->AddAreaLight(areaLight);
+	return scene;
 }

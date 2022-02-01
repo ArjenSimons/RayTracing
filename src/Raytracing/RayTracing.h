@@ -5,23 +5,12 @@ const unsigned int processor_count = std::thread::hardware_concurrency();
 enum Substance
 {
 	SOLID,
+	LIGHT,
 	AIR,
 	WATER,
 	GLASS,
 	ABSORBING_GLASS,
 	DIAMOND
-};
-
-enum ThreadingStatus
-{
-	THREADING_DISABLED,
-	THREADING_ENABLED
-};
-
-enum class MSAA
-{
-	NONE,
-	MSAA_4X
 };
 
 struct Ray
@@ -151,6 +140,7 @@ struct Color
 	{
 		return float3(value.x * rhs, value.y * rhs, value.z * rhs);
 	}
-
+	Color operator/(const float& rhs) const { return value / rhs; }
 	friend inline void operator+=(Color& a, Color b) { a.value += b.value; }
+	friend inline void operator*=(Color& a, float b) { a.value *= b; }
 };
