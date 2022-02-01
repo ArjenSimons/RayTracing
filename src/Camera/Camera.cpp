@@ -31,8 +31,9 @@ void Camera::CalculateScreen()
 	p2 = C - right * a - up;
 }
 
-void Camera::Tick()
+bool Camera::Tick()
 {
+	bool moved = false;
 	float2 deltaMouse = controller.DeltaPos();
 	controller.oldX = controller.newX;
 	controller.oldY = controller.newY;
@@ -41,23 +42,27 @@ void Camera::Tick()
 	{ 
 		float3 forward = viewDir; 
 		Translate(forward);
+		moved = true;
 	}
 	if (controller.backward) 
 	{ 
 		float3 backward = -viewDir;
-		Translate(backward); 
+		Translate(backward);
+		moved = true;
 	}
 	if (controller.leftward) 
 	{
 		float3 upEstim = float3(0, 1, 0);
 		float3 left = normalize(cross(viewDir, upEstim));
 		Translate(left);
+		moved = true;
 	}
 	if (controller.rightward) 
 	{ 
 		float3 upEstim = float3(0, 1, 0);
 		float3 right = normalize(cross(upEstim, viewDir));
 		Translate(right);
+		moved = true;
 	}
 
 	// Because the mouse is not 'fixed' such as in most freeform viewing experiences,
@@ -70,6 +75,7 @@ void Camera::Tick()
 		float angleX = 4 * deltaMouse.x / SCRWIDTH;
 		if (angleX >= 0.125 || angleX <= -0.125)
 		{
+			moved = true;
 			// the delta-X dictates rotations around the Y axis
 			// around this axis, we allow 360 degrees of rotation
 
@@ -85,6 +91,8 @@ void Camera::Tick()
 		float angleY = -4 * deltaMouse.y / SCRHEIGHT;
 		if (angleY >= 0.125 || angleY <= -0.125)
 		{
+			moved = true;
+
 			// Here we rotate around the Z axis
 			// Here, we only allow <180 degrees of rotation
 			// to prevent the screen from flipping over.
@@ -107,6 +115,7 @@ void Camera::Tick()
 	}
 	
 	CalculateScreen();
+	return moved;
 }
 
 void Camera::Translate(float3 direction)
