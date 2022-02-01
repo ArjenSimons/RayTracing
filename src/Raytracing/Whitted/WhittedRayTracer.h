@@ -6,7 +6,6 @@ protected:
 	Color Trace(Ray& ray, unsigned int bounceDepth = 0) override;
 	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int yStart, unsigned int yEnd);
 public:
-	void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT]);
 	WhittedRayTracer(Scene* scene, Camera* cam) : RayTracer(scene, cam) {};
 	~WhittedRayTracer() {};
 private:
