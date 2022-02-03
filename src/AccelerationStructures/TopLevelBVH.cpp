@@ -37,7 +37,7 @@ Intersection TopLevelBVH::Traverse(Ray& r)
 
 		r.Transform((*BVHs)[i]->GetTranslation());
 
-		if (intersection.intersect && intersection.t != 0 && intersection.t < closest_intersection.t)
+		if (intersection.intersect && intersection.t > 0.001f && intersection.t < closest_intersection.t)
 		{
 			closest_intersection = intersection;
 		}
