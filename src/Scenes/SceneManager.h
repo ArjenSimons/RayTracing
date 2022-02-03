@@ -6,6 +6,6 @@ public:
 	static Scene * AnimationTest();
 	static Scene * CornellBox();
 	static Scene* CornellBoxAreaLight();
-	static Scene * BeersLaw();
+	static Scene * SibenikCathedral();
 };
 
