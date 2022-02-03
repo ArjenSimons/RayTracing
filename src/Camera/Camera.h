@@ -16,7 +16,7 @@ struct Camera
 
 	Camera(float3 position = float3(0, 0, 0), float3 direction = float3(0, 0, 1), float FOVDegree = 90, float aspectRatio = 0);
 	void CalculateScreen();
-	void Tick();
+	bool Tick();
 	void Translate(float3);
 	void FOVIncr(float);
 };

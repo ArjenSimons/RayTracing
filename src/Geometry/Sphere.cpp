@@ -37,7 +37,7 @@ Intersection Sphere::OutsideIntersect(Ray ray)
 	if (p2 > radius2) { return out; } //No hit
 
 	t -= sqrt(radius2 - p2);
-	if ((t >= 0))
+	if (t > 0.001f)
 	{
 		out.t = t;
 		out.intersect = true;
@@ -65,7 +65,7 @@ Intersection Sphere::InsideIntersect(Ray ray)
 	float t = (-b + sqrtf(d)) / (2.0f * a);
 
 
-	if ((t >= 0))
+	if (t > 0.001f)
 	{
 		out.t = t;
 		out.intersect = true;

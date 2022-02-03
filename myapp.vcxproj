@@ -123,6 +123,11 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="src\Raytracing\BVHDebugger\BVHDebugger.cpp" />
+    <ClCompile Include="src\Raytracing\PathTracer\PathTracer.cpp" />
+    <ClCompile Include="src\Raytracing\RayTracer.cpp" />
+    <ClCompile Include="src\Scenes\SceneManager.cpp" />
+    <ClCompile Include="src\PostProcessing\PostProcessing.cpp" />
     <ClCompile Include="src\Utils\algebra.cpp" />
     <ClCompile Include="src\AccelerationStructures\BVH.cpp" />
     <ClCompile Include="src\Camera\Camera.cpp" />
@@ -131,8 +136,7 @@
     <ClCompile Include="src\Geometry\Model.cpp" />
     <ClCompile Include="src\myapp.cpp" />
     <ClCompile Include="src\Geometry\Plane.cpp" />
-    <ClCompile Include="src\Raytracing\RayTracer.cpp" />
-    <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Raytracing\Whitted\WhittedRayTracer.cpp" />
     <ClCompile Include="src\Geometry\Sphere.cpp" />
     <ClCompile Include="template\template.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -145,6 +149,13 @@
     <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Raytracing\BVHDebugger\BVHDebugger.h" />
+    <ClInclude Include="src\Raytracing\PathTracer\PathTracer.h" />
+    <ClInclude Include="src\Raytracing\PathTracer\Accumulator.h" />
+    <ClInclude Include="src\Raytracing\RayTracer.h" />
+    <ClInclude Include="src\Utils\DiffuseUtils.h" />
+    <ClInclude Include="src\Scenes\SceneManager.h" />
+    <ClInclude Include="src\PostProcessing\PostProcessing.h" />
     <ClInclude Include="src\Utils\algebra.h" />
     <ClInclude Include="src\AccelerationStructures\BVH.h" />
     <ClInclude Include="src\Camera\Camera.h" />
@@ -155,9 +166,10 @@
     <ClInclude Include="src\Material\Material.h" />
     <ClInclude Include="src\Texturing\Mesh.h" />
     <ClInclude Include="src\myapp.h" />
-    <ClInclude Include="src\Raytracing\RayTracer.h" />
+    <ClInclude Include="src\Raytracing\Whitted\WhittedRayTracer.h" />
     <ClInclude Include="src\Raytracing\RayTracing.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Utils\RayUtils.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\precomp.h" />
     <ClInclude Include="src\Texturing\Texture.h" />
