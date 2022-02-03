@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
+    <ClCompile Include="src\Raytracing\LowResTracer\LowResTracer.cpp" />
     <ClCompile Include="src\Raytracing\PathTracer\PathTracer.cpp" />
     <ClCompile Include="src\Raytracing\RayTracer.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="src\Geometry\Triangle.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Raytracing\LowResTracer\LowResTracer.h" />
     <ClInclude Include="src\Raytracing\PathTracer\PathTracer.h" />
     <ClInclude Include="src\Raytracing\PathTracer\Accumulator.h" />
     <ClInclude Include="src\Raytracing\RayTracer.h" />
