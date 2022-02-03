@@ -14,7 +14,7 @@
 // --------------------------------------------------------------
 // Post Processing settings.
 // --------------------------------------------------------------
-#define POSTPROCESSING true
+#define POSTPROCESSING false
 
 // Gamma correction.
 #define GAMMA_CORRECTION true
