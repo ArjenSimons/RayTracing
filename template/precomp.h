@@ -1265,6 +1265,7 @@ public:
 #include "src/Raytracing/Whitted/WhittedRayTracer.h"
 #include "src/Raytracing/PathTracer/Accumulator.h"
 #include "src/Raytracing/PathTracer/PathTracer.h"
+#include "src/Raytracing/BVHDebugger/BVHDebugger.h"
 
 // Post processing
 #include "src/PostProcessing/PostProcessing.h"
