@@ -1,12 +1,12 @@
 #include "precomp.h"
 
-#define RED_COST_COUNT 100
+#define RED_COST_COUNT 200
 
 inline Color rgb(float minimum, float maximum, float value) {
 	float ratio = 2 * ((value - minimum) / (maximum - minimum));
-	float b = fmax(0, 1 - ratio);
 	float r = fmax(0, ratio - 1);
-	float g = 1.f - (b * 1.5f) - (r * 0.5f);
+	float b = fmax(0, 1 - ratio);
+	float g = 1.f - b - r;
 	return Color(r, g, b);
 }
 
@@ -16,8 +16,6 @@ Color BVHDebugger::Trace(Ray& ray, unsigned int bounceDepth) {
 	float maxCount = RED_COST_COUNT;
 	return rgb(0, maxCount, i.nAABBandTriChecks);
 }
-
-
 
 void BVHDebugger::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int xStart, unsigned int xEnd) {
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
