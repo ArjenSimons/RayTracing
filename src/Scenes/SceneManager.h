@@ -7,5 +7,6 @@ public:
 	static Scene * CornellBox();
 	static Scene* CornellBoxAreaLight();
 	static Scene * BeersLaw();
+	static Scene* SpatialBvhTest();
 };
 

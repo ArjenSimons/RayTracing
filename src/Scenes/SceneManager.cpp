@@ -128,7 +128,7 @@ Scene* SceneManager::CornellBox() {
 	return scene;
 }
 
-Scene* SceneManager::CornellBoxAreaLight() {
+Scene * SceneManager::CornellBoxAreaLight() {
 	Sphere* areaLight = new Sphere(float3(0, 5, 4), 2.f, LIGHT, Material(Color(1,1,1), 10));
 
 	Scene* scene = CornellBox();
@@ -136,26 +136,30 @@ Scene* SceneManager::CornellBoxAreaLight() {
 	return scene;
 }
 
-	// case(Scenes::BVH_TEST):
-	// 	dragonMesh = make_shared<Mesh>("res/dragon.obj");
-	// 	model = new Model(float3(0, 0, 1), 2, dragonMesh, SOLID, Material(float3(1, 1, 1), redTexture));
-	// 	dragonBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+Scene * SceneManager::SpatialBvhTest() {
+	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
+	Model* model = new Model(float3(0, -3, 5), 10, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
-	// 	dragonBVH->ConstructBVH();
-	// 	dragonInstance = new BVHInstance(dragonBVH);
-	// 	dragonInstance->RotateY(90);
-	// 	//dragonInstance->Translate(float3(0, 0, 0));
-	// 	bvhs.push_back(dragonInstance);
-	// 	break;
-	// case(Scenes::SBVH_TEST):
-	// 	longPlaneMesh = make_shared<Mesh>("res/bunny.obj");
-	// 	model = new Model(float3(0, 0, 1), 4, longPlaneMesh, SOLID, Material(float3(1, 1, 1), redTexture));
-	// 	planeBVH = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
+	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
-	// 	planeBVH->ConstructBVH();
-	// 	planeInstance = new BVHInstance(planeBVH);
-	// 	//planeInstance->RotateZ(45);
-	// 	printf("# of tris = %i\n", model->GetTriangles()->size());
+	bvh->ConstructBVH();
 
-	// 	bvhs.push_back(planeInstance);
-	// 	break;
+	BVHInstance* instance = new BVHInstance(bvh);
+	instance->RotateY(90);
+
+	vector<BVHInstance*>* bvhs = new vector<BVHInstance*>;
+
+	bvhs->push_back(instance);
+
+	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
+
+	// TODO: Add objects, lights, bvh
+	vector<Intersectable*> objects = {};
+	PointLight* pointLight = new PointLight(float3(2, 5.f, -5), 20, float3(1, 1, 1));
+
+	vector<LightSource*> lights = { pointLight };
+
+	Scene* scene = new Scene(objects, lights, topBVH);
+	return scene;
+}
