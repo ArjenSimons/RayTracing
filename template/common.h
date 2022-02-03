@@ -2,10 +2,49 @@
 #define SCRWIDTH	1280
 #define SCRHEIGHT	720
 
+// --------------------------------------------------------------
+// General settings.
+// --------------------------------------------------------------
+#define MULTITHREADING true
+#define MAX_RECURSIONS 20
+
+// MSAA
+#define MSAA_SAMPLES 1 // 1 to disable, 2..4 to enable. Note: will be squared.
+
+// --------------------------------------------------------------
+// Post Processing settings.
+// --------------------------------------------------------------
+#define POSTPROCESSING true
+
+// Gamma correction.
+#define GAMMA_CORRECTION true
+#define GAMMA 0.7f
+
+// Vignetting.
+#define VIGNETTING false
+#define VIGNETTE_RADIUS .6f
+#define VIGNETTE_SMOOTHNESS .3f
+#define VIGNETTE_INTENSITY 1.f
+
+// Chromatic aberration.
+#define CHROMATIC_ABERRATION false
+#define CHROM_ABB_R_OFFSET int2(1,1)
+#define CHROM_ABB_G_OFFSET int2(-1,1)
+#define CHROM_ABB_B_OFFSET int2(-1,-1)
+
+// --------------------------------------------------------------
+// Lens settings. Clamped [0...1]
+#define LENS_DISTORTION 0.f
+
+// TODO: Add global epsilon.
+//#define RAY_EPSILON = 0.001f
+
 // IMPORTANT NOTE ON OPENCL COMPATIBILITY ON OLDER LAPTOPS:
 // Without a GPU, a laptop needs at least a 'Broadwell' Intel CPU (5th gen, 2015):
 // Intel's OpenCL implementation 'NEO' is not available on older devices.
 // Same is true for Vulkan, OpenGL 4.0 and beyond, as well as DX11 and DX12.
+
+// TODO: Do we still need the following global constants?
 
 // TODO:
 // - If we have enough bricks for the full map, each brick pos can point to a fixed brick.

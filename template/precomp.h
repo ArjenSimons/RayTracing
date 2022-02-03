@@ -1253,12 +1253,21 @@ public:
 // Scenes.
 // TODO: Add scene manager.
 #include "src/Scenes/Scene.h"
+#include "src/Scenes/SceneManager.h"
 
 // Utils.
 #include "src/Utils/algebra.h"
+#include "src/Utils/RayUtils.h"
+#include "src/Utils/DiffuseUtils.h"
 
-// Renderers.
-#include "src/Raytracing/RayTracer.h"
+// Raytracers.
+#include "src/Raytracing/Raytracer.h"
+#include "src/Raytracing/Whitted/WhittedRayTracer.h"
+#include "src/Raytracing/PathTracer/Accumulator.h"
+#include "src/Raytracing/PathTracer/PathTracer.h"
+
+// Post processing
+#include "src/PostProcessing/PostProcessing.h"
 
 
 // EOF
