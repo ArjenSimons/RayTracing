@@ -12,9 +12,9 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::CornellBoxAreaLight();
+	scene = SceneManager::SpatialBvhTest();
 	Camera * camera = new Camera();
-	rayTracer = new PathTracer(scene, camera/*, 5, THREADING_ENABLED, MSAA::NONE*/);
+	rayTracer = new WhittedRayTracer(scene, camera);
 }
 
 // -----------------------------------------------------------
