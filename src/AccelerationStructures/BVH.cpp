@@ -118,12 +118,12 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 		int ind = indices[i];
 		Triangle tri = (*primitives)[ind];
 		intersection = tri.Intersect(r);
+		nChecks++;
 
 		if (intersection.intersect && (closest_intersection.intersect == false || intersection.t < closest_intersection.t))
 		{
 			closest_intersection = intersection;
 			//printf("hit i=%i\n", i);
-			nChecks++;
 		}
 		//nChecks++;
 	}
@@ -639,7 +639,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
-	printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
+	//printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
 	float cost = leftArea * leftCount + rightArea * rightCount;;
 	lowestSpatialCost = cost;
 
