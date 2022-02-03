@@ -640,7 +640,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
 	//printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
-	float cost = leftArea * leftCount + rightArea * rightCount;;
+	float cost = 0.0125f + leftArea * leftCount + rightArea * rightCount;;
 	lowestSpatialCost = cost;
 
 	return make_pair(left, right);
