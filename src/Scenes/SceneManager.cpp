@@ -139,14 +139,14 @@ Scene * SceneManager::CornellBoxAreaLight() {
 Scene * SceneManager::SpatialBvhTest() {
 	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
-	Model* model = new Model(float3(0, -3, 5), 10, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
+	Model* model = new Model(float3(0, -3, 5), 20, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
 	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
 	bvh->ConstructBVH();
 
 	BVHInstance* instance = new BVHInstance(bvh);
-	instance->RotateY(90);
+	instance->RotateY(180);
 
 	vector<BVHInstance*>* bvhs = new vector<BVHInstance*>;
 
@@ -154,9 +154,11 @@ Scene * SceneManager::SpatialBvhTest() {
 
 	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
 
+	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), colorTexture));
+
 	// TODO: Add objects, lights, bvh
-	vector<Intersectable*> objects = {};
-	PointLight* pointLight = new PointLight(float3(2, 5.f, -5), 20, float3(1, 1, 1));
+	vector<Intersectable*> objects = { redSphere };
+	PointLight* pointLight = new PointLight(float3(0, 0, -4), 10, float3(1, 1, 1));
 
 	vector<LightSource*> lights = { pointLight };
 
