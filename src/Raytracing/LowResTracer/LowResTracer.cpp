@@ -31,5 +31,9 @@ Color LowResTracer::Trace(Ray& ray, uint bounceCount) {
 		return intersection.mat.GetColor(intersection.uv, intersection.position) * illumination;
 	}
 
+	if (intersection.sTo == LIGHT) {
+		return float3(1, 0.2, 0.2);
+	}
+
 	return black;
 }
