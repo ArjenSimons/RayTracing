@@ -157,20 +157,13 @@ Scene* SceneManager::SibenikCathedral() {
 
 	vector<Intersectable*> objects = {};
 
-	vector<LightSource*> lights = { pointLight, /*directionalLight*/ };
+	vector<LightSource*> lights = { pointLight };
 
 	Scene* scene = new Scene(objects, lights, topBVH);
 
-	Sphere* areaLight1 = new Sphere(float3(16.f, 2.f, 0.f), 2.75f, LIGHT, Material(Color(1, 0.8f, 0.8f), 20));
-	Sphere* areaLight2 = new Sphere(float3(7.6f, 2.f, 7.5f), 2.75f, LIGHT, Material(Color(0.8f, 1, 0.8f), 20));
-	Sphere* areaLight3 = new Sphere(float3(7.6f, 2.f, -7.5f), 2.75f, LIGHT, Material(Color(0.8f, 0.8f, 1), 20));
-	scene->AddAreaLight(areaLight1);
-	scene->AddAreaLight(areaLight2);
-	scene->AddAreaLight(areaLight3);
-
 	return scene;
 }
-	//7.543 2.08706 7.91143
+
 Scene * SceneManager::SpatialBvhTest() {
 	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
