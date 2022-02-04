@@ -533,88 +533,72 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 	return make_pair(bestLeft, bestRight);
 }
 
-pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos)
+pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float& bestBinPos)
 {
 	AABB bestLeft, bestRight;
 
-	float3 leftMinBound = minb;
-	float3 leftMaxBound = maxb;
-	float3 rightMinBound = minb;
-	float3 rightMaxBound = maxb;
-	int leftCount = 0;
-	int rightCount = 0;
+	float axisWidths[3] = { node->bounds.bmax3.x - node->bounds.bmin3.x, node->bounds.bmax3.y - node->bounds.bmin3.y, node->bounds.bmax3.z - node->bounds.bmin3.z };
+	float binPositions[3] = { node->bounds.bmin3.x, node->bounds.bmin3.y, node->bounds.bmin3.z };
+	float binDist = axisWidths[splitAxis] * iBinCount;
 
-	for (int i = node->first; i < node->first + node->count; i++)
+	int lCount = 0;
+	int rCount = 0;
+
+	for (int j = 0; j < binCount - 1; j++)
 	{
-		Triangle tri = (*primitives)[indices[i]];
-		float3 leftMax;
-		float3 rightMin;
+		binPositions[splitAxis] += binDist;
 
-		if (splitAxis == 0)
-		{
-			leftMax = float3(binPos, node->bounds.bmax3.y, node->bounds.bmax3.z);
-			rightMin = float3(binPos, node->bounds.bmin3.y, node->bounds.bmin3.z);
-		}
-		else if (splitAxis == 1)
-		{
-			leftMax = float3(node->bounds.bmax3.x, binPos, node->bounds.bmax3.z);
-			rightMin = float3(node->bounds.bmin3.x, binPos, node->bounds.bmin3.z);
-		}
-		else
-		{
-			leftMax = float3(node->bounds.bmax3.x, node->bounds.bmax3.y, binPos);
-			rightMin = float3(node->bounds.bmin3.x, node->bounds.bmin3.y, binPos);
-		}
+		float3 leftMinBound = minb;
+		float3 leftMaxBound = maxb;
+		float3 rightMinBound = minb;
+		float3 rightMaxBound = maxb;
+		int leftCount = 0;
+		int rightCount = 0;
 
-		AABB leftClipBox(node->bounds.bmin3, leftMax);
-		AABB rightClipBox(rightMin, node->bounds.bmax3);
-
-		float3* vertices = tri.GetVertices();
-
-		float3 points;
-
-		switch (splitAxis)
+		for (int i = node->first; i < node->first + node->count; i++)
 		{
-		case(0):
-			points = float3(vertices[0].x, vertices[1].x, vertices[2].x);
-			break;
-		case(1):
-			points = float3(vertices[0].y, vertices[1].y, vertices[2].y);
-			break;
-		case(2):
-			points = float3(vertices[0].z, vertices[1].z, vertices[2].z);
-			break;
-		}
+			Triangle tri = (*primitives)[indices[i]];
+			float3 leftMax;
+			float3 rightMin;
 
-		if (points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f) //All points left
-		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
-			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
-			leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
-			leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
-			leftMaxBound.x = max(leftMaxBound.x, aabb.bmax3.x);
-			leftMaxBound.y = max(leftMaxBound.y, aabb.bmax3.y);
-			leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
-			leftCount++;
-		}
-		else if (points.x >= binPos - .01f && points.y >= binPos - .01f && points.z >= binPos - .01f) //All points right
-		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
-			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
-			rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
-			rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
-			rightMaxBound.x = max(rightMaxBound.x, aabb.bmax3.x);
-			rightMaxBound.y = max(rightMaxBound.y, aabb.bmax3.y);
-			rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
-			rightCount++;
-		}
-		else //Some points right, some left
-		{
-			//LeftBox
-			vector<float3> leftPolyVerts = ClipTriangle(tri, leftClipBox);
-			vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
+			//Calculate bounds for clip boxes
+			if (splitAxis == 0) //x-axis
+			{
+				leftMax = float3(bestBinPos, node->bounds.bmax3.y, node->bounds.bmax3.z);
+				rightMin = float3(bestBinPos, node->bounds.bmin3.y, node->bounds.bmin3.z);
+			}
+			else if (splitAxis == 1) //y-axis
+			{
+				leftMax = float3(node->bounds.bmax3.x, bestBinPos, node->bounds.bmax3.z);
+				rightMin = float3(node->bounds.bmin3.x, bestBinPos, node->bounds.bmin3.z);
+			}
+			else //z-axis
+			{
+				leftMax = float3(node->bounds.bmax3.x, node->bounds.bmax3.y, bestBinPos);
+				rightMin = float3(node->bounds.bmin3.x, node->bounds.bmin3.y, bestBinPos);
+			}
 
-			if (leftPolyVerts.size() == 0)
+			AABB leftClipBox(node->bounds.bmin3, leftMax);
+			AABB rightClipBox(rightMin, node->bounds.bmax3);
+
+			float3* vertices = tri.GetVertices();
+
+			float3 points;
+
+			switch (splitAxis)
+			{
+			case(0): //x-axis
+				points = float3(vertices[0].x, vertices[1].x, vertices[2].x);
+				break;
+			case(1): //y-axis
+				points = float3(vertices[0].y, vertices[1].y, vertices[2].y);
+				break;
+			case(2): //z-axis
+				points = float3(vertices[0].z, vertices[1].z, vertices[2].z);
+				break;
+			}
+
+			if (points.x <= bestBinPos + .01f && points.y <= bestBinPos + .01f && points.z <= bestBinPos + .01f) //All points left
 			{
 				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
@@ -625,7 +609,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 				leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
 				leftCount++;
 			}
-			else if (rightPolyVerts.size() == 0)
+			else if (points.x >= bestBinPos - .01f && points.y >= bestBinPos - .01f && points.z >= bestBinPos - .01f) //All points right
 			{
 				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
@@ -636,46 +620,83 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 				rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
 				rightCount++;
 			}
-			else {
+			else //Some points right, some left
+			{
+				//LeftBox
+				vector<float3> leftPolyVerts = ClipTriangle(tri, leftClipBox);
+				vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
 
-				for (float3 p : leftPolyVerts)
+				if (leftPolyVerts.size() == 0)
 				{
-					leftMinBound.x = min(leftMinBound.x, p.x);
-					leftMinBound.y = min(leftMinBound.y, p.y);
-					leftMinBound.z = min(leftMinBound.z, p.z);
-					leftMaxBound.x = max(leftMaxBound.x, p.x);
-					leftMaxBound.y = max(leftMaxBound.y, p.y);
-					leftMaxBound.z = max(leftMaxBound.z, p.z);
+					AABB aabb = (*primitives)[indices[i]].GetAABB();
+					leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
+					leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
+					leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
+					leftMaxBound.x = max(leftMaxBound.x, aabb.bmax3.x);
+					leftMaxBound.y = max(leftMaxBound.y, aabb.bmax3.y);
+					leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
+					leftCount++;
 				}
-				leftCount++;
+				else if (rightPolyVerts.size() == 0)
+				{
+					AABB aabb = (*primitives)[indices[i]].GetAABB();
+					rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
+					rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
+					rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
+					rightMaxBound.x = max(rightMaxBound.x, aabb.bmax3.x);
+					rightMaxBound.y = max(rightMaxBound.y, aabb.bmax3.y);
+					rightMaxBound.z = max(rightMaxBound.z, aabb.bmax3.z);
+					rightCount++;
+				}
+				else {
 
-				//RightBox
-				for (float3 p : rightPolyVerts)
-				{
-					rightMinBound.x = min(rightMinBound.x, p.x);
-					rightMinBound.y = min(rightMinBound.y, p.y);
-					rightMinBound.z = min(rightMinBound.z, p.z);
-					rightMaxBound.x = max(rightMaxBound.x, p.x);
-					rightMaxBound.y = max(rightMaxBound.y, p.y);
-					rightMaxBound.z = max(rightMaxBound.z, p.z);
+					for (float3 p : leftPolyVerts)
+					{
+						leftMinBound.x = min(leftMinBound.x, p.x);
+						leftMinBound.y = min(leftMinBound.y, p.y);
+						leftMinBound.z = min(leftMinBound.z, p.z);
+						leftMaxBound.x = max(leftMaxBound.x, p.x);
+						leftMaxBound.y = max(leftMaxBound.y, p.y);
+						leftMaxBound.z = max(leftMaxBound.z, p.z);
+					}
+					leftCount++;
+
+					//RightBox
+					for (float3 p : rightPolyVerts)
+					{
+						rightMinBound.x = min(rightMinBound.x, p.x);
+						rightMinBound.y = min(rightMinBound.y, p.y);
+						rightMinBound.z = min(rightMinBound.z, p.z);
+						rightMaxBound.x = max(rightMaxBound.x, p.x);
+						rightMaxBound.y = max(rightMaxBound.y, p.y);
+						rightMaxBound.z = max(rightMaxBound.z, p.z);
+					}
+					rightCount++;
 				}
-				rightCount++;
 			}
+		}
+
+		AABB left = AABB(leftMinBound, leftMaxBound);
+		AABB right = AABB(rightMinBound, rightMaxBound);
+
+		float leftArea = left.Area();
+		float rightArea = right.Area();
+		leftArea = isinf(leftArea) ? 0 : leftArea;
+		rightArea = isinf(rightArea) ? 0 : rightArea;
+		float cost = spatialSplitCost + leftArea * leftCount + rightArea * rightCount;
+
+		if (cost < lowestSpatialCost)
+		{
+			lowestSpatialCost = cost;
+			bestBinPos = binPositions[splitAxis];
+			bestLeft = left;
+			bestRight = right;
+			lCount = leftCount;
+			rCount = rightCount;
 		}
 	}
 
-	AABB left = AABB(leftMinBound, leftMaxBound);
-	AABB right = AABB(rightMinBound, rightMaxBound);
-	//SAH
-	float leftArea = left.Area();
-	float rightArea = right.Area();
-	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
-	rightArea = isinf(rightArea) ? 0 : rightArea;
-
-	float cost = spatialSplitCost + leftArea * leftCount + rightArea * rightCount;
-	lowestSpatialCost = cost;
-
-	return make_pair(left, right);
+	return make_pair(bestLeft, bestRight);
 }
 
 //Sutherland-Hodgman Algorithm: https://en.wikipedia.org/wiki/Sutherland%E2%80%93Hodgman_algorithm
