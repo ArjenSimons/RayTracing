@@ -139,7 +139,7 @@ Scene * SceneManager::CornellBoxAreaLight() {
 Scene * SceneManager::SpatialBvhTest() {
 	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
-	Model* model = new Model(float3(0, -1, 1), 1, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
+	Model* model = new Model(float3(0, 0, 3), 5, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
 	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true);
 
@@ -148,7 +148,7 @@ Scene * SceneManager::SpatialBvhTest() {
 	bvh->ConstructBVH();
 
 	BVHInstance* instance = new BVHInstance(bvh);
-	instance->RotateY(180);
+	//instance->RotateY(180);
 
 	vector<BVHInstance*>* bvhs = new vector<BVHInstance*>;
 

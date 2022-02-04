@@ -2,8 +2,8 @@
 
 int missingRefCount = 0;
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics)
-	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics)
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f)
+	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
 	invTranslation = translation.Inverted();
 }
@@ -606,7 +606,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
-	float cost = 0.0125f + leftArea * leftCount + rightArea * rightCount;
+	float cost = spatialSplitCost + leftArea * leftCount + rightArea * rightCount;
 	lowestSpatialCost = cost;
 
 	return make_pair(left, right);

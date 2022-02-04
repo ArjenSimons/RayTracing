@@ -46,11 +46,12 @@ private:
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 
 	//1.0e-5 for optimal sbvh, 1 for full bvh
-	float spatialSplitConstraint =  1.0e-5f;
+	float spatialSplitConstraint = 1.0e-5f;
+	float spatialSplitCost = 0.05f;
 	int spatialSplitCount = 0;
 
 public:
-	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics);
+	BVH(vector<Triangle>* intersectables, uint32_t count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f);
 	void ConstructBVH();
 	Intersection Traverse(Ray& r);
 	BVHNode GetRoot() { return *root; }
