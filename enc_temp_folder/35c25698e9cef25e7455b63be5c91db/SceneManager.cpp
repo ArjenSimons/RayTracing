@@ -167,8 +167,6 @@ Scene* SceneManager::SibenikCathedral() {
 	scene->AddAreaLight(areaLight1);
 	scene->AddAreaLight(areaLight2);
 	scene->AddAreaLight(areaLight3);
-
-	return scene;
 }
 	//7.543 2.08706 7.91143
 Scene * SceneManager::SpatialBvhTest() {

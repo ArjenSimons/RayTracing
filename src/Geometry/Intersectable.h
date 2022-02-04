@@ -9,6 +9,8 @@ struct Intersection
 	Material mat{ float3(1, 0, 1), nullptr };
 	Substance sTo;
 	float2 uv;
+	uint nAABBandTriChecks;
+	uint lastStepCount;
 
 	Intersection()
 	{
@@ -16,6 +18,8 @@ struct Intersection
 		t = INT_MAX;
 		position = float3(0, 0, 0);
 		normal = float3(0, 0, 0);
+		nAABBandTriChecks = 0;
+		lastStepCount = 0;
 	}
 };
 
@@ -117,7 +121,9 @@ public:
 	~Triangle() = default;
 	Intersection Intersect(Ray ray) override;
 	AABB GetAABB() const { return aabb; }
+	float3 GetNormal() const { return normal; }
 	float3 GetCentroid() const { return centroid; }
+	float3* GetVertices() const { float3 positions[3] = { position, position2, position3 }; return positions; }
 private:
 	void CalculateBoundingBox();
 };

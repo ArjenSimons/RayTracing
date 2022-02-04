@@ -4,6 +4,9 @@
 TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
+RayTracer* mainTracer;
+RayTracer* lowResTracer;
+
 Scene* scene;
 Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 
@@ -12,9 +15,11 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::CornellBoxAreaLight();
+	scene = SceneManager::SibenikCathedral();
 	Camera * camera = new Camera();
-	rayTracer = new PathTracer(scene, camera/*, 5, THREADING_ENABLED, MSAA::NONE*/);
+	lowResTracer = new LowResTracer(scene, camera);
+	mainTracer = new BVHDebugger(scene, camera);
+	rayTracer = lowResTracer;
 }
 
 // -----------------------------------------------------------
@@ -33,7 +38,6 @@ void MyApp::Tick(float deltaTime)
 	if (animated || cameraUpdated) {
 		rayTracer->OnCameraUpdate();
 	}
-
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 	//RENDERING
 	rayTracer->Render(renderBuffer);
@@ -98,6 +102,10 @@ void MyApp::KeyDown(int key)
 {
 	switch (key)
 	{
+	case 32: // Spacebar
+		rayTracer = rayTracer == lowResTracer ? mainTracer : lowResTracer;
+		break;
+
 	case 87: // W
 		rayTracer->cam->controller.forward = true;
 		break;

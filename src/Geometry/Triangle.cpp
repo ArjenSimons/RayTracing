@@ -38,7 +38,7 @@ Intersection Triangle::Intersect(Ray ray)
 	if (u < 0 || u + v > 1) return out; //miss
 
 	float t = dot(p1p3, qvec) * invDet;
-	if (t > 000.1) 
+	if (t > 0.001f) 
 	{
 		out.t = t;
 		out.intersect = true;

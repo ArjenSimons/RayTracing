@@ -56,6 +56,9 @@
       <Filter>src\Raytracing\PathTracer</Filter>
     </ClCompile>
     <ClCompile Include="src\Raytracing\LowResTracer\LowResTracer.cpp" />
+    <ClCompile Include="src\Raytracing\BVHDebugger\BVHDebugger.cpp">
+      <Filter>src\Raytracing\BVHDebugger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\precomp.h">
@@ -131,6 +134,9 @@
       <Filter>src\Raytracing\PathTracer</Filter>
     </ClInclude>
     <ClInclude Include="src\Raytracing\LowResTracer\LowResTracer.h" />
+    <ClInclude Include="src\Raytracing\BVHDebugger\BVHDebugger.h">
+      <Filter>src\Raytracing\BVHDebugger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md">
@@ -191,6 +197,9 @@
     </Filter>
     <Filter Include="src\Raytracing\LowResTracer">
       <UniqueIdentifier>{bd02aff6-ccba-40c2-bc62-af80e4d6ca35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Raytracing\BVHDebugger">
+      <UniqueIdentifier>{f48d45e4-aad2-41c2-92cd-bb45a18c17b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
