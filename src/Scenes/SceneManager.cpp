@@ -151,12 +151,23 @@ Scene* SceneManager::SibenikCathedral() {
 
 	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
 
-	PointLight* pointLight = new PointLight(float3(0, 0, 0), 100, float3(1, 1, 1));
-	//DirectionalLight* directionalLight = new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
+	PointLight* pointLight = new PointLight(float3(0, 0, 0), 50, float3(1, 1, 1));
+	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
 
-	vector<Intersectable*> objects;
+
+	vector<Intersectable*> objects = {};
+
 	vector<LightSource*> lights = { pointLight, /*directionalLight*/ };
 
 	Scene* scene = new Scene(objects, lights, topBVH);
+
+	Sphere* areaLight1 = new Sphere(float3(16.f, 2.f, 0.f), 2.75f, LIGHT, Material(Color(1, 0.8f, 0.8f), 20));
+	Sphere* areaLight2 = new Sphere(float3(7.6f, 2.f, 7.5f), 2.75f, LIGHT, Material(Color(0.8f, 1, 0.8f), 20));
+	Sphere* areaLight3 = new Sphere(float3(7.6f, 2.f, -7.5f), 2.75f, LIGHT, Material(Color(0.8f, 0.8f, 1), 20));
+	scene->AddAreaLight(areaLight1);
+	scene->AddAreaLight(areaLight2);
+	scene->AddAreaLight(areaLight3);
+
+	//7.543 2.08706 7.91143
 	return scene;
 }
