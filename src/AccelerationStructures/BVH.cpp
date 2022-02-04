@@ -1,5 +1,7 @@
 #include "precomp.h"
 
+int missingRefCount = 0;
+
 BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics)
 {
@@ -9,10 +11,10 @@ BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool di
 void BVH::ConstructBVH()
 {
 	//Allocate extra memory for indices when constructing the sbvh
-	if (spatialSplitConstraint == 1) 
-		indices.resize(n); 
+	if (spatialSplitConstraint == 1)
+		indices.resize(n);
 	else
-		indices.resize(n * 1.2);
+		indices.resize(n);
 
 
 	for (int i = 0; i < n; i++) indices[i] = i;
@@ -31,8 +33,16 @@ void BVH::ConstructBVH()
 	if (diagnostics)
 	{
 		printf("Number of nodes: %i\n", countNodes(*root));
-		printf("Number of references %i\n", root->count);
+		//for (int ind : indices)
+		//{
+		//	printf(" %i ", ind);
+		//}
+
+		printf("\nNumber of references %i\n", root->count);
+		printf("indices size: %i\n", indices.size());
+		PrintRightLeaf(root);
 		printf("Number of spatial splits %i\n", spatialSplitCount);
+		printf("Number of missing refs %i\n", missingRefCount);
 	}
 }
 
@@ -73,6 +83,15 @@ void BVH::RotateZ(float r)
 	translation = translation * rot;
 	invTranslation = translation.Inverted();
 
+}
+
+void BVH::PrintRightLeaf(BVHNode* node) {
+	if (node->isLeaf) {
+		printf("right:: First %i | count %i | sum %i\n", node->first, node->count, node->first + node->count);
+	}
+	else {
+		PrintRightLeaf(node->right);
+	}
 }
 
 Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
@@ -193,7 +212,7 @@ bool BVH::Partition(BVHNode* node)
 	AABB aabb;
 	float lowestCost = minb.x;
 	float bestBinPos;
-	
+
 	//Binning
 	int splitAxis = node->bounds.LongestAxis();
 
@@ -210,7 +229,7 @@ bool BVH::Partition(BVHNode* node)
 		node->isLeaf = true;
 		return false;
 	}
-	
+
 	int j = node->first - 1;
 
 	switch (splitAxis)
@@ -254,7 +273,7 @@ bool BVH::Partition(BVHNode* node)
 		pair<AABB, AABB> spatial_left_right = SpatialSplitAABB(node, splitAxis, spatialCost, bestBinPos);
 		//printf("spatial cost: %f\n", spatialCost);
 
-		if (spatialCost < lowestCost) 
+		if (spatialCost < lowestCost)
 		{
 			spatialSplitCount++;
 			left_right.first = spatial_left_right.first;
@@ -271,6 +290,13 @@ bool BVH::Partition(BVHNode* node)
 
 			vector<uInt> inds(indices.begin() + node->first, indices.begin() + end);
 
+			for (int i = 0; i < inds.size(); i++)
+			{
+				if (inds[i] == 1) {
+					printf("is 1");
+				}
+			}
+
 			for (int i = 0; i < node->count; i++)
 			{
 				Triangle tri = (*primitives)[inds[i]];
@@ -278,7 +304,6 @@ bool BVH::Partition(BVHNode* node)
 				aabb = tri.GetAABB();
 				float3* verts = tri.GetVertices();
 
-				//points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f
 				switch (splitAxis)
 				{
 				case(0):
@@ -295,6 +320,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						spatialSplitCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				case(1):
@@ -311,6 +337,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						spatialSplitCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				case(2):
@@ -327,6 +354,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						spatialSplitCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				}
@@ -334,9 +362,9 @@ bool BVH::Partition(BVHNode* node)
 			/*printf("root count before: %i\n", root->count);
 			printf("count before: %i\n", node->count);*/
 			//printf("hahahahahahahahahhahahahaa\n");
-			if (node->parent!= nullptr)
-				UpdateBVHNodeCounts(node->parent, spatialSplitCount);
-			node->count += spatialSplitCount;
+			UpdateBVHNodeCounts(node, spatialSplitCount);
+			UpdateBVHNodeFirsts(node, spatialSplitCount);
+
 			/*printf("ExitNodeCount: %i\n", node->count);
 			printf("root count after: %i\n", root->count);
 			printf("count after: %i\n", node->count);
@@ -346,7 +374,9 @@ bool BVH::Partition(BVHNode* node)
 	AABB intersect = left_right.first.Intersection(left_right.second);
 	//printf("after spatial area: %f\n", intersect.Area());
 	//cout << intersect.Area() << "yeet" << endl;
-
+	if (node->left == nullptr || node->right == nullptr) {
+		int dummy = 1;
+	}
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
 	left->first = node->first;
@@ -359,7 +389,9 @@ bool BVH::Partition(BVHNode* node)
 	right->bounds = left_right.second;// CalculateBounds(right->first, right->count);
 	right->parent = node;
 
+	//printf("nodeFirst | leftFirst | rightFirst === %i | %i | %i\n", node->first, left->first, right->first);
 
+	//printf("nodeCount | leftCount | rightCount  === %i | %i | %i\n", node->count, left->count, right->count);
 	//printf("-----Y-------\n");
 	//printf("---top---\n");
 	//printf("parent: %f\n", node->bounds.bmax3.y);
@@ -386,39 +418,35 @@ bool BVH::Partition(BVHNode* node)
 		return false;
 	}
 
-
 	return true;
 }
 
-void BVH::UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount)
+void BVH::UpdateBVHNodeFirsts(BVHNode* node, int amount)
 {
-	if (node->first > first)
+	if (node->parent == nullptr) return;
+
+	BVHNode* rightNode = node->parent->right;
+
+	if (rightNode != node)
 	{
-		node->first += amount;
-		if (!node->isLeaf)
-		{
-			UpdateBVHNodeFirsts(node->right, first, amount);
-			UpdateBVHNodeFirsts(node->right, first, amount);
+		if (rightNode->first == 0) {
+			printf("is 0");
 		}
+			rightNode->first += amount;
 	}
-	else {
-		if (!node->isLeaf)
-		{
-			UpdateBVHNodeFirsts(node->right, first, amount);
-		}
-	}
+
+
+	UpdateBVHNodeFirsts(node->parent, amount);
 }
 
 void BVH::UpdateBVHNodeCounts(BVHNode* node, int amount)
 {
-	/*printf("amount: %i\n", amount);
-	printf("node count: %i\n", node->count);
+	if (amount == 0) return;
 
-	printf("node count: %i\n", node->count);*/
-	//printf("UPDATING REFERENCES\n");
+	node->count += amount;
+
 	if (node->parent != nullptr) {
-		node->count += amount;
-		node->right->first += amount;
+
 		UpdateBVHNodeCounts(node->parent, amount);
 	}
 }
@@ -543,7 +571,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 		}
 
 		AABB leftClipBox(node->bounds.bmin3, leftMax);
-		AABB rightClipBox(rightMin, node->bounds.bmax3);		
+		AABB rightClipBox(rightMin, node->bounds.bmax3);
 
 		float3* vertices = tri.GetVertices();
 
@@ -590,7 +618,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			vector<float3> leftPolyVerts = ClipTriangle(tri, leftClipBox);
 			vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
 
-			if (leftPolyVerts.size() == 0) 
+			if (leftPolyVerts.size() == 0)
 			{
 				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
@@ -649,7 +677,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
 	//printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
-	float cost = 0.0125f + leftArea * leftCount + rightArea * rightCount;;
+	float cost = 0.0125f + leftArea * leftCount + rightArea * rightCount;
 	lowestSpatialCost = cost;
 
 	return make_pair(left, right);
@@ -699,13 +727,13 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			bool p2InFront = p2Dist >= -.001f;
 			bool p2Behind = !p2InFront;
 
-			if (p1InFront && p2InFront) 
+			if (p1InFront && p2InFront)
 			{
 				out.push_back(endPoint);
 				//printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
 				//printf("Inside\n");
 			}
-			else if (p1InFront && p2Behind) 
+			else if (p1InFront && p2Behind)
 			{
 				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
 				float3 intersection = lerp(startPoint, endPoint, alpha);
@@ -764,6 +792,7 @@ ClipPlane* BVH::GetClipPlanes(AABB& clipBox)
 
 int BVH::countNodes(const BVHNode& node) const
 {
+	//printf("Node first, node count, isleaf = %i, %i, %i\n", node.first, node.count, node.isLeaf);
 	if (node.isLeaf) return 1;
 
 	return 1 + countNodes(*node.left) + countNodes(*node.right);

@@ -5,6 +5,7 @@ Camera::Camera(float3 position, float3 direction, float FOVDegree, float aspectR
 	controller = Controller();
 	pos = position;
 	viewDir = normalize(direction);
+	speed = .1f;
 
 	a = clamp(aspectRatio, 0.0f, 2.0f);
 	if (aspectRatio == 0)
@@ -41,27 +42,27 @@ bool Camera::Tick()
 	if (controller.forward) 
 	{ 
 		float3 forward = viewDir; 
-		Translate(forward);
+		Translate(forward * speed);
 		moved = true;
 	}
 	if (controller.backward) 
 	{ 
 		float3 backward = -viewDir;
-		Translate(backward);
+		Translate(backward * speed);
 		moved = true;
 	}
 	if (controller.leftward) 
 	{
 		float3 upEstim = float3(0, 1, 0);
 		float3 left = normalize(cross(viewDir, upEstim));
-		Translate(left);
+		Translate(left * speed);
 		moved = true;
 	}
 	if (controller.rightward) 
 	{ 
 		float3 upEstim = float3(0, 1, 0);
 		float3 right = normalize(cross(upEstim, viewDir));
-		Translate(right);
+		Translate(right * speed);
 		moved = true;
 	}
 

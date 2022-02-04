@@ -17,17 +17,19 @@ private:
 	struct BVHNode
 	{
 		AABB bounds;
-		bool isLeaf;
-		BVHNode* parent, * left, * right;
-		uint32_t first;
-		uint32_t count;
+		bool isLeaf = false;
+		BVHNode* parent = nullptr;
+		BVHNode* left = nullptr;
+		BVHNode* right = nullptr;
+		uint32_t first = 0;
+		uint32_t count = 0;
 	};
 
 private:
 	vector<Triangle>* primitives;
-	uInt n;
+	uInt n = 0;
 	vector<uInt> indices;
-	uInt poolPtr;
+	uInt poolPtr = 0;
 
 	int binCount = 4;
 	float iBinCount = 1.0f / binCount;
@@ -39,7 +41,7 @@ private:
 	
 	Intersection dummyIntersection;
 
-	bool diagnostics;
+	bool diagnostics = 0;
 	float3 minb = float3(std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), std::numeric_limits<float>::max());
 	float3 maxb = float3(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
 
@@ -60,12 +62,13 @@ public:
 	void RotateY(float rotation);
 	void RotateZ(float rotation);
 private:
+	void PrintRightLeaf(BVHNode* node);
 	Intersection TraverseInner(Ray& r, BVHNode* node, uint& nChecks);
 	Intersection GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChecks);
 	AABB CalculateBounds(uint32_t first, uint32_t count);
 	void SubdivideBVHNode(BVHNode* node);
 	bool Partition(BVHNode* node);
-	void UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount);
+	void UpdateBVHNodeFirsts(BVHNode* node, int amount);
 	void UpdateBVHNodeCounts(BVHNode* node, int amount);
 	pair<AABB, AABB> SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos);
 	pair<AABB, AABB> SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowestSpatialCost, float binPos);
