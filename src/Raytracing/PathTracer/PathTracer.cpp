@@ -6,28 +6,14 @@ void PathTracer::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT]) {
 	RayTracer::Render(renderBuffer);
 }
 
-
 void PathTracer::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int xStart, unsigned int xEnd)
 {
 	// Starting at xStart width, until xEnd width, trace vertical segments of the screen.
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
 	{
-		Color sampleColor;
-
 		// For every sample, trace a color and add to the total color.
-		for (uint aa_idx = 0; aa_idx < AASamples; aa_idx++) {
-			Ray ray = GetUVRay(uv[i][j]);
-			sampleColor += Trace(ray);
-		}
-
-		// Divide the color by the amount of samples.
-		if (AASamples > 1) {
-			float aa_coeff = 1.f / AASamples;
-			sampleColor *= aa_coeff;
-		}
-
-		Color renderColor = accumulator.accumulateEnergy(sampleColor, i, j);
-		renderBuffer[i][j] = renderColor;
+		Ray ray = GetUVRay(uv[i][j]);
+		renderBuffer[i][j] = accumulator.accumulateEnergy(Trace(ray), i, j);;
 	}
 }
 

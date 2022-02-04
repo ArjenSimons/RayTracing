@@ -1,12 +1,12 @@
 // default screen resolution
-#define SCRWIDTH	1280
-#define SCRHEIGHT	720
+#define SCRWIDTH	640
+#define SCRHEIGHT	360
 
 // --------------------------------------------------------------
 // General settings.
 // --------------------------------------------------------------
 #define MULTITHREADING true
-#define MAX_RECURSIONS 20
+#define MAX_RECURSIONS 4
 
 // MSAA
 #define MSAA_SAMPLES 1 // 1 to disable, 2..4 to enable. Note: will be squared.
@@ -14,7 +14,7 @@
 // --------------------------------------------------------------
 // Post Processing settings.
 // --------------------------------------------------------------
-#define POSTPROCESSING true
+#define POSTPROCESSING false
 
 // Gamma correction.
 #define GAMMA_CORRECTION true

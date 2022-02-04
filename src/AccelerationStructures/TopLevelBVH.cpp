@@ -28,9 +28,20 @@ Intersection TopLevelBVH::Traverse(Ray& r)
 	{
 		r.Transform((*BVHs)[i]->GetInvTranslation());
 		Intersection intersection = (*BVHs)[i]->GetBVH()->Traverse(r);
+
+		// Translate the position and the normal back to world space.
+		intersection.position = (*BVHs)[i]->GetTranslation().TransformPoint(intersection.position);
+		intersection.normal = (*BVHs)[i]->GetTranslation().TransformVector(intersection.normal);
+
+		//TODO: Take a look at this
+		if (!closest_intersection.intersect) 
+		{
+			closest_intersection = intersection;
+		}
+
 		r.Transform((*BVHs)[i]->GetTranslation());
 
-		if (intersection.intersect && intersection.t != 0 && intersection.t < closest_intersection.t)
+		if (intersection.intersect && intersection.t > 0.001f && intersection.t < closest_intersection.t)
 		{
 			closest_intersection = intersection;
 		}

@@ -29,5 +29,9 @@ public:
 
 	virtual void Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT]);
 	Ray GetUVRay(const float2& uv) const;
-	virtual void OnCameraUpdate() {}
+	virtual void OnCameraUpdate() {
+		float3 p = cam->pos;
+		string s = " ";
+		cout << "Camera position: " << p.x << s << p.y << s << p.z << endl;
+	}
 };
