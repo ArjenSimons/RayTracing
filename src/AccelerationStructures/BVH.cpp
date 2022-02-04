@@ -331,13 +331,16 @@ bool BVH::Partition(BVHNode* node)
 					break;
 				}
 			}
-			printf("root count before: %i\n", root->count);
-			printf("count before: %i\n", node->count);
+			/*printf("root count before: %i\n", root->count);
+			printf("count before: %i\n", node->count);*/
 			//printf("hahahahahahahahahhahahahaa\n");
-			UpdateBVHNodeCounts(node, spatialSplitCount);
-			printf("ExitNodeCount: %i\n", node->count);
+			if (node->parent!= nullptr)
+				UpdateBVHNodeCounts(node->parent, spatialSplitCount);
+			node->count += spatialSplitCount;
+			/*printf("ExitNodeCount: %i\n", node->count);
 			printf("root count after: %i\n", root->count);
 			printf("count after: %i\n", node->count);
+			printf("indices count after: %i\n", indices.size());*/
 		}
 	}
 	AABB intersect = left_right.first.Intersection(left_right.second);
@@ -408,10 +411,16 @@ void BVH::UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount)
 
 void BVH::UpdateBVHNodeCounts(BVHNode* node, int amount)
 {
-	node->count += amount;
+	/*printf("amount: %i\n", amount);
+	printf("node count: %i\n", node->count);
+
+	printf("node count: %i\n", node->count);*/
 	//printf("UPDATING REFERENCES\n");
-	if (node->parent != nullptr)
+	if (node->parent != nullptr) {
+		node->count += amount;
+		node->right->first += amount;
 		UpdateBVHNodeCounts(node->parent, amount);
+	}
 }
 
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
