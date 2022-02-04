@@ -1,7 +1,9 @@
 #include "precomp.h"
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics)
-	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics)
+int missingRefCount = 0;
+
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f)
+	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
 	invTranslation = translation.Inverted();
 }
@@ -9,14 +11,14 @@ BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool di
 void BVH::ConstructBVH()
 {
 	//Allocate extra memory for indices when constructing the sbvh
-	if (spatialSplitConstraint == 1) 
-		indices.resize(n); 
+	if (spatialSplitConstraint == 1)
+		indices.resize(n);
 	else
-		indices.resize(n * 1.2);
+		indices.resize(n);
 
 
 	for (int i = 0; i < n; i++) indices[i] = i;
-	pool = new BVHNode[n * 2];
+	pool = new BVHNode[n * 3];
 	root = &pool[0];
 	poolPtr = 2;
 
@@ -31,8 +33,11 @@ void BVH::ConstructBVH()
 	if (diagnostics)
 	{
 		printf("Number of nodes: %i\n", countNodes(*root));
-		printf("Number of references %i\n", root->count);
+		printf("\nNumber of references %i\n", root->count);
+		printf("indices size: %i\n", indices.size());
+		PrintRightLeaf(root);
 		printf("Number of spatial splits %i\n", spatialSplitCount);
+		printf("Number of missing refs %i\n", missingRefCount);
 	}
 }
 
@@ -75,6 +80,15 @@ void BVH::RotateZ(float r)
 
 }
 
+void BVH::PrintRightLeaf(BVHNode* node) {
+	if (node->isLeaf) {
+		printf("right:: First %i | count %i | sum %i\n", node->first, node->count, node->first + node->count);
+	}
+	else {
+		PrintRightLeaf(node->right);
+	}
+}
+
 Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
 {
 
@@ -87,19 +101,12 @@ Intersection BVH::TraverseInner(Ray& r, BVHNode* node, uint& nChecks)
 	nChecks++;
 	if (node->isLeaf)
 	{
-		//Intersection dummy;
-		//dummy.nAABBandTriChecks = nChecks;
-		////printf("nchecks: %i\n", dummy.nAABBandTriChecks);
-		//nChecks++;
-
 		//return dummy;
 		Intersection intersection = GetClosestIntersectionInNode(r, node, nChecks);
 		return intersection;
 	}
 	else
 	{
-		//printf("oof");
-		//nChecks += 2;
 		Intersection left = TraverseInner(r, node->left, nChecks);
 		Intersection right = TraverseInner(r, node->right, nChecks);
 
@@ -123,17 +130,11 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 		if (intersection.intersect && (closest_intersection.intersect == false || intersection.t < closest_intersection.t))
 		{
 			closest_intersection = intersection;
-			//printf("hit i=%i\n", i);
 		}
-		//nChecks++;
 	}
-	//printf("checks %i\n", nChecks);
-	//nChecks += node->first + node->count;
-	closest_intersection.nAABBandTriChecks = nChecks;
 
-	//if (!closest_intersection.intersect) {
-	//	printf("ha %i", nChecks);
-	//}
+
+	closest_intersection.nAABBandTriChecks = nChecks;
 
 	return closest_intersection;
 }
@@ -154,7 +155,6 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 		maxBound.x = max(maxBound.x, aabb.bmax3.x);
 		maxBound.y = max(maxBound.y, aabb.bmax3.y);
 		maxBound.z = max(maxBound.z, aabb.bmax3.z);
-		//aabb.Grow((*primitives)[indices[i]].GetAABB());
 	}
 
 	return AABB(minBound, maxBound);
@@ -162,10 +162,8 @@ AABB BVH::CalculateBounds(uint32_t first, uint32_t count)
 
 void BVH::SubdivideBVHNode(BVHNode* node)
 {
-	//printf("Node sa: %f\n", node->bounds.bmin3.x);
 	if (node->count == 1)
 	{
-		//printf("leaf ref count: %i\n", node->count);
 		node->isLeaf = true;
 		return;
 	}
@@ -179,30 +177,19 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 		SubdivideBVHNode(node->left);
 		SubdivideBVHNode(node->right);
 	}
-	else {
-		//printf("leaf ref count: %i\n", node->count);
-	}
 }
 
 bool BVH::Partition(BVHNode* node)
 {
-	//Determine split axis
-	//Determine split position
-	float splitPos = node->bounds.Center(node->bounds.LongestAxis());
-
 	AABB aabb;
 	float lowestCost = minb.x;
 	float bestBinPos;
-	
+
 	//Binning
 	int splitAxis = node->bounds.LongestAxis();
 
 	pair<AABB, AABB> left_right = SplitAABB(node, splitAxis, lowestCost, bestBinPos);
 
-	//float parentArea = node->bounds.Area();
-	//float parentCost = parentArea * node->count;
-	//printf("parentCost: %f\n", parentCost);
-	//printf("parentArea: %f\n", parentArea);
 	if (lowestCost >= node->bounds.Area() * node->count)
 	{
 		node->left = nullptr;
@@ -210,7 +197,7 @@ bool BVH::Partition(BVHNode* node)
 		node->isLeaf = true;
 		return false;
 	}
-	
+
 	int j = node->first - 1;
 
 	switch (splitAxis)
@@ -245,29 +232,22 @@ bool BVH::Partition(BVHNode* node)
 		break;
 	}
 
-	//printf("lowestCost: %f\n", lowestCost);
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
-	//printf("before spatial area: %f\n", intersectRL.Area());
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
 		float spatialCost = 0;
 		pair<AABB, AABB> spatial_left_right = SpatialSplitAABB(node, splitAxis, spatialCost, bestBinPos);
-		//printf("spatial cost: %f\n", spatialCost);
 
-		if (spatialCost < lowestCost) 
+		if (spatialCost < lowestCost)
 		{
 			spatialSplitCount++;
 			left_right.first = spatial_left_right.first;
 			left_right.second = spatial_left_right.second;
 
-			//printf("union Area %f\n", unionRL.Area());
-			//TODO: Implement spatial splitting
-
 			int createdReferenceCount = 0;
-			//printf("start\n");
 
 			int end = node->first + node->count;
-			int spatialSplitCount = 0;
+			int referenceDupCount = 0;
 
 			vector<uInt> inds(indices.begin() + node->first, indices.begin() + end);
 
@@ -278,14 +258,13 @@ bool BVH::Partition(BVHNode* node)
 				aabb = tri.GetAABB();
 				float3* verts = tri.GetVertices();
 
-				//points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f
 				switch (splitAxis)
 				{
 				case(0):
-					if (!(verts[0].x <= splitPos + 0.01f && verts[1].x <= splitPos + 0.01f && verts[2].x <= splitPos + 0.01f)
-						&& !(verts[0].x >= splitPos - 0.01f && verts[1].x >= splitPos - 0.01f && verts[2].x >= splitPos - 0.01f))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+					if (!(verts[0].x <= bestBinPos + 0.01f && verts[1].x <= bestBinPos + 0.01f && verts[2].x <= bestBinPos + 0.01f)
+						&& !(verts[0].x >= bestBinPos - 0.01f && verts[1].x >= bestBinPos - 0.01f && verts[2].x >= bestBinPos - 0.01f))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
-						if (tri.GetCentroid().x <= splitPos)
+						if (tri.GetCentroid().x <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -294,14 +273,15 @@ bool BVH::Partition(BVHNode* node)
 							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
-						spatialSplitCount += 1;
+						referenceDupCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				case(1):
-					if (!(verts[0].y <= splitPos + 0.01f && verts[1].y <= splitPos + 0.01f && verts[2].y <= splitPos + 0.01f)
-						&& !(verts[0].y >= splitPos - 0.01f && verts[1].y >= splitPos - 0.01f && verts[2].y >= splitPos - 0.01f))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
+					if (!(verts[0].y <= bestBinPos + 0.01f && verts[1].y <= bestBinPos + 0.01f && verts[2].y <= bestBinPos + 0.01f)
+						&& !(verts[0].y >= bestBinPos - 0.01f && verts[1].y >= bestBinPos - 0.01f && verts[2].y >= bestBinPos - 0.01f))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
-						if (tri.GetCentroid().y <= splitPos)
+						if (tri.GetCentroid().y <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -310,14 +290,15 @@ bool BVH::Partition(BVHNode* node)
 							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
-						spatialSplitCount += 1;
+						referenceDupCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				case(2):
-					if (!(verts[0].z <= splitPos + 0.01f && verts[1].z <= splitPos + 0.01f && verts[2].z <= splitPos + 0.01f)
-						&& !(verts[0].z >= splitPos - 0.01f && verts[1].z >= splitPos - 0.01f && verts[2].z >= splitPos - 0.01f))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
+					if (!(verts[0].z <= bestBinPos + 0.01f && verts[1].z <= bestBinPos + 0.01f && verts[2].z <= bestBinPos + 0.01f)
+						&& !(verts[0].z >= bestBinPos - 0.01f && verts[1].z >= bestBinPos - 0.01f && verts[2].z >= bestBinPos - 0.01f))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
-						if (tri.GetCentroid().z <= splitPos)
+						if (tri.GetCentroid().z <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -326,24 +307,29 @@ bool BVH::Partition(BVHNode* node)
 							indices.insert(indices.begin() + node->first + 1, inds[i]);
 							j++;
 						}
-						spatialSplitCount += 1;
+						referenceDupCount += 1;
+						missingRefCount += 1;
 					}
 					break;
 				}
 			}
-			printf("root count before: %i\n", root->count);
-			printf("count before: %i\n", node->count);
-			//printf("hahahahahahahahahhahahahaa\n");
-			UpdateBVHNodeCounts(node, spatialSplitCount);
-			printf("ExitNodeCount: %i\n", node->count);
+			/*printf("root count before: %i\n", root->count);
+			printf("count before: %i\n", node->count);*/
+			UpdateBVHNodeCounts(node, referenceDupCount);
+			UpdateBVHNodeFirsts(node, referenceDupCount);
+
+			/*printf("ExitNodeCount: %i\n", node->count);
 			printf("root count after: %i\n", root->count);
 			printf("count after: %i\n", node->count);
+			printf("indices count after: %i\n", indices.size());*/
 		}
 	}
 	AABB intersect = left_right.first.Intersection(left_right.second);
-	//printf("after spatial area: %f\n", intersect.Area());
-	//cout << intersect.Area() << "yeet" << endl;
 
+
+	if (node->left == nullptr || node->right == nullptr) {
+		int dummy = 1;
+	}
 	BVHNode* left = node->left;
 	left->count = j - node->first + 1;
 	left->first = node->first;
@@ -356,26 +342,6 @@ bool BVH::Partition(BVHNode* node)
 	right->bounds = left_right.second;// CalculateBounds(right->first, right->count);
 	right->parent = node;
 
-
-	//printf("-----Y-------\n");
-	//printf("---top---\n");
-	//printf("parent: %f\n", node->bounds.bmax3.y);
-	//printf("left: %f\n", left->bounds.bmax3.y);
-	//printf("right: %f\n", right->bounds.bmax3.y);
-	//printf("---bot---\n");
-	//printf("parent: %f\n", node->bounds.bmin3.y);
-	//printf("left: %f\n", left->bounds.bmin3.y);
-	//printf("right: %f\n", right->bounds.bmin3.y);
-	//printf("-----X-------\n");
-	//printf("parent: %f\n", node->bounds.bmax3.x);
-	//printf("left: %f\n", left->bounds.bmax3.x);
-	//printf("right: %f\n", right->bounds.bmax3.x);
-	//printf("---bot---\n");
-	//printf("parent: %f\n", node->bounds.bmin3.x);
-	//printf("left: %f\n", left->bounds.bmin3.x);
-	//printf("right: %f\n", right->bounds.bmin3.x);
-	//printf("--------------\n");
-
 	if (left->count == node->count || right->count == node->count) {
 		node->left = nullptr;
 		node->right = nullptr;
@@ -383,35 +349,37 @@ bool BVH::Partition(BVHNode* node)
 		return false;
 	}
 
-
 	return true;
 }
 
-void BVH::UpdateBVHNodeFirsts(BVHNode* node, uint32_t first, int amount)
+void BVH::UpdateBVHNodeFirsts(BVHNode* node, int amount)
 {
-	if (node->first > first)
+	if (node->parent == nullptr) return;
+
+	BVHNode* rightNode = node->parent->right;
+
+	if (rightNode != node)
 	{
-		node->first += amount;
-		if (!node->isLeaf)
-		{
-			UpdateBVHNodeFirsts(node->right, first, amount);
-			UpdateBVHNodeFirsts(node->right, first, amount);
+		if (rightNode->first == 0) {
+			printf("is 0");
 		}
+			rightNode->first += amount;
 	}
-	else {
-		if (!node->isLeaf)
-		{
-			UpdateBVHNodeFirsts(node->right, first, amount);
-		}
-	}
+
+
+	UpdateBVHNodeFirsts(node->parent, amount);
 }
 
 void BVH::UpdateBVHNodeCounts(BVHNode* node, int amount)
 {
+	if (amount == 0) return;
+
 	node->count += amount;
-	//printf("UPDATING REFERENCES\n");
-	if (node->parent != nullptr)
+
+	if (node->parent != nullptr) {
+
 		UpdateBVHNodeCounts(node->parent, amount);
+	}
 }
 
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
@@ -513,7 +481,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	for (int i = node->first; i < node->first + node->count; i++)
 	{
 		Triangle tri = (*primitives)[indices[i]];
-		//AABB aabb = (*primitives)[indices[i]].GetAABB();
 		float3 leftMax;
 		float3 rightMin;
 
@@ -534,7 +501,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 		}
 
 		AABB leftClipBox(node->bounds.bmin3, leftMax);
-		AABB rightClipBox(rightMin, node->bounds.bmax3);		
+		AABB rightClipBox(rightMin, node->bounds.bmax3);
 
 		float3* vertices = tri.GetVertices();
 
@@ -581,7 +548,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			vector<float3> leftPolyVerts = ClipTriangle(tri, leftClipBox);
 			vector<float3> rightPolyVerts = ClipTriangle(tri, rightClipBox);
 
-			if (leftPolyVerts.size() == 0) 
+			if (leftPolyVerts.size() == 0)
 			{
 				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
@@ -639,8 +606,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 	leftArea = isinf(leftArea) ? 0 : leftArea; //Look at this hier gaat het fout
 	rightArea = isinf(rightArea) ? 0 : rightArea;
 
-	//printf("SpatialSPlit: leftArea %f, rightArea %f, leftCount %i, rightCount %i\n", leftArea, rightArea, leftCount, rightCount);
-	float cost = 0.0125f + leftArea * leftCount + rightArea * rightCount;;
+	float cost = spatialSplitCost + leftArea * leftCount + rightArea * rightCount;
 	lowestSpatialCost = cost;
 
 	return make_pair(left, right);
@@ -655,12 +621,8 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 	out.push_back(vertices[2]);
 	out.push_back(vertices[1]);
 	out.push_back(vertices[0]);
-	//printf("\nTRI ORDERS:\n");
-	//printf("%f\n", vertices[0].x);
-	//printf("%f\n", vertices[1].x);
-	//printf("%f\n", vertices[2].x);
+
 	ClipPlane* clipPlanes = GetClipPlanes(clipBox);
-	//printf("\n === CLIPPING START ==== \n");
 	for (int i = 0; i < 6; i++)
 	{
 		vector<float3> input = out;
@@ -671,38 +633,27 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			return input;
 		}
 
-		//printf("size: %i\n", input.size());
 		float3 startPoint = input.back();
 
 		for (float3 endPoint : input)
 		{
-			//printf("========loopStart===========\n");
-			//printf("clipPlane normal: %f, %f, %f\n", clipPlanes[i].n.x, clipPlanes[i].n.y, clipPlanes[i].n.z);
-			//printf("clipPlane pos: %f, %f, %f\n", clipPlanes[i].p.x, clipPlanes[i].p.y, clipPlanes[i].p.z);
-			//printf("startPoint: %f, %f, %f\n", startPoint.x, startPoint.y, startPoint.z);
-			//printf("endPoint: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
 			float p1Dist = clipPlanes[i].Distance(startPoint);
 			float p2Dist = clipPlanes[i].Distance(endPoint);
-			//printf("p1Dist: %f\n", p1Dist);
-			//printf("p2Dist: %f\n", p2Dist);
+
 			bool p1InFront = p1Dist >= -.001f;
 			bool p1Behind = !p1InFront;
 			bool p2InFront = p2Dist >= -.001f;
 			bool p2Behind = !p2InFront;
 
-			if (p1InFront && p2InFront) 
+			if (p1InFront && p2InFront)
 			{
 				out.push_back(endPoint);
-				//printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
-				//printf("Inside\n");
 			}
-			else if (p1InFront && p2Behind) 
+			else if (p1InFront && p2Behind)
 			{
 				float alpha = abs(p1Dist) / (abs(p1Dist) + abs(p2Dist));
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
-				//printf("Inside\n");
-				//printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
 
 			}
 			else if (p1Behind && p2InFront)
@@ -711,23 +662,11 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 				float3 intersection = lerp(startPoint, endPoint, alpha);
 				out.push_back(intersection);
 				out.push_back(endPoint);
-				//printf("Inside\n");
-				//printf("added: %f, %f, %f\n", intersection.x, intersection.y, intersection.z);
-				//printf("added boundary: %f, %f, %f\n", endPoint.x, endPoint.y, endPoint.z);
 			}
-			//else
-			//{
-			//	  printf("OUTSIDE\n");
-			//}
 
 			startPoint = endPoint;
 		}
-		/*cout << "OUTPUT" << endl;
-		for (float3 endPoint : out) {
-			cout << "out: " << endPoint.x << ", " << endPoint.y << ", " << endPoint.z << endl;
-		}*/
 	}
-
 
 	return out;
 }

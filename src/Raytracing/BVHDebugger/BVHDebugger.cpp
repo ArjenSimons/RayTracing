@@ -1,6 +1,6 @@
 #include "precomp.h"
 
-#define RED_COST_COUNT 200
+#define RED_COST_COUNT 10
 
 inline Color rgb(float minimum, float maximum, float value) {
 	float ratio = 2 * ((value - minimum) / (maximum - minimum));
