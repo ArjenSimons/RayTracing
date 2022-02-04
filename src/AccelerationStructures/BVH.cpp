@@ -2,7 +2,7 @@
 
 int missingRefCount = 0;
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f)
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint, float spatialSplitCost)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
 	invTranslation = translation.Inverted();
@@ -179,6 +179,7 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 	}
 }
 
+//Class that partitions a node into two nodes (creates their bounding boxes, and sorts the references)
 bool BVH::Partition(BVHNode* node)
 {
 	AABB aabb;
@@ -188,6 +189,7 @@ bool BVH::Partition(BVHNode* node)
 	//Binning
 	int splitAxis = node->bounds.LongestAxis();
 
+	//Get the best normal bvhSplit
 	pair<AABB, AABB> left_right = SplitAABB(node, splitAxis, lowestCost, bestBinPos);
 
 	if (lowestCost >= node->bounds.Area() * node->count)
@@ -200,9 +202,10 @@ bool BVH::Partition(BVHNode* node)
 
 	int j = node->first - 1;
 
+	//Sort the references
 	switch (splitAxis)
 	{
-	case(0):
+	case(0): //x-axis
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			if ((*primitives)[indices[i]].GetCentroid().x < bestBinPos)
@@ -212,7 +215,7 @@ bool BVH::Partition(BVHNode* node)
 		}
 
 		break;
-	case(1):
+	case(1): //y-axis
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			if ((*primitives)[indices[i]].GetCentroid().y < bestBinPos)
@@ -221,7 +224,7 @@ bool BVH::Partition(BVHNode* node)
 			}
 		}
 		break;
-	case(2):
+	case(2): //z-axis
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
 			if ((*primitives)[indices[i]].GetCentroid().z < bestBinPos)
@@ -235,7 +238,7 @@ bool BVH::Partition(BVHNode* node)
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
-		float spatialCost = 0;
+		float spatialCost = INFINITY;
 		pair<AABB, AABB> spatial_left_right = SpatialSplitAABB(node, splitAxis, spatialCost, bestBinPos);
 
 		if (spatialCost < lowestCost)
@@ -382,6 +385,7 @@ void BVH::UpdateBVHNodeCounts(BVHNode* node, int amount)
 	}
 }
 
+//Create best bounding boxes for left/right child nodes
 pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost, float& bestBinPos)
 {
 	AABB bestLeft, bestRight;

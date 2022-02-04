@@ -15,10 +15,10 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::SibenikCathedral();
+	scene = SceneManager::SpatialBvhTest();
 	Camera * camera = new Camera();
 	lowResTracer = new LowResTracer(scene, camera);
-	mainTracer = new BVHDebugger(scene, camera);
+	mainTracer = new WhittedRayTracer(scene, camera);
 	rayTracer = lowResTracer;
 }
 
