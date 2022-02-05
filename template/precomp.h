@@ -1266,10 +1266,9 @@ public:
 #include "src/Raytracing/PathTracer/Accumulator.h"
 #include "src/Raytracing/PathTracer/PathTracer.h"
 #include "src/Raytracing/LowResTracer/LowResTracer.h"
-#include "src/Raytracing/BVHDebugger/BVHDebugger.h"
+#include "src/Raytracing/BVHHeatmap/BVHHeatmap.h"
 
 // Post processing
 #include "src/PostProcessing/PostProcessing.h"
-
 
 // EOF

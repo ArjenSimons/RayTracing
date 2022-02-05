@@ -124,7 +124,7 @@
   <!-- END Custom section -->
   <ItemGroup>
     <ClCompile Include="src\Raytracing\LowResTracer\LowResTracer.cpp" />
-    <ClCompile Include="src\Raytracing\BVHDebugger\BVHDebugger.cpp" />
+    <ClCompile Include="src\Raytracing\BVHHeatmap\BVHHeatmap.cpp" />
     <ClCompile Include="src\Raytracing\PathTracer\PathTracer.cpp" />
     <ClCompile Include="src\Raytracing\RayTracer.cpp" />
     <ClCompile Include="src\Scenes\SceneManager.cpp" />
@@ -151,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Raytracing\LowResTracer\LowResTracer.h" />
-    <ClInclude Include="src\Raytracing\BVHDebugger\BVHDebugger.h" />
+    <ClInclude Include="src\Raytracing\BVHHeatmap\BVHHeatmap.h" />
     <ClInclude Include="src\Raytracing\PathTracer\PathTracer.h" />
     <ClInclude Include="src\Raytracing\PathTracer\Accumulator.h" />
     <ClInclude Include="src\Raytracing\RayTracer.h" />
@@ -178,6 +178,7 @@
     <ClInclude Include="src\AccelerationStructures\TopLevelBVH.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="cl\kernels.cl" />
     <None Include="README.md" />
     <None Include="template\LICENSE" />

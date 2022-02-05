@@ -55,9 +55,11 @@
     <ClCompile Include="src\Raytracing\PathTracer\PathTracer.cpp">
       <Filter>src\Raytracing\PathTracer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Raytracing\LowResTracer\LowResTracer.cpp" />
-    <ClCompile Include="src\Raytracing\BVHDebugger\BVHDebugger.cpp">
-      <Filter>src\Raytracing\BVHDebugger</Filter>
+    <ClCompile Include="src\Raytracing\BVHHeatmap\BVHHeatmap.cpp">
+      <Filter>src\Raytracing\BVHHeatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Raytracing\LowResTracer\LowResTracer.cpp">
+      <Filter>src\Raytracing\LowResTracer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,9 +135,11 @@
     <ClInclude Include="src\Raytracing\PathTracer\PathTracer.h">
       <Filter>src\Raytracing\PathTracer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Raytracing\LowResTracer\LowResTracer.h" />
-    <ClInclude Include="src\Raytracing\BVHDebugger\BVHDebugger.h">
-      <Filter>src\Raytracing\BVHDebugger</Filter>
+    <ClInclude Include="src\Raytracing\BVHHeatmap\BVHHeatmap.h">
+      <Filter>src\Raytracing\BVHHeatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Raytracing\LowResTracer\LowResTracer.h">
+      <Filter>src\Raytracing\LowResTracer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +152,7 @@
     <None Include="cl\kernels.cl">
       <Filter>template\cl</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template">
@@ -198,7 +203,7 @@
     <Filter Include="src\Raytracing\LowResTracer">
       <UniqueIdentifier>{bd02aff6-ccba-40c2-bc62-af80e4d6ca35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Raytracing\BVHDebugger">
+    <Filter Include="src\Raytracing\BVHHeatmap">
       <UniqueIdentifier>{f48d45e4-aad2-41c2-92cd-bb45a18c17b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
