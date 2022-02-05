@@ -458,8 +458,7 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 				}
 				aabb.bmin3 = minbound;
 				aabb.bmax3 = maxbound;
-				p = node->bounds.Center(splitAxis);
-				aabb = node->bounds;
+				p = aabb.Center(splitAxis);
 			}
 
 			if (p < binPositions[splitAxis])
