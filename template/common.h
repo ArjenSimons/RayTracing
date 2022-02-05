@@ -1,6 +1,6 @@
 // default screen resolution
-#define SCRWIDTH	640
-#define SCRHEIGHT	360
+#define SCRWIDTH	1280
+#define SCRHEIGHT	720
 
 // --------------------------------------------------------------
 // General settings.

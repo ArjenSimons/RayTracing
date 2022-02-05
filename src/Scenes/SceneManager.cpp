@@ -141,7 +141,7 @@ Scene* SceneManager::SibenikCathedral() {
 
 	shared_ptr<Mesh> sibenikMesh = make_shared<Mesh>("res/sibenik.obj");
 	Model* sibenikModel = new Model(float3(0, 0, 0), 1, sibenikMesh, SOLID, Material(Color(1, 1, 1), colorTexture));
-	BVH* sibenikBVH = new BVH(sibenikModel->GetTriangles(), sibenikModel->GetTriangles()->size(), sibenikModel->GetTranslation(), true);
+	BVH* sibenikBVH = new BVH(sibenikModel->GetTriangles(), sibenikModel->GetTriangles()->size(), sibenikModel->GetTranslation(), true, .1f, 0.05f);
 
 	sibenikBVH->ConstructBVH();
 
