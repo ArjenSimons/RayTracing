@@ -136,34 +136,6 @@ Scene * SceneManager::CornellBoxAreaLight() {
 	return scene;
 }
 
-Scene* SceneManager::SibenikCathedral() {
-	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
-
-	shared_ptr<Mesh> sibenikMesh = make_shared<Mesh>("res/sibenik.obj");
-	Model* sibenikModel = new Model(float3(0, 0, 0), 1, sibenikMesh, SOLID, Material(Color(1, 1, 1), colorTexture));
-	BVH* sibenikBVH = new BVH(sibenikModel->GetTriangles(), sibenikModel->GetTriangles()->size(), sibenikModel->GetTranslation(), true, .1f, 0.05f);
-
-	sibenikBVH->ConstructBVH();
-
-	BVHInstance* sibenikInstance = new BVHInstance(sibenikBVH);
-	vector<BVHInstance*>* bvhs = new vector<BVHInstance*>;
-	bvhs->push_back(sibenikInstance);
-
-	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
-
-	PointLight* pointLight = new PointLight(float3(0, 0, 0), 50, float3(1, 1, 1));
-	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 0, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
-
-
-	vector<Intersectable*> objects = {};
-
-	vector<LightSource*> lights = { pointLight };
-
-	Scene* scene = new Scene(objects, lights, topBVH);
-
-	return scene;
-}
-
 Scene * SceneManager::SpatialBvhDragon() {
 	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
