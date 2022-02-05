@@ -15,9 +15,9 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::SibenikCathedral();
-	Camera * camera = new Camera();
-	lowResTracer = new LowResTracer(scene, camera);
+	scene = SceneManager::BvhDragon();
+	Camera * camera = new Camera(float3(0, 0, 0));
+	lowResTracer = new WhittedRayTracer(scene, camera);
 	mainTracer = new BVHDebugger(scene, camera);
 	rayTracer = lowResTracer;
 }

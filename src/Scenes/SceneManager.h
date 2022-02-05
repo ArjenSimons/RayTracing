@@ -8,6 +8,7 @@ public:
 	static Scene* CornellBoxAreaLight();
 	static Scene * SibenikCathedral();
 	static Scene * BeersLaw();
-	static Scene* SpatialBvhTest();
+	static Scene* SpatialBvhDragon();
+	static Scene* BvhDragon();
 };
 

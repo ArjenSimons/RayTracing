@@ -1,8 +1,30 @@
 #include "precomp.h"
 
-int missingRefCount = 0;
+int duplicatedRefCount = 0;
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f)
+float eps = .001f;
+
+inline float getAxisValue(float3 pos, uint axis) {
+	return axis == 0 ? pos.x : axis == 1 ? pos.y : pos.z;
+}
+
+inline bool triangleOutsideBounds(AABB bounds, float3* vertices) {
+	// For each vertex, check whether it falls between the min and max for that axis.
+	for (uint v_idx = 0; v_idx < 3; v_idx++) {
+		float3 vertex = vertices[v_idx];
+		for (uint v_axis = 0; v_axis < 3; v_axis++) {
+
+			// Get values for comparison.
+			float pos = getAxisValue(vertex, v_axis);
+			float min = bounds.Minimum(v_axis);
+			float max = bounds.Maximum(v_axis);
+
+			if (pos < min - eps || pos > max + eps) return true;
+		}
+	}
+}
+
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint, float spatialSplitCost)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
 	invTranslation = translation.Inverted();
@@ -32,12 +54,12 @@ void BVH::ConstructBVH()
 
 	if (diagnostics)
 	{
-		printf("Number of nodes: %i\n", countNodes(*root));
 		printf("\nNumber of references %i\n", root->count);
+		printf("Number of nodes: %i\n", countNodes(*root));
 		printf("indices size: %i\n", indices.size());
-		PrintRightLeaf(root);
+		//PrintRightLeaf(root);
 		printf("Number of spatial splits %i\n", spatialSplitCount);
-		printf("Number of missing refs %i\n", missingRefCount);
+		printf("Number of duplicated refs %i\n", duplicatedRefCount);
 	}
 }
 
@@ -133,7 +155,6 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 		}
 	}
 
-
 	closest_intersection.nAABBandTriChecks = nChecks;
 
 	return closest_intersection;
@@ -182,7 +203,7 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 bool BVH::Partition(BVHNode* node)
 {
 	AABB aabb;
-	float lowestCost = minb.x;
+	float lowestCost = INFINITY;
 	float bestBinPos;
 
 	//Binning
@@ -200,36 +221,13 @@ bool BVH::Partition(BVHNode* node)
 
 	int j = node->first - 1;
 
-	switch (splitAxis)
+	for (int i = node->first; i < node->first + node->count; i++)
 	{
-	case(0):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().x < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-
-		break;
-	case(1):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().y < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
-	case(2):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().z < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
+		AABB primitiveAABB = (*primitives)[indices[i]].GetAABB();
+		float AABBCentroid = primitiveAABB.Center(splitAxis);
+		
+		if (AABBCentroid < bestBinPos)
+			swap(indices[++j], indices[i]);
 	}
 
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
@@ -261,10 +259,10 @@ bool BVH::Partition(BVHNode* node)
 				switch (splitAxis)
 				{
 				case(0):
-					if (!(verts[0].x <= bestBinPos + 0.01f && verts[1].x <= bestBinPos + 0.01f && verts[2].x <= bestBinPos + 0.01f)
-						&& !(verts[0].x >= bestBinPos - 0.01f && verts[1].x >= bestBinPos - 0.01f && verts[2].x >= bestBinPos - 0.01f))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+					if (!(verts[0].x < bestBinPos + eps && verts[1].x < bestBinPos + eps && verts[2].x < bestBinPos + eps)
+						&& !(verts[0].x > bestBinPos - eps && verts[1].x > bestBinPos - eps && verts[2].x > bestBinPos - eps))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
-						if (tri.GetCentroid().x <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -274,14 +272,14 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				case(1):
-					if (!(verts[0].y <= bestBinPos + 0.01f && verts[1].y <= bestBinPos + 0.01f && verts[2].y <= bestBinPos + 0.01f)
-						&& !(verts[0].y >= bestBinPos - 0.01f && verts[1].y >= bestBinPos - 0.01f && verts[2].y >= bestBinPos - 0.01f))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
+					if (!(verts[0].y < bestBinPos + eps && verts[1].y < bestBinPos + eps && verts[2].y < bestBinPos + eps)
+						&& !(verts[0].y > bestBinPos - eps && verts[1].y > bestBinPos - eps && verts[2].y > bestBinPos - eps))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
-						if (tri.GetCentroid().y <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -291,14 +289,14 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				case(2):
-					if (!(verts[0].z <= bestBinPos + 0.01f && verts[1].z <= bestBinPos + 0.01f && verts[2].z <= bestBinPos + 0.01f)
-						&& !(verts[0].z >= bestBinPos - 0.01f && verts[1].z >= bestBinPos - 0.01f && verts[2].z >= bestBinPos - 0.01f))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
+					if (!(verts[0].z < bestBinPos + eps && verts[1].z < bestBinPos + eps && verts[2].z < bestBinPos + eps)
+						&& !(verts[0].z > bestBinPos - eps && verts[1].z > bestBinPos - eps && verts[2].z > bestBinPos - eps))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
-						if (tri.GetCentroid().z <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -308,7 +306,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				}
@@ -366,7 +364,6 @@ void BVH::UpdateBVHNodeFirsts(BVHNode* node, int amount)
 			rightNode->first += amount;
 	}
 
-
 	UpdateBVHNodeFirsts(node->parent, amount);
 }
 
@@ -404,24 +401,51 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 		int rightCount = 0;
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			float p = 0;
-			switch (splitAxis)
-			{
-			case(0):
-				p = (*primitives)[indices[i]].GetCentroid().x;
-				break;
-			case(1):
-				p = (*primitives)[indices[i]].GetCentroid().y;
-				break;
-			case(2):
-				p = (*primitives)[indices[i]].GetCentroid().z;
-				break;
-			}
+			//float p = 0;
+			//switch (splitAxis)
+			//{
+			//case(0): //x-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().x;
+			//	break;
+			//case(1): //y-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().y;
+			//	break;
+			//case(2): //z-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().z;
+			//	break;
+			//}
+
+			float p = (*primitives)[indices[i]].GetAABB().Center(splitAxis);
 
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
+
+			Triangle tri = (*primitives)[indices[i]];
+			float3* vertices = tri.GetVertices();
+
+			//CheckAll if all vertices are inside of the aabb from this node
+			if (spatialSplitConstraint < 1 && triangleOutsideBounds(aabb, vertices))
+			{
+				////Adjust tri aabb to the cliped tri
+				vector<float3> verts = ClipTriangle(tri, node->bounds);
+
+				float3 minbound = minb;
+				float3 maxbound = maxb;
+				for (float3 vert : verts)
+				{
+					minbound.x = min(minbound.x, vert.x);
+					minbound.y = min(minbound.y, vert.y);
+					minbound.z = min(minbound.z, vert.z);
+					maxbound.x = max(maxbound.x, vert.x);
+					maxbound.y = max(maxbound.y, vert.y);
+					maxbound.z = max(maxbound.z, vert.z);
+				}
+				aabb.bmin3 = minbound;
+				aabb.bmax3 = maxbound;
+				p = aabb.Center(splitAxis);
+			}
+
 			if (p < binPositions[splitAxis])
 			{
-				//left.Grow((*primitives)[indices[i]].GetCentroid());
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -520,9 +544,10 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			break;
 		}
 
-		if (points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f) //All points left
+		AABB aabb = (*primitives)[indices[i]].GetAABB();
+
+		if (points.x <= binPos + eps && points.y <= binPos + eps && points.z <= binPos + eps) //All points left
 		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 			leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 			leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -531,9 +556,8 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
 			leftCount++;
 		}
-		else if (points.x >= binPos - .01f && points.y >= binPos - .01f && points.z >= binPos - .01f) //All points right
+		else if (points.x >= binPos - eps && points.y >= binPos - eps && points.z >= binPos - eps) //All points right
 		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
 			rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
 			rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
@@ -550,7 +574,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 
 			if (leftPolyVerts.size() == 0)
 			{
-				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -561,7 +584,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			}
 			else if (rightPolyVerts.size() == 0)
 			{
-				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
 				rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
 				rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
@@ -640,9 +662,9 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			float p1Dist = clipPlanes[i].Distance(startPoint);
 			float p2Dist = clipPlanes[i].Distance(endPoint);
 
-			bool p1InFront = p1Dist >= -.001f;
+			bool p1InFront = p1Dist >= -eps;
 			bool p1Behind = !p1InFront;
-			bool p2InFront = p2Dist >= -.001f;
+			bool p2InFront = p2Dist >= -eps;
 			bool p2Behind = !p2InFront;
 
 			if (p1InFront && p2InFront)

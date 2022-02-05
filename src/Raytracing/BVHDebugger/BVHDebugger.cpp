@@ -1,6 +1,6 @@
 #include "precomp.h"
 
-#define RED_COST_COUNT 10
+#define RED_COST_COUNT 200
 
 // Converted from python to c++. Original at https://stackoverflow.com/a/20792531
 inline Color rgb(float minimum, float maximum, float value) {
