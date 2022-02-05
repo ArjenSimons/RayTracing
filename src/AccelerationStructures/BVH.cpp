@@ -200,7 +200,16 @@ bool BVH::Partition(BVHNode* node)
 
 	int j = node->first - 1;
 
-	switch (splitAxis)
+	for (int i = node->first; i < node->first + node->count; i++)
+	{
+		AABB primitiveAABB = (*primitives)[indices[i]].GetAABB();
+		float AABBCentroid = primitiveAABB.Center(splitAxis);
+		
+		if (AABBCentroid < bestBinPos)
+			swap(indices[++j], indices[i]);
+	}
+
+	/*switch (splitAxis)
 	{
 	case(0):
 		for (int i = node->first; i < node->first + node->count; i++)
@@ -230,7 +239,7 @@ bool BVH::Partition(BVHNode* node)
 			}
 		}
 		break;
-	}
+	}*/
 
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
@@ -404,19 +413,21 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 		int rightCount = 0;
 		for (int i = node->first; i < node->first + node->count; i++)
 		{
-			float p = 0;
-			switch (splitAxis)
-			{
-			case(0): //x-axis
-				p = (*primitives)[indices[i]].GetCentroid().x;
-				break;
-			case(1): //y-axis
-				p = (*primitives)[indices[i]].GetCentroid().y;
-				break;
-			case(2): //z-axis
-				p = (*primitives)[indices[i]].GetCentroid().z;
-				break;
-			}
+			//float p = 0;
+			//switch (splitAxis)
+			//{
+			//case(0): //x-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().x;
+			//	break;
+			//case(1): //y-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().y;
+			//	break;
+			//case(2): //z-axis
+			//	p = (*primitives)[indices[i]].GetCentroid().z;
+			//	break;
+			//}
+
+			float p = (*primitives)[indices[i]].GetAABB().Center(splitAxis);
 
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
 
