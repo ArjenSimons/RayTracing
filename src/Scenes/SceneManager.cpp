@@ -186,7 +186,6 @@ Scene * SceneManager::SpatialBvhDragon() {
 
 	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
-	// TODO: Add objects, lights, bvh
 	vector<Intersectable*> objects = { };
 	PointLight* pointLight = new PointLight(float3(0, 0, -4), 10, float3(1, 1, 1));
 	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 10, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
@@ -219,7 +218,6 @@ Scene* SceneManager::BvhDragon() {
 
 	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
-	// TODO: Add objects, lights, bvh
 	vector<Intersectable*> objects = { };
 	PointLight* pointLight = new PointLight(float3(0, 0, -4), 10, float3(1, 1, 1));
 	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 10, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
