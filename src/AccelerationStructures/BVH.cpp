@@ -184,7 +184,7 @@ void BVH::SubdivideBVHNode(BVHNode* node)
 bool BVH::Partition(BVHNode* node)
 {
 	AABB aabb;
-	float lowestCost = minb.x;
+	float lowestCost = INFINITY;
 	float bestBinPos;
 
 	//Binning
@@ -243,7 +243,7 @@ bool BVH::Partition(BVHNode* node)
 					if (!(verts[0].x < bestBinPos + eps && verts[1].x < bestBinPos + eps && verts[2].x < bestBinPos + eps)
 						&& !(verts[0].x > bestBinPos - eps && verts[1].x > bestBinPos - eps && verts[2].x > bestBinPos - eps))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
-						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -260,7 +260,7 @@ bool BVH::Partition(BVHNode* node)
 					if (!(verts[0].y < bestBinPos + eps && verts[1].y < bestBinPos + eps && verts[2].y < bestBinPos + eps)
 						&& !(verts[0].y > bestBinPos - eps && verts[1].y > bestBinPos - eps && verts[2].y > bestBinPos - eps))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
-						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -277,7 +277,7 @@ bool BVH::Partition(BVHNode* node)
 					if (!(verts[0].z < bestBinPos + eps && verts[1].z < bestBinPos + eps && verts[2].z < bestBinPos + eps)
 						&& !(verts[0].z > bestBinPos - eps && verts[1].z > bestBinPos - eps && verts[2].z > bestBinPos - eps))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
-						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) < bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
