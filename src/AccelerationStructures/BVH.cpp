@@ -1,6 +1,6 @@
 #include "precomp.h"
 
-int missingRefCount = 0;
+int duplicatedRefCount = 0;
 
 float eps = .001f;
 
@@ -54,12 +54,12 @@ void BVH::ConstructBVH()
 
 	if (diagnostics)
 	{
-		printf("Number of nodes: %i\n", countNodes(*root));
 		printf("\nNumber of references %i\n", root->count);
+		printf("Number of nodes: %i\n", countNodes(*root));
 		printf("indices size: %i\n", indices.size());
-		PrintRightLeaf(root);
+		//PrintRightLeaf(root);
 		printf("Number of spatial splits %i\n", spatialSplitCount);
-		printf("Number of duplicated refs %i\n", missingRefCount);
+		printf("Number of duplicated refs %i\n", duplicatedRefCount);
 	}
 }
 
@@ -272,7 +272,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				case(1):
@@ -289,7 +289,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				case(2):
@@ -306,7 +306,7 @@ bool BVH::Partition(BVHNode* node)
 							j++;
 						}
 						referenceDupCount += 1;
-						missingRefCount += 1;
+						duplicatedRefCount += 1;
 					}
 					break;
 				}
