@@ -240,10 +240,10 @@ bool BVH::Partition(BVHNode* node)
 				switch (splitAxis)
 				{
 				case(0):
-					if (!(verts[0].x <= bestBinPos + eps && verts[1].x <= bestBinPos + eps && verts[2].x <= bestBinPos + eps)
-						&& !(verts[0].x >= bestBinPos - eps && verts[1].x >= bestBinPos - eps && verts[2].x >= bestBinPos - eps))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+					if (!(verts[0].x < bestBinPos + eps && verts[1].x < bestBinPos + eps && verts[2].x < bestBinPos + eps)
+						&& !(verts[0].x > bestBinPos - eps && verts[1].x > bestBinPos - eps && verts[2].x > bestBinPos - eps))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
-						if (tri.GetCentroid().x <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -257,10 +257,10 @@ bool BVH::Partition(BVHNode* node)
 					}
 					break;
 				case(1):
-					if (!(verts[0].y <= bestBinPos + eps && verts[1].y <= bestBinPos + eps && verts[2].y <= bestBinPos + eps)
-						&& !(verts[0].y >= bestBinPos - eps && verts[1].y >= bestBinPos - eps && verts[2].y >= bestBinPos - eps))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
+					if (!(verts[0].y < bestBinPos + eps && verts[1].y < bestBinPos + eps && verts[2].y < bestBinPos + eps)
+						&& !(verts[0].y > bestBinPos - eps && verts[1].y > bestBinPos - eps && verts[2].y > bestBinPos - eps))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
-						if (tri.GetCentroid().y <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -274,10 +274,10 @@ bool BVH::Partition(BVHNode* node)
 					}
 					break;
 				case(2):
-					if (!(verts[0].z <= bestBinPos + eps && verts[1].z <= bestBinPos + eps && verts[2].z <= bestBinPos + eps)
-						&& !(verts[0].z >= bestBinPos - eps && verts[1].z >= bestBinPos - eps && verts[2].z >= bestBinPos - eps))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
+					if (!(verts[0].z < bestBinPos + eps && verts[1].z < bestBinPos + eps && verts[2].z < bestBinPos + eps)
+						&& !(verts[0].z > bestBinPos - eps && verts[1].z > bestBinPos - eps && verts[2].z > bestBinPos - eps))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
-						if (tri.GetCentroid().z <= bestBinPos)
+						if (tri.GetAABB().Center(splitAxis) <= bestBinPos)
 						{
 							indices.insert(indices.begin() + j + 1, inds[i]);
 						}
@@ -404,12 +404,12 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			float3* vertices = tri.GetVertices();
 
 			//CheckAll if all vertices are inside of the aabb from this node
-			if (   vertices[0].x <= node->bounds.bmin3.x - eps || vertices[0].y <= node->bounds.bmin3.y - eps || vertices[0].z <= node->bounds.bmin3.z - eps
-				|| vertices[0].x >= node->bounds.bmax3.x + eps || vertices[0].y >= node->bounds.bmax3.y + eps || vertices[0].z >= node->bounds.bmax3.z + eps
-				|| vertices[1].x <= node->bounds.bmin3.x - eps || vertices[1].y <= node->bounds.bmin3.y - eps || vertices[1].z <= node->bounds.bmin3.z - eps
-				|| vertices[1].x >= node->bounds.bmax3.x + eps || vertices[1].y >= node->bounds.bmax3.y + eps || vertices[1].z >= node->bounds.bmax3.z + eps
-				|| vertices[2].x <= node->bounds.bmin3.x - eps || vertices[2].y <= node->bounds.bmin3.y - eps || vertices[2].z <= node->bounds.bmin3.z - eps
-				|| vertices[2].x >= node->bounds.bmax3.x + eps || vertices[2].y >= node->bounds.bmax3.y + eps || vertices[2].z >= node->bounds.bmax3.z + eps)
+			if (   vertices[0].x < node->bounds.bmin3.x - eps || vertices[0].y < node->bounds.bmin3.y - eps || vertices[0].z < node->bounds.bmin3.z - eps
+				|| vertices[0].x > node->bounds.bmax3.x + eps || vertices[0].y > node->bounds.bmax3.y + eps || vertices[0].z > node->bounds.bmax3.z + eps
+				|| vertices[1].x < node->bounds.bmin3.x - eps || vertices[1].y < node->bounds.bmin3.y - eps || vertices[1].z < node->bounds.bmin3.z - eps
+				|| vertices[1].x > node->bounds.bmax3.x + eps || vertices[1].y > node->bounds.bmax3.y + eps || vertices[1].z > node->bounds.bmax3.z + eps
+				|| vertices[2].x < node->bounds.bmin3.x - eps || vertices[2].y < node->bounds.bmin3.y - eps || vertices[2].z < node->bounds.bmin3.z - eps
+				|| vertices[2].x > node->bounds.bmax3.x + eps || vertices[2].y > node->bounds.bmax3.y + eps || vertices[2].z > node->bounds.bmax3.z + eps)
 			{
 				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);
