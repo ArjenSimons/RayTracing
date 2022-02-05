@@ -2,6 +2,8 @@
 
 int missingRefCount = 0;
 
+float eps = .001f;
+
 BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint, float spatialSplitCost)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
@@ -238,8 +240,8 @@ bool BVH::Partition(BVHNode* node)
 				switch (splitAxis)
 				{
 				case(0):
-					if (!(verts[0].x <= bestBinPos + 0.01f && verts[1].x <= bestBinPos + 0.01f && verts[2].x <= bestBinPos + 0.01f)
-						&& !(verts[0].x >= bestBinPos - 0.01f && verts[1].x >= bestBinPos - 0.01f && verts[2].x >= bestBinPos - 0.01f))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
+					if (!(verts[0].x <= bestBinPos + eps && verts[1].x <= bestBinPos + eps && verts[2].x <= bestBinPos + eps)
+						&& !(verts[0].x >= bestBinPos - eps && verts[1].x >= bestBinPos - eps && verts[2].x >= bestBinPos - eps))//  aabb.bmin3.x < splitPos && aabb.bmax3.x > splitPos)
 					{
 						if (tri.GetCentroid().x <= bestBinPos)
 						{
@@ -255,8 +257,8 @@ bool BVH::Partition(BVHNode* node)
 					}
 					break;
 				case(1):
-					if (!(verts[0].y <= bestBinPos + 0.01f && verts[1].y <= bestBinPos + 0.01f && verts[2].y <= bestBinPos + 0.01f)
-						&& !(verts[0].y >= bestBinPos - 0.01f && verts[1].y >= bestBinPos - 0.01f && verts[2].y >= bestBinPos - 0.01f))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
+					if (!(verts[0].y <= bestBinPos + eps && verts[1].y <= bestBinPos + eps && verts[2].y <= bestBinPos + eps)
+						&& !(verts[0].y >= bestBinPos - eps && verts[1].y >= bestBinPos - eps && verts[2].y >= bestBinPos - eps))//(aabb.bmin3.y < splitPos && aabb.bmax3.y > splitPos)
 					{
 						if (tri.GetCentroid().y <= bestBinPos)
 						{
@@ -272,8 +274,8 @@ bool BVH::Partition(BVHNode* node)
 					}
 					break;
 				case(2):
-					if (!(verts[0].z <= bestBinPos + 0.01f && verts[1].z <= bestBinPos + 0.01f && verts[2].z <= bestBinPos + 0.01f)
-						&& !(verts[0].z >= bestBinPos - 0.01f && verts[1].z >= bestBinPos - 0.01f && verts[2].z >= bestBinPos - 0.01f))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
+					if (!(verts[0].z <= bestBinPos + eps && verts[1].z <= bestBinPos + eps && verts[2].z <= bestBinPos + eps)
+						&& !(verts[0].z >= bestBinPos - eps && verts[1].z >= bestBinPos - eps && verts[2].z >= bestBinPos - eps))//(aabb.bmin3.z < splitPos && aabb.bmax3.z > splitPos)
 					{
 						if (tri.GetCentroid().z <= bestBinPos)
 						{
@@ -402,12 +404,12 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			float3* vertices = tri.GetVertices();
 
 			//CheckAll if all vertices are inside of the aabb from this node
-			if (   vertices[0].x <= node->bounds.bmin3.x - 0.01f || vertices[0].y <= node->bounds.bmin3.y - 0.01f || vertices[0].z <= node->bounds.bmin3.z - 0.01f
-				|| vertices[0].x >= node->bounds.bmax3.x + 0.01f || vertices[0].y >= node->bounds.bmax3.y + 0.01f || vertices[0].z >= node->bounds.bmax3.z + 0.01f
-				|| vertices[1].x <= node->bounds.bmin3.x - 0.01f || vertices[1].y <= node->bounds.bmin3.y - 0.01f || vertices[1].z <= node->bounds.bmin3.z - 0.01f
-				|| vertices[1].x >= node->bounds.bmax3.x + 0.01f || vertices[1].y >= node->bounds.bmax3.y + 0.01f || vertices[1].z >= node->bounds.bmax3.z + 0.01f
-				|| vertices[2].x <= node->bounds.bmin3.x - 0.01f || vertices[2].y <= node->bounds.bmin3.y - 0.01f || vertices[2].z <= node->bounds.bmin3.z - 0.01f
-				|| vertices[2].x >= node->bounds.bmax3.x + 0.01f || vertices[2].y >= node->bounds.bmax3.y + 0.01f || vertices[2].z >= node->bounds.bmax3.z + 0.01f)
+			if (   vertices[0].x <= node->bounds.bmin3.x - eps || vertices[0].y <= node->bounds.bmin3.y - eps || vertices[0].z <= node->bounds.bmin3.z - eps
+				|| vertices[0].x >= node->bounds.bmax3.x + eps || vertices[0].y >= node->bounds.bmax3.y + eps || vertices[0].z >= node->bounds.bmax3.z + eps
+				|| vertices[1].x <= node->bounds.bmin3.x - eps || vertices[1].y <= node->bounds.bmin3.y - eps || vertices[1].z <= node->bounds.bmin3.z - eps
+				|| vertices[1].x >= node->bounds.bmax3.x + eps || vertices[1].y >= node->bounds.bmax3.y + eps || vertices[1].z >= node->bounds.bmax3.z + eps
+				|| vertices[2].x <= node->bounds.bmin3.x - eps || vertices[2].y <= node->bounds.bmin3.y - eps || vertices[2].z <= node->bounds.bmin3.z - eps
+				|| vertices[2].x >= node->bounds.bmax3.x + eps || vertices[2].y >= node->bounds.bmax3.y + eps || vertices[2].z >= node->bounds.bmax3.z + eps)
 			{
 				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);
@@ -530,7 +532,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 
 		AABB aabb = (*primitives)[indices[i]].GetAABB();
 
-		if (points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f) //All points left
+		if (points.x <= binPos + eps && points.y <= binPos + eps && points.z <= binPos + eps) //All points left
 		{
 			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 			leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
@@ -540,7 +542,7 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			leftMaxBound.z = max(leftMaxBound.z, aabb.bmax3.z);
 			leftCount++;
 		}
-		else if (points.x >= binPos - .01f && points.y >= binPos - .01f && points.z >= binPos - .01f) //All points right
+		else if (points.x >= binPos - eps && points.y >= binPos - eps && points.z >= binPos - eps) //All points right
 		{
 			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
 			rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
@@ -646,9 +648,9 @@ vector<float3> BVH::ClipTriangle(Triangle& tri, AABB& clipBox)
 			float p1Dist = clipPlanes[i].Distance(startPoint);
 			float p2Dist = clipPlanes[i].Distance(endPoint);
 
-			bool p1InFront = p1Dist >= -.001f;
+			bool p1InFront = p1Dist >= -eps;
 			bool p1Behind = !p1InFront;
-			bool p2InFront = p2Dist >= -.001f;
+			bool p2InFront = p2Dist >= -eps;
 			bool p2Behind = !p2InFront;
 
 			if (p1InFront && p2InFront)
