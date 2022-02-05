@@ -209,38 +209,6 @@ bool BVH::Partition(BVHNode* node)
 			swap(indices[++j], indices[i]);
 	}
 
-	/*switch (splitAxis)
-	{
-	case(0):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().x < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-
-		break;
-	case(1):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().y < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
-	case(2):
-		for (int i = node->first; i < node->first + node->count; i++)
-		{
-			if ((*primitives)[indices[i]].GetCentroid().z < bestBinPos)
-			{
-				std::swap(indices[++j], indices[i]);
-			}
-		}
-		break;
-	}*/
-
 	AABB intersectRL = left_right.first.Intersection(left_right.second);
 	if (intersectRL.Area() / node->bounds.Area() > spatialSplitConstraint)
 	{
@@ -375,7 +343,6 @@ void BVH::UpdateBVHNodeFirsts(BVHNode* node, int amount)
 			rightNode->first += amount;
 	}
 
-
 	UpdateBVHNodeFirsts(node->parent, amount);
 }
 
@@ -435,12 +402,12 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			float3* vertices = tri.GetVertices();
 
 			//CheckAll if all vertices are inside of the aabb from this node
-			if (vertices[0].x <= node->bounds.bmin3.x - 0.001f || vertices[0].y <= node->bounds.bmin3.y - 0.001f || vertices[0].z <= node->bounds.bmin3.z - 0.001f
-				|| vertices[0].x >= node->bounds.bmax3.x + 0.001f || vertices[0].y >= node->bounds.bmax3.y + 0.001f || vertices[0].z >= node->bounds.bmax3.z + 0.001f
-				|| vertices[1].x <= node->bounds.bmin3.x - 0.001f || vertices[1].y <= node->bounds.bmin3.y - 0.001f || vertices[1].z <= node->bounds.bmin3.z - 0.001f
-				|| vertices[1].x >= node->bounds.bmax3.x + 0.001f || vertices[1].y >= node->bounds.bmax3.y + 0.001f || vertices[1].z >= node->bounds.bmax3.z + 0.001f
-				|| vertices[2].x <= node->bounds.bmin3.x - 0.001f || vertices[2].y <= node->bounds.bmin3.y - 0.001f || vertices[2].z <= node->bounds.bmin3.z - 0.001f
-				|| vertices[2].x >= node->bounds.bmax3.x + 0.001f || vertices[2].y >= node->bounds.bmax3.y + 0.001f || vertices[2].z >= node->bounds.bmax3.z + 0.001f)
+			if (   vertices[0].x <= node->bounds.bmin3.x - 0.01f || vertices[0].y <= node->bounds.bmin3.y - 0.01f || vertices[0].z <= node->bounds.bmin3.z - 0.01f
+				|| vertices[0].x >= node->bounds.bmax3.x + 0.01f || vertices[0].y >= node->bounds.bmax3.y + 0.01f || vertices[0].z >= node->bounds.bmax3.z + 0.01f
+				|| vertices[1].x <= node->bounds.bmin3.x - 0.01f || vertices[1].y <= node->bounds.bmin3.y - 0.01f || vertices[1].z <= node->bounds.bmin3.z - 0.01f
+				|| vertices[1].x >= node->bounds.bmax3.x + 0.01f || vertices[1].y >= node->bounds.bmax3.y + 0.01f || vertices[1].z >= node->bounds.bmax3.z + 0.01f
+				|| vertices[2].x <= node->bounds.bmin3.x - 0.01f || vertices[2].y <= node->bounds.bmin3.y - 0.01f || vertices[2].z <= node->bounds.bmin3.z - 0.01f
+				|| vertices[2].x >= node->bounds.bmax3.x + 0.01f || vertices[2].y >= node->bounds.bmax3.y + 0.01f || vertices[2].z >= node->bounds.bmax3.z + 0.01f)
 			{
 				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);
@@ -561,9 +528,10 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			break;
 		}
 
+		AABB aabb = (*primitives)[indices[i]].GetAABB();
+
 		if (points.x <= binPos + .01f && points.y <= binPos + .01f && points.z <= binPos + .01f) //All points left
 		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 			leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 			leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -574,7 +542,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 		}
 		else if (points.x >= binPos - .01f && points.y >= binPos - .01f && points.z >= binPos - .01f) //All points right
 		{
-			AABB aabb = (*primitives)[indices[i]].GetAABB();
 			rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
 			rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
 			rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
@@ -591,7 +558,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 
 			if (leftPolyVerts.size() == 0)
 			{
-				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
@@ -602,7 +568,6 @@ pair<AABB, AABB> BVH::SpatialSplitAABB(BVHNode* node, int splitAxis, float& lowe
 			}
 			else if (rightPolyVerts.size() == 0)
 			{
-				AABB aabb = (*primitives)[indices[i]].GetAABB();
 				rightMinBound.x = min(rightMinBound.x, aabb.bmin3.x);
 				rightMinBound.y = min(rightMinBound.y, aabb.bmin3.y);
 				rightMinBound.z = min(rightMinBound.z, aabb.bmin3.z);
