@@ -1,4 +1,6 @@
 #pragma once
+// Diffuse util from Raynetracing Renderobert, tutorial from Scratchapixel
+// https://www.scratchapixel.com/lessons/3d-basic-rendering/global-illumination-path-tracing/global-illumination-path-tracing-practical-implementation
 
 inline void createCoordinateSystem(const float3& N, float3& Nt, float3& Nb)
 {
