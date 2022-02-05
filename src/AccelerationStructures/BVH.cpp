@@ -59,7 +59,7 @@ void BVH::ConstructBVH()
 		printf("indices size: %i\n", indices.size());
 		PrintRightLeaf(root);
 		printf("Number of spatial splits %i\n", spatialSplitCount);
-		printf("Number of missing refs %i\n", missingRefCount);
+		printf("Number of duplicated refs %i\n", missingRefCount);
 	}
 }
 
@@ -423,7 +423,7 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			float3* vertices = tri.GetVertices();
 
 			//CheckAll if all vertices are inside of the aabb from this node
-			if (triangleOutsideBounds(aabb, vertices))
+			if (spatialSplitConstraint < 1 && triangleOutsideBounds(aabb, vertices))
 			{
 				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);
