@@ -152,7 +152,6 @@
     <None Include="cl\kernels.cl">
       <Filter>template\cl</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template">
