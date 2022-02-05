@@ -10,14 +10,14 @@ inline Color rgb(float minimum, float maximum, float value) {
 	return Color(r, g, b);
 }
 
-Color BVHHeatmap::Trace(Ray& ray, unsigned int bounceDepth) {
+Color BVHDebugger::Trace(Ray& ray, unsigned int bounceDepth) {
 	Color col = float3(0.f,0.f,0.f);
 	Intersection i = scene->GetBVH()->Traverse(ray);
 	float maxCount = RED_COST_COUNT;
 	return rgb(0, maxCount, i.nAABBandTriChecks);
 }
 
-void BVHHeatmap::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int xStart, unsigned int xEnd) {
+void BVHDebugger::Render(Color renderBuffer[SCRWIDTH][SCRHEIGHT], unsigned int xStart, unsigned int xEnd) {
 	for (unsigned int i = xStart; i < xEnd; ++i) for (unsigned int j = 0; j < SCRHEIGHT; ++j)
 		renderBuffer[i][j] = Trace(GetUVRay(uv[i][j]));
 }

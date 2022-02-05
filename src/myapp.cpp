@@ -5,7 +5,7 @@ TheApp* CreateApp() { return new MyApp(); }
 
 RayTracer* rayTracer;
 RayTracer* mainTracer;
-RayTracer* secondaryTracer;
+RayTracer* lowResTracer;
 
 Scene* scene;
 Color renderBuffer[SCRWIDTH][SCRHEIGHT];
@@ -15,11 +15,11 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::SpatialBvhDragon();
+	scene = SceneManager::BvhDragon();
 	Camera * camera = new Camera(float3(0, 0, 0));
-	mainTracer = new WhittedRayTracer(scene, camera);
-	secondaryTracer = new BVHHeatmap(scene, camera);
-	rayTracer = mainTracer;
+	lowResTracer = new WhittedRayTracer(scene, camera);
+	mainTracer = new BVHDebugger(scene, camera);
+	rayTracer = lowResTracer;
 }
 
 // -----------------------------------------------------------
@@ -103,7 +103,7 @@ void MyApp::KeyDown(int key)
 	switch (key)
 	{
 	case 32: // Spacebar
-		rayTracer = rayTracer == secondaryTracer ? mainTracer : secondaryTracer;
+		rayTracer = rayTracer == lowResTracer ? mainTracer : lowResTracer;
 		break;
 
 	case 87: // W
