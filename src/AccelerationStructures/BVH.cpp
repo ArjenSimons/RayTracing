@@ -431,29 +431,6 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 
 			AABB aabb = (*primitives)[indices[i]].GetAABB();
 
-			float3 leftMax;
-			float3 rightMin;
-
-			//Calculate clipBox bounds based on axis
-			if (splitAxis == 0)  //x-axis
-			{
-				leftMax = float3(bestBinPos, node->bounds.bmax3.y, node->bounds.bmax3.z);
-				rightMin = float3(bestBinPos, node->bounds.bmin3.y, node->bounds.bmin3.z);
-			}
-			else if (splitAxis == 1) //y-axis
-			{
-				leftMax = float3(node->bounds.bmax3.x, bestBinPos, node->bounds.bmax3.z);
-				rightMin = float3(node->bounds.bmin3.x, bestBinPos, node->bounds.bmin3.z);
-			}
-			else //z-axis
-			{
-				leftMax = float3(node->bounds.bmax3.x, node->bounds.bmax3.y, bestBinPos);
-				rightMin = float3(node->bounds.bmin3.x, node->bounds.bmin3.y, bestBinPos);
-			}
-
-			AABB leftClipBox(node->bounds.bmin3, leftMax);
-			AABB rightClipBox(rightMin, node->bounds.bmax3);
-
 			Triangle tri = (*primitives)[indices[i]];
 			float3* vertices = tri.GetVertices();
 
@@ -465,40 +442,28 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 				|| vertices[2].x <= node->bounds.bmin3.x - 0.001f || vertices[2].y <= node->bounds.bmin3.y - 0.001f || vertices[2].z <= node->bounds.bmin3.z - 0.001f
 				|| vertices[2].x >= node->bounds.bmax3.x + 0.001f || vertices[2].y >= node->bounds.bmax3.y + 0.001f || vertices[2].z >= node->bounds.bmax3.z + 0.001f)
 			{
-				//Adjust tri aabb to the cliped tri
+				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);
-				float3 centroid = float3(0, 0, 0);
-				for (float3 vert : verts)
-				{
-					centroid += vert;
-				}
-				centroid /= static_cast<float>(verts.size());
-
-				if (splitAxis == 0)
-					p = centroid.x;
-				else if (splitAxis == 1)
-					p = centroid.y;
-				else
-					p = centroid.z;
 
 				float3 minbound = minb;
 				float3 maxbound = maxb;
-				for (float3 p : verts)
+				for (float3 vert : verts)
 				{
-					minbound.x = min(minbound.x, p.x);
-					minbound.y = min(minbound.y, p.y);
-					minbound.z = min(minbound.z, p.z);
-					maxbound.x = max(maxbound.x, p.x);
-					maxbound.y = max(maxbound.y, p.y);
-					maxbound.z = max(maxbound.z, p.z);
+					minbound.x = min(minbound.x, vert.x);
+					minbound.y = min(minbound.y, vert.y);
+					minbound.z = min(minbound.z, vert.z);
+					maxbound.x = max(maxbound.x, vert.x);
+					maxbound.y = max(maxbound.y, vert.y);
+					maxbound.z = max(maxbound.z, vert.z);
 				}
 				aabb.bmin3 = minbound;
 				aabb.bmax3 = maxbound;
+				p = node->bounds.Center(splitAxis);
+				aabb = node->bounds;
 			}
 
 			if (p < binPositions[splitAxis])
 			{
-				//left.Grow((*primitives)[indices[i]].GetCentroid());
 				leftMinBound.x = min(leftMinBound.x, aabb.bmin3.x);
 				leftMinBound.y = min(leftMinBound.y, aabb.bmin3.y);
 				leftMinBound.z = min(leftMinBound.z, aabb.bmin3.z);
