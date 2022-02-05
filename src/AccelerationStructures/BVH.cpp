@@ -2,7 +2,7 @@
 
 int missingRefCount = 0;
 
-BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint = 1.0f, float spatialSplitCost = 0.0125f)
+BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint, float spatialSplitCost)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
 	invTranslation = translation.Inverted();
