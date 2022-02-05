@@ -28,9 +28,9 @@
 
 // Chromatic aberration.
 #define CHROMATIC_ABERRATION false
-#define CHROM_ABB_R_OFFSET int2(1,1)
-#define CHROM_ABB_G_OFFSET int2(-1,1)
-#define CHROM_ABB_B_OFFSET int2(-1,-1)
+#define CHROM_AB_R_OFFSET int2(1,1)
+#define CHROM_AB_G_OFFSET int2(-1,1)
+#define CHROM_AB_B_OFFSET int2(-1,-1)
 
 // --------------------------------------------------------------
 // Lens settings. Clamped [0...1]

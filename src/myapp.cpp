@@ -53,7 +53,7 @@ void MyApp::Tick(float deltaTime)
 			PostProcessing::GammaCorrection(renderBuffer, GAMMA);
 		}
 		if (CHROMATIC_ABERRATION) {
-			PostProcessing::ChromaticAberration(renderBuffer, CHROM_ABB_R_OFFSET, CHROM_ABB_G_OFFSET, CHROM_ABB_B_OFFSET);
+			PostProcessing::ChromaticAberration(renderBuffer, CHROM_AB_R_OFFSET, CHROM_AB_G_OFFSET, CHROM_AB_B_OFFSET);
 		}
 		chrono::steady_clock::time_point ppend = chrono::steady_clock::now();
 		cout << "Post Processing time:" << chrono::duration_cast<chrono::milliseconds>(ppend - ppbegin).count() << "[ms]" << endl;
