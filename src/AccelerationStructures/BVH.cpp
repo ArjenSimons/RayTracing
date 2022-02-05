@@ -4,6 +4,26 @@ int missingRefCount = 0;
 
 float eps = .001f;
 
+inline float getAxisValue(float3 pos, uint axis) {
+	return axis == 0 ? pos.x : axis == 1 ? pos.y : pos.z;
+}
+
+inline bool triangleOutsideBounds(AABB bounds, float3* vertices) {
+	// For each vertex, check whether it falls between the min and max for that axis.
+	for (uint v_idx = 0; v_idx < 3; v_idx++) {
+		float3 vertex = vertices[v_idx];
+		for (uint v_axis = 0; v_axis < 3; v_axis++) {
+
+			// Get values for comparison.
+			float pos = getAxisValue(vertex, v_axis);
+			float min = bounds.Minimum(v_axis);
+			float max = bounds.Maximum(v_axis);
+
+			if (pos < min - eps || pos > max + eps) return true;
+		}
+	}
+}
+
 BVH::BVH(vector<Triangle>* intersectables, uInt count, mat4 translation, bool diagnostics, float spatialSplitConstraint, float spatialSplitCost)
 	:primitives(intersectables), n(count), translation(translation), diagnostics(diagnostics), spatialSplitConstraint(spatialSplitConstraint), spatialSplitCost(spatialSplitCost)
 {
@@ -134,7 +154,6 @@ Intersection BVH::GetClosestIntersectionInNode(Ray& r, BVHNode* node, uint& nChe
 			closest_intersection = intersection;
 		}
 	}
-
 
 	closest_intersection.nAABBandTriChecks = nChecks;
 
@@ -404,12 +423,7 @@ pair<AABB, AABB> BVH::SplitAABB(BVHNode* node, int splitAxis, float& lowestCost,
 			float3* vertices = tri.GetVertices();
 
 			//CheckAll if all vertices are inside of the aabb from this node
-			if (   vertices[0].x < node->bounds.bmin3.x - eps || vertices[0].y < node->bounds.bmin3.y - eps || vertices[0].z < node->bounds.bmin3.z - eps
-				|| vertices[0].x > node->bounds.bmax3.x + eps || vertices[0].y > node->bounds.bmax3.y + eps || vertices[0].z > node->bounds.bmax3.z + eps
-				|| vertices[1].x < node->bounds.bmin3.x - eps || vertices[1].y < node->bounds.bmin3.y - eps || vertices[1].z < node->bounds.bmin3.z - eps
-				|| vertices[1].x > node->bounds.bmax3.x + eps || vertices[1].y > node->bounds.bmax3.y + eps || vertices[1].z > node->bounds.bmax3.z + eps
-				|| vertices[2].x < node->bounds.bmin3.x - eps || vertices[2].y < node->bounds.bmin3.y - eps || vertices[2].z < node->bounds.bmin3.z - eps
-				|| vertices[2].x > node->bounds.bmax3.x + eps || vertices[2].y > node->bounds.bmax3.y + eps || vertices[2].z > node->bounds.bmax3.z + eps)
+			if (triangleOutsideBounds(aabb, vertices))
 			{
 				////Adjust tri aabb to the cliped tri
 				vector<float3> verts = ClipTriangle(tri, node->bounds);

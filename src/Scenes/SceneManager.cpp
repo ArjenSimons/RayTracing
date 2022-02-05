@@ -169,7 +169,7 @@ Scene * SceneManager::SpatialBvhTest() {
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
 	Model* model = new Model(float3(0, 0, 3), 5, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
 
-	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true, 1e-5f, .05f);
+	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true, 1e-1f, .05f);
 
 	printf("\n triangle count: %i\n", model->GetTriangles()->size());
 
