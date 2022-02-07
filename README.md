@@ -1,7 +1,28 @@
-This template is intended for students of the Advanced Graphics course of Utrecht University.
+# CPU RayTracer
 
-**Please refer to "_ getting started.pdf" for instructions.**
+## Features
+- Whitted style raytracer
+  - Anti aliasing
+- PathTracer
+- BVH Acceleration structure
+  - Binning / SAH
+  - Top Level BVH 
+  - Instancing
+  - Rigid Animations
+- Multithreading
+- Post-processing effects. (Vignette, Gamma correction, Chromatic aberration)
+- Materials (albedo, specular, dieletrics, textures)
+- Camera controlls
 
-Code is fully public domain. Use as you please.
+## Credits
 
-Contact me at bikker.j@gmail.com .
+### Contributions 
+- Arjen Simons (https://github.com/ArjenSimons): Whitted style raytracer, BVH Acceleration structure, multithreading, pp effects, materials
+- Robert Oost (https://github.com/robertoost): PathTracer, Scene Management, pp effects
+- Jan Willem de Ruig (https://github.com/De-Signated): Camera controlls, torus intersection, directional/spot lights
+
+### Used libraries
+advgrtmpl8 https://github.com/jbikker/advgrtmpl8<br/>
+tinyobj https://github.com/tinyobjloader/tinyobjloader<br/>
+stb_image https://github.com/nothings/stb<br/>
+ThreadPool https://github.com/progschj/ThreadPool<br/>
