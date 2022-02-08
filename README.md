@@ -15,6 +15,15 @@
 - Materials (albedo, specular, dieletrics, textures)
 - Camera controlls
 
+## Future work
+- Skybox
+- Top level BVH construction using: Fast Agglomerative Clustering for Rendering, Walter et al., 2008
+- GPGPU implementation
+- PathTracing Importance Sampling
+- PathTracing various filtering techniques
+- Improved Camera controlls/implementation
+- Graphical User Interface
+
 ## Credits
 
 ### Contributions 
