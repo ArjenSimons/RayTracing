@@ -9,6 +9,7 @@
   - Top Level BVH 
   - Instancing
   - Rigid Animations
+  - Heatmap renderer displaying the cost of each ray
 - Multithreading
 - Post-processing effects. (Vignette, Gamma correction, Chromatic aberration)
 - Materials (albedo, specular, dieletrics, textures)
@@ -18,7 +19,7 @@
 
 ### Contributions 
 - Arjen Simons (https://github.com/ArjenSimons): Whitted style raytracer, BVH Acceleration structure, multithreading, pp effects, materials
-- Robert Oost (https://github.com/robertoost): PathTracer, Scene Management, pp effects
+- Robert Oost (https://github.com/robertoost): PathTracer, Scene Management, pp effects, BVH heatmap renderer
 - Jan Willem de Ruig (https://github.com/De-Signated): Camera controlls, torus intersection, directional/spot lights
 
 ### Used libraries
