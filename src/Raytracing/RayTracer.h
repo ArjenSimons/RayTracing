@@ -5,7 +5,7 @@ class RayTracer
 private:
 	// Multithreading
 	bool multithreadingEnabled = MULTITHREADING;
-	unsigned int nThreads = processor_count * 4;
+	unsigned int nThreads = processor_count * 2;
 	unsigned int threadWidth = SCRWIDTH / nThreads;
 	vector<int> threadStartPoints;
 	ThreadPool threadPool;

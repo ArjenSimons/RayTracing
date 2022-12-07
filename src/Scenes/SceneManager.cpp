@@ -143,7 +143,7 @@ Scene * SceneManager::SpatialBvhDragon() {
 
 	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true, 1e-1f, 1);
 
-	printf("\n triangle count: %i\n", model->GetTriangles()->size());
+	printf("\n triangle count: %llu\n", model->GetTriangles()->size());
 
 	bvh->ConstructBVH();
 
@@ -170,13 +170,15 @@ Scene * SceneManager::SpatialBvhDragon() {
 }
 
 Scene* SceneManager::BvhDragon() {
-	shared_ptr<ColorTexture> colorTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+	shared_ptr<ColorTexture> whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+	shared_ptr<ColorTexture> blackTexture = make_shared<ColorTexture>(Color(0.9, 0.9, 0.9));
+	shared_ptr<CheckerTexture> checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
 	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/dragon.obj");
-	Model* model = new Model(float3(0, 0, 3), 5, mesh, SOLID, Material(Color(.45, .12, .12), colorTexture));
+	Model* model = new Model(float3(0, 0, 3), 5, mesh, SOLID, Material(Color(.45, .12, .12), whiteTexture));
 
 	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true, 1, 1);
 
-	printf("\n triangle count: %i\n", model->GetTriangles()->size());
+	printf("\n triangle count: %llu\n", model->GetTriangles()->size());
 
 	bvh->ConstructBVH();
 
@@ -189,15 +191,67 @@ Scene* SceneManager::BvhDragon() {
 
 	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
 
-	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), colorTexture));
+	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), whiteTexture));
+
+	Material offWhiteMat = Material(Color(.85f, .85f, .85f), whiteTexture);
+	Plane* floor = new Plane(float3(0, -3, 0), float3(0, 1, 0), SOLID, Material(Color(1, 1, 1), checkerTexture));
 
 	// TODO: Add objects, lights, bvh
-	vector<Intersectable*> objects = { };
+	vector<Intersectable*> objects = { floor };
 	PointLight* pointLight = new PointLight(float3(0, 0, -4), 10, float3(1, 1, 1));
 	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 10, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
 
 	vector<LightSource*> lights = { pointLight };
 
+
+
 	Scene* scene = new Scene(objects, lights, topBVH);
+	return scene;
+}
+
+Scene* SceneManager::BvhBunny() {
+	shared_ptr<ColorTexture> whiteTexture = make_shared<ColorTexture>(Color(1, 1, 1));
+	shared_ptr<ColorTexture> blackTexture = make_shared<ColorTexture>(Color(.05, .05, .05));
+	shared_ptr<CheckerTexture> checkerTexture = make_shared<CheckerTexture>(whiteTexture, blackTexture);
+	shared_ptr<ImageTexture> marbleTexture = make_shared<ImageTexture>("res/marble.jpg");
+
+	shared_ptr<Mesh> mesh = make_shared<Mesh>("res/bunny.obj");
+	Model* model = new Model(float3(0, -1, 1.2), .5, mesh, GLASS, Material(Color(1, .12, .12), whiteTexture));
+
+	BVH* bvh = new BVH(model->GetTriangles(), model->GetTriangles()->size(), model->GetTranslation(), true, 1, 1);
+
+	printf("\n triangle count: %llu\n", model->GetTriangles()->size());
+
+	bvh->ConstructBVH();
+
+	BVHInstance* instance = new BVHInstance(bvh);
+	instance->RotateY(170);
+
+	vector<BVHInstance*>* bvhs = new vector<BVHInstance*>;
+
+	bvhs->push_back(instance);
+
+	TopLevelBVH* topBVH = new TopLevelBVH(bvhs);
+
+	Sphere* redSphere = new Sphere(float3(-2, -2, 5), 1.f, SOLID, Material(Color(.45, .12, .12), whiteTexture));
+
+	Material checkerMat = Material(Color(.9, .9, .9), checkerTexture);
+	Material marbleMat = Material(Color(1, 1, 1), marbleTexture);
+	Plane* floor = new Plane(float3(0, -1, 0), float3(0, 1, 0), SOLID, marbleMat);
+
+	Sphere* areaLight = new Sphere(float3(0, 5, 4), 1.f, LIGHT, Material(Color(1, 1, 1), 10));
+
+	// TODO: Add objects, lights, bvh
+	vector<Intersectable*> objects = { floor };
+	PointLight* pointLight = new PointLight(float3(0, 2, 3), 10, float3(1, 1, 1));
+	DirectionalLight* directionalLight = new DirectionalLight(float3(0, 10, 14), float3(.2f, -.8f, -.1f), 1.0f, float3(1, 1, 1));
+
+	vector<LightSource*> lights = { pointLight };
+
+
+
+	Scene* scene = new Scene(objects, lights, topBVH);
+	scene->AddAreaLight(areaLight);
+
 	return scene;
 }

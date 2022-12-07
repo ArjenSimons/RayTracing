@@ -15,10 +15,14 @@ Color renderBuffer[SCRWIDTH][SCRHEIGHT];
 // -----------------------------------------------------------
 void MyApp::Init()
 {
-	scene = SceneManager::BvhDragon();
-	Camera * camera = new Camera(float3(0, 0, 0));
+	Camera * camera = new Camera(float3(0, -.1, -1));
+	//scene = SceneManager::BvhDragon();
+	//mainTracer = new WhittedRayTracer(scene, camera);
+	scene = SceneManager::BvhBunny();
+	//mainTracer = new PathTracer(scene, camera);
 	mainTracer = new WhittedRayTracer(scene, camera);
-	secondaryTracer = new BVHHeatmap(scene, camera);
+
+	secondaryTracer = new PathTracer(scene, camera);
 	rayTracer = mainTracer;
 }
 
